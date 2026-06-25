@@ -2,15 +2,6 @@
 
 import { motion } from "framer-motion";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] },
-  }),
-};
-
 const TESTIMONIALS = [
   {
     name: "Aanya Sharma",
@@ -38,6 +29,8 @@ const TESTIMONIALS = [
     text: "Incredibly soft against the skin, and the heritage makes it a masterpiece. It's an absolute privilege to own.",
   }
 ];
+
+type Testimonial = (typeof TESTIMONIALS)[number];
 
 export default function Testimonials() {
   return (
@@ -78,7 +71,7 @@ export default function Testimonials() {
           >
             {[...TESTIMONIALS, ...TESTIMONIALS].map((item, index) => (
               <div key={index} className="w-[320px] md:w-[400px] flex-shrink-0 h-full">
-                <TestimonialCard item={item} index={index % TESTIMONIALS.length} className="h-full" />
+                <TestimonialCard item={item} className="h-full" />
               </div>
             ))}
           </motion.div>
@@ -93,7 +86,7 @@ export default function Testimonials() {
   );
 }
 
-function TestimonialCard({ item, index, className = "" }: { item: any, index: number, className?: string }) {
+function TestimonialCard({ item, className = "" }: { item: Testimonial; className?: string }) {
   return (
     <div
       className={`group flex flex-col bg-[#F3EFE6] p-8 lg:p-10 border border-[#EAE6D9] rounded-xl hover:bg-white hover:border-[#C8892A]/40 hover:shadow-[0_20px_50px_rgba(200,137,42,0.12)] hover:-translate-y-2 transition-all duration-500 cursor-pointer ${className}`}

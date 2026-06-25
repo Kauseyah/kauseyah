@@ -9,27 +9,27 @@ const fadeUp = {
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const },
   }),
 };
 
 const slideInLeft = {
   hidden: { opacity: 0, x: -50 },
   show: (i = 0) => ({
-    opacity: 1, x: 0, transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, x: 0, transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
 const slideInRight = {
   hidden: { opacity: 0, x: 50 },
   show: (i = 0) => ({
-    opacity: 1, x: 0, transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, x: 0, transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
 const imageReveal = {
   hidden: { opacity: 0, scale: 0.85, filter: "blur(10px)" },
-  show: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
+  show: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
 export default function WhoWeAre() {
@@ -61,7 +61,7 @@ export default function WhoWeAre() {
           >
             <motion.p variants={slideInRight} custom={0}
               className="font-display text-3xl md:text-4xl italic text-[#1A1410] leading-[1.5]">
-              "Every thread carries a story,<br />every pattern a prayer."
+              &ldquo;Every thread carries a story,<br />every pattern a prayer.&rdquo;
             </motion.p>
             <motion.div variants={slideInRight} custom={1} className="mt-6">
               <div className="w-8 h-px bg-[#C8892A] mb-2" />
@@ -118,7 +118,7 @@ export default function WhoWeAre() {
           >
             <motion.p variants={fadeUp} custom={0}
               className="font-body text-lg text-[#1A1410]/90 leading-relaxed mb-6">
-              Kauseyah is more than a brand — it is a living archive of India's most sacred textile traditions.
+              Kauseyah is more than a brand — it is a living archive of India&apos;s most sacred textile traditions.
               Born from a deep reverence for the hands that weave, dye, and embroider these masterpieces,
               we work directly with artisan families across tribal belts of India.
             </motion.p>

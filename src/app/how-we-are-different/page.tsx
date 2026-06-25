@@ -13,7 +13,7 @@ export default function HowWeAreDifferentPage() {
       <section>
         <h2 className="font-display text-3xl mb-4">What Sets Us Apart</h2>
         <p className="text-stone-600">
-          We don't just sell clothes; we curate living artifacts. Every item carries the signature 
+          We don&apos;t just sell clothes; we curate living artifacts. Every item carries the signature 
           of its region and the history of its people.
         </p>
       </section>

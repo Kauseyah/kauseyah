@@ -14,11 +14,11 @@ export default function TestimonialsPage() {
         <h2 className="font-display text-3xl mb-8">Client Feedback</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div className="card p-6 border border-stone-100 shadow-sm">
-            <p className="italic text-stone-600 mb-4">"The craftsmanship is unparalleled. You can feel the history in the fabric."</p>
+            <p className="italic text-stone-600 mb-4">&ldquo;The craftsmanship is unparalleled. You can feel the history in the fabric.&rdquo;</p>
             <p className="font-semibold">- Anjali R.</p>
           </div>
           <div className="card p-6 border border-stone-100 shadow-sm">
-            <p className="italic text-stone-600 mb-4">"Absolutely stunning tribal gift box. The packaging and the art piece inside were magnificent."</p>
+            <p className="italic text-stone-600 mb-4">&ldquo;Absolutely stunning tribal gift box. The packaging and the art piece inside were magnificent.&rdquo;</p>
             <p className="font-semibold">- Michael T.</p>
           </div>
         </div>

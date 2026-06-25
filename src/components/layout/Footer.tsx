@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { SITE_NAME, SITE_TAGLINE, CATEGORIES, SOCIAL_LINKS, CONTACT_EMAIL } from "@/constants";
+import type { ReactElement } from "react";
+import { SITE_NAME, SITE_TAGLINE, SOCIAL_LINKS, CONTACT_EMAIL } from "@/constants";
 
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy" },
@@ -10,7 +10,7 @@ const LEGAL_LINKS = [
   { label: "Shipping Policy", href: "/shipping" },
 ];
 
-const SOCIAL_ICONS: Record<string, JSX.Element> = {
+const SOCIAL_ICONS: Record<string, ReactElement> = {
   instagram: (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
@@ -34,14 +34,6 @@ const SOCIAL_ICONS: Record<string, JSX.Element> = {
 };
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-  const [joined, setJoined] = useState(false);
-
-  const handleJoin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setJoined(true);
-  };
-
   return (
     <footer style={{ background: "#120D09" }}>
 
@@ -77,7 +69,7 @@ export default function Footer() {
 
             {/* Brand description */}
             <p className="font-body text-[12.5px] leading-[1.85] text-white/45 max-w-[220px]">
-              India's living textile heritage, brought directly from artisan hands to yours — uncompromised, authentic, and ethically made.
+              India&apos;s living textile heritage, brought directly from artisan hands to yours — uncompromised, authentic, and ethically made.
             </p>
           </div>
 

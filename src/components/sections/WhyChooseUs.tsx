@@ -4,38 +4,29 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Fingerprint, HandHeart, Clock, Leaf } from "lucide-react";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] },
-  }),
-};
-
 const slideInLeft = {
   hidden: { opacity: 0, x: -40 },
   show: (i = 0) => ({
-    opacity: 1, x: 0, transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, x: 0, transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
 const slideInRight = {
   hidden: { opacity: 0, x: 40 },
   show: (i = 0) => ({
-    opacity: 1, x: 0, transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, x: 0, transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
 const zoomRotate = {
   hidden: { opacity: 0, scale: 0.7, rotate: -15 },
-  show: { opacity: 1, scale: 1, rotate: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
+  show: { opacity: 1, scale: 1, rotate: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
 const scaleUpPop = {
   hidden: { opacity: 0, scale: 0.9 },
   show: (i = 0) => ({
-    opacity: 1, scale: 1, transition: { duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, scale: 1, transition: { duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] as const }
   })
 };
 

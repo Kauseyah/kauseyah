@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { COLLECTIONS } from "@/data";
-import { CATEGORIES } from "@/constants";
 
 export const metadata: Metadata = {
   title: "Collections",

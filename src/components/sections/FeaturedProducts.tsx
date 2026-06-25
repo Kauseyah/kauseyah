@@ -10,21 +10,21 @@ const fadeUp = {
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.8, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const },
   }),
 };
 
 const blurIn = {
   hidden: { opacity: 0, filter: "blur(10px)" },
   show: (i = 0) => ({
-    opacity: 1, filter: "blur(0px)", transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, filter: "blur(0px)", transition: { duration: 0.9, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
 const slideUpBlur = {
   hidden: { opacity: 0, y: 50, filter: "blur(8px)", scale: 0.98 },
   show: (i = 0) => ({
-    opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 1.1, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }
+    opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 1.1, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
   }),
 };
 
@@ -108,6 +108,7 @@ export default function FeaturedProducts() {
               {/* Rich Text Body */}
               <div className="p-8 flex flex-col flex-1">
                 {/* Artisan & Region Meta */}
+                {product.artisan && (
                 <div className="flex items-center gap-2 mb-3">
                   <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#C8892A]">
                     {product.artisan.region}
@@ -117,6 +118,7 @@ export default function FeaturedProducts() {
                     By {product.artisan.name}
                   </span>
                 </div>
+                )}
 
                 {/* Title */}
                 <Link href={`/products/${product.slug}`} className="block font-display text-3xl text-[#1A1410] group-hover:text-[#C8892A] transition-colors mb-4 leading-tight">

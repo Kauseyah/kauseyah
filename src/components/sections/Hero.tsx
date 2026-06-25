@@ -30,11 +30,6 @@ export default function Hero() {
           transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-2xl"
         >
-          {/* Eyebrow */}
-          <span className="font-body text-[11px] tracking-[0.3em] text-[#E7D6B8]/80 block mb-5 uppercase">
-            The Artisan Collective
-          </span>
-
           {/* Headline */}
           <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-white mb-5 tracking-tight drop-shadow-2xl">
             Woven by Hands.<br />
@@ -46,7 +41,7 @@ export default function Hero() {
 
           {/* Short description */}
           <p className="font-body text-[15px] font-light tracking-wide text-white/70 mb-10 leading-relaxed max-w-md">
-            India's heritage, ethically woven — handlooms, textiles &amp; tribal artistry.
+            India&apos;s heritage, ethically woven — handlooms, textiles &amp; tribal artistry.
           </p>
 
           {/* CTAs */}
@@ -55,7 +50,7 @@ export default function Hero() {
               href="/collections"
               className="btn bg-[#E7D6B8] text-[#1A1410] border-none px-8 py-3 text-[11px] font-bold tracking-[0.2em] hover:bg-white transition-all shadow-lg uppercase"
             >
-              Shop Collections
+              Shop Now
             </Link>
             <Link
               href="/about"

@@ -158,10 +158,10 @@ export default function FAQ() {
             <div className="w-10 h-[1.5px] bg-[#C8892A] mb-7" />
             <p className="font-body text-lg lg:text-xl text-[#1A1410]/70 leading-relaxed mb-8">
               Everything you need to know about our handloom collections, ethical sourcing,
-              care instructions, and how we bring India's artisan legacy to your door.
+              care instructions, and how we bring India&apos;s artisan legacy to your door.
             </p>
             <p className="font-body text-[15px] leading-relaxed text-[#1A1410]/70 mb-10">
-              Can't find your answer? We're always happy to help — reach out to us directly
+              Can&apos;t find your answer? We&apos;re always happy to help — reach out to us directly
               and our team will get back to you within 24 hours.
             </p>
             <a
