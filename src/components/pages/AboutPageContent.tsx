@@ -1,10 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Heart, Leaf, Shield, Target, Eye } from "lucide-react";
-import { FOUNDER, ABOUT_STORY_BRIDGE, BRAND_TAGLINE, SITE_TAGLINE } from "@/constants";
+import { Heart, Leaf, Shield, Target, Eye } from "lucide-react";
+import { FOUNDER, ABOUT_KAUSEYAH, BRAND_TAGLINE, SITE_TAGLINE } from "@/constants";
 
 const BRAND_PILLARS = BRAND_TAGLINE.split("|").map((item) => item.trim());
 
@@ -239,10 +238,10 @@ export default function AboutPageContent() {
   return (
     <main className="bg-[#F9F5EE]">
       {/* ── Navbar clearance + separation from hero ── */}
-      <div className="h-24 lg:h-28" aria-hidden />
+      <div className="h-[4.25rem] lg:h-[4.5rem]" aria-hidden />
 
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#E5C18D] py-12 lg:py-16 pb-16 lg:pb-20 overflow-hidden">
+      <section className="w-full bg-[#E5C18D] pt-10 lg:pt-12 pb-16 lg:pb-20 overflow-hidden">
         <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
             <motion.div
@@ -309,21 +308,26 @@ export default function AboutPageContent() {
             viewport={{ once: true, margin: "-60px" }}
             className="max-w-3xl mb-14 lg:mb-20"
           >
-            <motion.p
+            <motion.h2
               variants={fadeUp}
               custom={0}
-              className="font-display text-2xl md:text-3xl lg:text-[2rem] text-[#0D0603] leading-snug mb-6"
+              className="font-display text-3xl md:text-4xl lg:text-[2.65rem] text-[#0D0603] leading-snug mb-6"
             >
-              {ABOUT_STORY_BRIDGE.lead}
-            </motion.p>
+              {ABOUT_KAUSEYAH.title}
+            </motion.h2>
             <motion.div variants={fadeUp} custom={1} className="w-12 h-[2px] bg-[#C8892A] mb-6" />
-            <motion.p
-              variants={fadeUp}
-              custom={2}
-              className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed"
-            >
-              {ABOUT_STORY_BRIDGE.body}
-            </motion.p>
+            <div className="space-y-5">
+              {ABOUT_KAUSEYAH.paragraphs.map((paragraph, index) => (
+                <motion.p
+                  key={paragraph.slice(0, 40)}
+                  variants={fadeUp}
+                  custom={index + 2}
+                  className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed"
+                >
+                  {paragraph}
+                </motion.p>
+              ))}
+            </div>
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
@@ -335,7 +339,7 @@ export default function AboutPageContent() {
               className="relative h-[360px] md:h-[480px] overflow-hidden rounded-2xl"
             >
               <Image
-                src="/images/who-we-are.png"
+                src="/images/about/about.jpeg"
                 alt="Founder journey among master artisans at the loom"
                 fill
                 className="object-cover"
@@ -352,28 +356,27 @@ export default function AboutPageContent() {
               <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
                 The Founder
               </motion.span>
-              <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl text-[#0D0603] mb-6">
-                {FOUNDER.headline}<br />
-                <span className="italic text-[#6B2D0A]">{FOUNDER.headlineAccent}</span>
+              <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl text-[#0D0603] mb-2">
+                {FOUNDER.name}
               </motion.h2>
-              <motion.p variants={fadeUp} custom={2} className="font-body text-[16px] text-[#2C1810]/80 leading-relaxed mb-5">
-                {FOUNDER.intro}
+              <motion.p variants={fadeUp} custom={2} className="font-body text-[13px] font-semibold tracking-[0.12em] text-[#6B2D0A] uppercase mb-6">
+                {FOUNDER.title}
               </motion.p>
-              <motion.p variants={fadeUp} custom={3} className="font-body text-[16px] text-[#2C1810]/80 leading-relaxed mb-6">
-                {FOUNDER.story}
+              <div className="space-y-5 mb-8">
+                {FOUNDER.paragraphs.map((paragraph, index) => (
+                  <motion.p
+                    key={paragraph.slice(0, 40)}
+                    variants={fadeUp}
+                    custom={index + 3}
+                    className="font-body text-[16px] text-[#2C1810]/80 leading-relaxed"
+                  >
+                    {paragraph}
+                  </motion.p>
+                ))}
+              </div>
+              <motion.p variants={fadeUp} custom={5} className="font-display text-lg text-[#6B2D0A]">
+                — {FOUNDER.role}
               </motion.p>
-              <motion.p variants={fadeUp} custom={4} className="font-display text-lg text-[#6B2D0A] mb-8">
-                — {FOUNDER.name}, {FOUNDER.role}
-              </motion.p>
-              <motion.div variants={fadeUp} custom={5}>
-                <Link
-                  href="/collections"
-                  className="inline-flex items-center gap-3 rounded-full bg-[#0D0603] text-white px-8 py-3.5 font-body text-[11px] tracking-[0.22em] uppercase hover:bg-[#6B2D0A] transition-all duration-300"
-                >
-                  Explore Collections
-                  <ArrowRight size={14} />
-                </Link>
-              </motion.div>
             </motion.div>
           </div>
         </div>

@@ -3,6 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { CountUp } from "@/components/CountUp";
+
+const WHO_WE_ARE_STATS = [
+  { value: 100, suffix: "%", label: "Ethically Sourced" },
+  { value: 12, suffix: "+", label: "Indigenous Crafts" },
+  { value: 1000, suffix: "+", label: "Customers" },
+];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -131,14 +138,12 @@ export default function WhoWeAre() {
             {/* Stats row */}
             <motion.div variants={fadeUp} custom={2}
               className="grid grid-cols-3 gap-6 pb-10 mb-10 border-b border-[#C8892A]/15">
-              {[
-                { v: "100%", l: "Ethically Sourced" },
-                { v: "12+", l: "Indigenous Crafts" },
-                { v: "1000+", l: "Customers" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <p className="font-display text-3xl text-[#6B3A2A] mb-1">{s.v}</p>
-                  <p className="font-body text-[11px] font-medium tracking-[0.15em] text-[#1A1410]/80 uppercase leading-snug">{s.l}</p>
+              {WHO_WE_ARE_STATS.map((s) => (
+                <div key={s.label}>
+                  <p className="font-display text-3xl text-[#6B3A2A] mb-1">
+                    <CountUp value={s.value} suffix={s.suffix} duration={2} className="inline-block" />
+                  </p>
+                  <p className="font-body text-[11px] font-medium tracking-[0.15em] text-[#1A1410]/80 uppercase leading-snug">{s.label}</p>
                 </div>
               ))}
             </motion.div>

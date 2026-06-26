@@ -4,30 +4,30 @@ import { motion } from "framer-motion";
 
 const TESTIMONIALS = [
   {
-    name: "Aanya Sharma",
-    location: "Mumbai",
-    text: "The Ikat feels like wearing a breathing piece of history. You simply can't find this richness in fast fashion. Every detail is exquisite.",
+    name: "Verified Patron",
+    location: "Chhattisgarh",
+    text: "You are doing great work Shweta.. our Chhattisgarh is still hidden from many people. I am very glad you are globalizing our local textile to international platform. Keep doing the good work. All the very best.",
   },
   {
-    name: "Priyanka Desai",
-    location: "New York",
-    text: "The authenticity of Kauseyah's work shines through. I wore this to a gala, and it sparked endless conversations.",
+    name: "International Patron",
+    location: "London, UK",
+    text: "Hey Shweta! Trust all is well! I want to confirm — I'll go with the kosa silk saree, orange Banarasi and the toys. Will select and update you shortly! Also, I'm totally okay with paying the courier charges. Let me know the total please? Address you already have — the London one.",
   },
   {
-    name: "Kriti Rao",
-    location: "Bangalore",
-    text: "Knowing my purchase supports artisan families makes this so meaningful. The detail is breathtaking.",
+    name: "Saree Lover",
+    location: "India",
+    text: "The drape, the feel, the comfort.. Have never experienced such with any other saree I've owned. You are creating absolute fabulous pieces and the art is simply outstanding. Received compliments for its uniqueness. Thank you very much for these masterpieces! Wishing your business expands across an even broader spectrum and reaches every woman who loves draping sarees.",
   },
   {
-    name: "Neha Gupta",
-    location: "Delhi",
-    text: "Finally, a brand that practices what it preaches. The transparency gives me absolute trust in Kauseyah.",
+    name: "Returning Customer",
+    location: "India",
+    text: "Received the package. As usual it was all perfectly made. Loved all of them. Thank you so much for the special note and the gift. Your items will never go out of trend.",
   },
   {
-    name: "Meghna Iyer",
-    location: "Chennai",
-    text: "Incredibly soft against the skin, and the heritage makes it a masterpiece. It's an absolute privilege to own.",
-  }
+    name: "Gift Buyer",
+    location: "India",
+    text: "Hi Shweta! Received the saree. It's lovely! Thanks so much for the great work :) Bought this one as a gift, I'm sure they'll love it too!",
+  },
 ];
 
 type Testimonial = (typeof TESTIMONIALS)[number];

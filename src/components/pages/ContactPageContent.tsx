@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, ArrowRight, User, MessageSquare } from "lucide-react";
 import {
   CONTACT_EMAIL,
-  WHATSAPP_NUMBER,
+  CONTACT_PHONE,
   SOCIAL_LINKS,
   CONTACT_HERO,
 } from "@/constants";
@@ -21,6 +21,13 @@ const SOCIAL_ICONS = {
   facebook: (
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  ),
+  linkedin: (
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
     </svg>
   ),
 } as const;
@@ -99,10 +106,10 @@ export default function ContactPageContent() {
   return (
     <main className="bg-[#F9F5EE]">
       {/* ── Navbar clearance + separation from hero ── */}
-      <div className="h-24 lg:h-28" aria-hidden />
+      <div className="h-[4.25rem] lg:h-[4.5rem]" aria-hidden />
 
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#E5C18D] py-12 lg:py-16 pb-16 lg:pb-20 overflow-hidden">
+      <section className="w-full bg-[#E5C18D] pt-10 lg:pt-12 pb-16 lg:pb-20 overflow-hidden">
         <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
           <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
             <motion.div
@@ -232,11 +239,11 @@ export default function ContactPageContent() {
               <div className="lg:pl-10 xl:pl-12 lg:border-l lg:border-[#6B3A2A]/40 space-y-8">
                 <div className="space-y-4">
                   <a
-                    href={`tel:${WHATSAPP_NUMBER.replace(/\s/g, "")}`}
+                    href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}
                     className="flex items-center gap-3 font-body text-[17px] text-[#0D0603] hover:text-[#6B2D0A] transition-colors duration-200"
                   >
                     <Phone size={18} strokeWidth={1.5} className="text-[#6B3A2A] flex-shrink-0" />
-                    {WHATSAPP_NUMBER}
+                    {CONTACT_PHONE}
                   </a>
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
@@ -265,6 +272,13 @@ export default function ContactPageContent() {
                     >
                       {SOCIAL_ICONS.facebook}
                       Facebook
+                    </Link>
+                    <Link
+                      href={SOCIAL_LINKS.linkedin}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#C4A882]/40 bg-[#F3EBD8]/50 px-4 py-2.5 font-body text-[12px] text-[#2C1810]/80 hover:border-[#C8892A]/60 hover:text-[#6B2D0A] transition-all duration-200"
+                    >
+                      {SOCIAL_ICONS.linkedin}
+                      LinkedIn
                     </Link>
                   </div>
                 </div>

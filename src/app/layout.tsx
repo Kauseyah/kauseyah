@@ -5,6 +5,8 @@ import { CartProvider } from "@/store/CartContext";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/constants";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import Loader from "@/components/Loader";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 // ─── Fonts ────────────────────────────────────────────────────────────────────
 
@@ -26,7 +28,7 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: {
     default: `${SITE_NAME} — Woven by Hands. Born from Tribes.`,
-    template: `%s | ${SITE_NAME}`,
+    template: `${SITE_NAME} - %s`,
   },
   description: SITE_DESCRIPTION,
   metadataBase: new URL(SITE_URL),
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.png",
     apple: "/apple-touch-icon.png",
   },
 };
@@ -62,9 +64,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#F9F5EE] text-stone-900">
         <CartProvider>
+          <Loader />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <WhatsAppFloat />
         </CartProvider>
       </body>
     </html>

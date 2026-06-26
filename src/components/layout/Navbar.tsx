@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef } from "react";
 import { useScrollY } from "@/hooks";
@@ -19,7 +20,8 @@ export default function Navbar() {
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const isSolidHeaderPage = pathname === "/about" || pathname === "/contact";
+  const isSolidHeaderPage =
+    pathname === "/about" || pathname === "/contact" || pathname === "/gallery";
   const isScrolled = scrollY > 20;
   const isLightNav = isScrolled || isSolidHeaderPage;
 
@@ -38,49 +40,52 @@ export default function Navbar() {
         className={cn(
           "fixed z-50 transition-all duration-700",
           isScrolled
-            ? "top-5 left-[7%] right-[7%] rounded-full bg-[#C4A882]/95 backdrop-blur-xl shadow-[0_8px_40px_rgba(80,45,15,0.25)] border border-[#8B6340]/25"
+            ? "top-5 left-[7%] right-[7%] rounded-full bg-[#E5C18D]/95 backdrop-blur-xl shadow-[0_8px_40px_rgba(80,45,15,0.25)] border border-[#8B6340]/25"
             : isSolidHeaderPage
-              ? "top-0 left-0 right-0 bg-[#F9F5EE]"
+              ? "top-0 left-0 right-0 bg-white"
               : "top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent"
         )}
       >
         <nav
           className={cn(
             "w-full transition-all duration-700",
-            isScrolled ? "px-6 lg:px-8 py-3" : "max-w-[1500px] mx-auto px-10 lg:px-20 py-5 lg:py-6"
+            isScrolled
+              ? "px-6 lg:px-8 py-3"
+              : isSolidHeaderPage
+                ? "max-w-[1500px] mx-auto px-10 lg:px-20 py-2.5 lg:py-3"
+                : "max-w-[1500px] mx-auto px-10 lg:px-20 py-5 lg:py-6"
           )}
         >
           <div className="flex items-center justify-between w-full">
 
             {/* LEFT: Logo + Brand Tagline */}
-            <div className="flex-shrink-0 flex flex-col items-start">
+            <div className="flex-shrink-0 flex items-center">
               <Link
                 href="/"
                 className={cn(
-                  "font-display leading-none tracking-wider transition-all duration-500",
-                  isScrolled
-                    ? "text-2xl text-[#0D0603]"
-                    : isSolidHeaderPage
-                      ? "text-3xl text-[#0D0603]"
-                      : "text-3xl text-white"
+                  "relative block transition-all duration-500",
+                  !isScrolled && !isSolidHeaderPage && "mt-2"
                 )}
               >
-                {SITE_NAME}
+                <Image
+                  src="/images/logo1.png"
+                  alt={SITE_NAME}
+                  width={isScrolled ? 140 : isSolidHeaderPage ? 132 : 180}
+                  height={isScrolled ? 48 : isSolidHeaderPage ? 44 : 70}
+                  className={cn(
+                    "object-contain",
+                    isScrolled ? "h-10 w-auto" : isSolidHeaderPage ? "h-9 lg:h-10 w-auto" : "h-auto"
+                  )}
+                  priority
+                />
               </Link>
-              {/* Gold underline accent + tagline */}
-              <div className={cn(
-                "h-px bg-gradient-to-r from-[#C8892A] to-transparent transition-all duration-500 mt-1",
-                isLightNav ? "w-full opacity-100" : "w-0 opacity-0"
-              )} />
-              {!isLightNav && (
-                <span className="font-body text-[9px] tracking-[0.3em] text-[#C8892A]/90 uppercase mt-1 leading-none">
-                  {BRAND_TAGLINE}
-                </span>
-              )}
             </div>
 
             {/* CENTER: Nav Links */}
-            <div className="hidden lg:flex flex-1 justify-center items-center gap-10">
+            <div className={cn(
+              "hidden lg:flex flex-1 justify-center items-center gap-10",
+              !isSolidHeaderPage && !isScrolled && "-mt-2"
+            )}>
               {NAV_LINKS.map((link) => {
                 if (link.label === "Shop Now") {
                   return (
@@ -129,7 +134,7 @@ export default function Navbar() {
                       "font-body text-[12px] tracking-[0.18em] font-normal uppercase",
                       "transition-colors duration-400 ease-out",
                       isLightNav
-                        ? "text-[#0D0603] group-hover:text-[#6B2D0A]"
+                        ? "text-[#1A1410] group-hover:text-[#6B2D0A]"
                         : "text-white/75 group-hover:text-white"
                     )}>
                       {link.label}
