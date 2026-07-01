@@ -43,54 +43,43 @@ const SOCIAL_ICONS: Record<string, ReactElement> = {
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#E5C18D" }}>
+    <footer className="bg-[#111111] text-white">
 
-      {/* ── Gold top border ── */}
-      <div style={{ height: "2px", background: "#1A1410" }} />
+      <div style={{ height: "2px", background: "#FF6B00" }} />
 
-      {/* ── Main 4-column grid ── */}
-      <div className="max-w-[1400px] mx-auto px-10 lg:px-20 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr_1.1fr_1.1fr_1fr] gap-10 lg:gap-8">
+      <div className="max-w-[1400px] mx-auto px-10 lg:px-20 pt-8 pb-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr_1.1fr_1.1fr_1fr] gap-8 lg:gap-10 items-start text-center lg:text-left">
 
-          {/* ── Col 1: Brand identity ── */}
-          <div>
-            {/* Logo area */}
-            <div className="mb-4">
+          <div className="flex flex-col items-center lg:items-start">
+            <div className="mb-3">
               <Link href="/">
                 <Image
                   src="/images/logo1.png"
                   alt={SITE_NAME}
-                  width={160}
-                  height={60}
+                  width={180}
+                  height={70}
                   className="object-contain"
                 />
               </Link>
             </div>
 
-            {/* Brand tagline in small caps */}
-            <p
-              className="font-body text-[10px] tracking-[0.3em] text-[#1A1410] mb-4 uppercase font-bold"
-            >
+            <p className="font-body text-[10px] tracking-[0.3em] text-[#FF6B00] mb-1 uppercase font-bold">
               {SITE_TAGLINE}
             </p>
 
-            {/* Divider */}
-            <div style={{ width: "32px", height: "2px", background: "#1A1410", marginBottom: "16px" }} />
+            <div style={{ width: "32px", height: "1px", background: "#FF6B00", marginBottom: "4px" }} />
 
-            {/* Brand description */}
-            <p className="font-body text-[13px] leading-[1.7] text-[#1A1410]/85 max-w-[220px] font-medium">
-              India&apos;s handloom heritage, ethically made.
+            <p className="font-body text-[14px] leading-[1.8] text-[#FFFFFF]/80 max-w-[240px] font-light">
+              India&apos;s handloom heritage, ethically made. Every thread preserves a story.
             </p>
           </div>
 
-          {/* ── Col 2: Quick Links (2 sub-columns) ── */}
-          <div>
-            {/* Section heading — italic display like reference */}
-            <h3 className="font-display text-[1.5rem] text-[#1A1410] mb-6 font-semibold mt-4">
+          <div className="pt-10 flex flex-col items-center lg:items-start">
+            <h3 className="font-display text-[1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
               Quick Links
             </h3>
 
-            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+            <div className="grid grid-cols-2 gap-y-2 gap-x-4">
               {[
                 { label: "Kauseyah", href: "/" },
                 { label: "About Us", href: "/about" },
@@ -98,11 +87,13 @@ export default function Footer() {
                 { label: "Gallery", href: "/gallery" },
                 { label: "Portfolio", href: "/portfolio" },
                 { label: "Contact", href: "/contact" },
+                { label: "FAQ", href: "/faq" },
+                { label: "Blog", href: "/blog" },
               ].map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="font-body text-[14px] text-[#1A1410]/80 hover:text-[#1A1410] transition-colors duration-200 font-medium"
+                  className="font-body text-[15px] text-[#FFFFFF]/70 hover:text-[#FF6B00] transition-colors duration-200"
                 >
                   {l.label}
                 </Link>
@@ -110,65 +101,54 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ── Col 3: Reach Us ── */}
-          <div>
-            <h3 className="font-display text-[1.5rem] text-[#1A1410] mb-6 font-semibold mt-4">
+          <div className="pt-10 flex flex-col items-center lg:items-start">
+            <h3 className="font-display text-[1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
               Reach Us
             </h3>
 
-            <div className="space-y-4">
-              {/* Hours */}
+            <div className="space-y-3">
               <div>
-                <p className="font-body text-[14px] leading-[1.7] text-[#1A1410]/85 font-medium">
+                <p className="font-body text-[14px] leading-[1.7] text-[#FFFFFF]/80">
                   Mon – Sat: 10:00 AM – 7:00 PM
                 </p>
-                <p
-                  className="font-body text-[10px] tracking-[0.2em] uppercase font-bold mt-1"
-                  style={{ color: "#1A1410" }}
-                >
+                <p className="font-body text-[10px] tracking-[0.2em] uppercase font-bold mt-2 text-[#FF6B00]">
                   By Appointment Only
                 </p>
               </div>
 
-              {/* Email */}
-              <div className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1410" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <div className="flex items-center justify-center lg:justify-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#FF6B00]">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                 </svg>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="font-body text-[14px] text-[#1A1410]/85 hover:text-[#1A1410] transition-colors duration-200 font-medium"
+                  className="font-body text-[14px] text-[#FFFFFF]/80 hover:text-[#FF6B00] transition-colors duration-200"
                 >
                   {CONTACT_EMAIL}
                 </a>
               </div>
 
-              {/* Phone */}
-              <div className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1410" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <div className="flex items-center justify-center lg:justify-start gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#FF6B00]">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
                 <a
                   href={`tel:${CONTACT_PHONE}`}
-                  className="font-body text-[14px] text-[#1A1410]/85 hover:text-[#1A1410] transition-colors duration-200 font-medium"
+                  className="font-body text-[14px] text-[#FFFFFF]/80 hover:text-[#FF6B00] transition-colors duration-200"
                 >
                   {CONTACT_PHONE}
                 </a>
               </div>
-
-              {/* Removed Newsletter inline as requested */}
             </div>
           </div>
 
-          {/* ── Col 4: Follow Us ── */}
-          <div>
-            <h3 className="font-display text-[1.5rem] text-[#1A1410] mb-6 font-semibold mt-4">
+          <div className="pt-10 flex flex-col items-center lg:items-start">
+            <h3 className="font-display text-[1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
               Follow Us
             </h3>
 
-            {/* Social icon circles */}
-            <div className="flex gap-3 mb-5">
-              {Object.entries(SOCIAL_LINKS).filter(([p]) => p.toLowerCase() !== 'pinterest').map(([platform, url]) => (
+            <div className="flex gap-3 mb-3">
+              {Object.entries(SOCIAL_LINKS).filter(([p]) => p.toLowerCase() !== "pinterest").map(([platform, url]) => (
                 <a
                   key={platform}
                   href={url}
@@ -176,21 +156,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   aria-label={platform}
                   title={platform}
-                  className="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300"
-                  style={{
-                    border: "1.5px solid #1A1410",
-                    color: "#1A1410",
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.background = "#1A1410";
-                    (e.currentTarget as HTMLElement).style.color = "#E5C18D";
-                    (e.currentTarget as HTMLElement).style.borderColor = "#1A1410";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = "#1A1410";
-                    (e.currentTarget as HTMLElement).style.borderColor = "#1A1410";
-                  }}
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-[#FF6B00]/20 text-white/70 hover:bg-[#FF6B00] hover:border-[#FF6B00] hover:text-white transition-all duration-300"
                 >
                   {SOCIAL_ICONS[platform.toLowerCase()] ?? (
                     <span className="text-[10px] uppercase font-semibold">{platform[0]}</span>
@@ -199,38 +165,37 @@ export default function Footer() {
               ))}
             </div>
 
-            <p className="font-body text-[13px] leading-[1.7] text-[#1A1410]/85 font-medium">
-              Follow our journey of handloom heritage, artisan stories, and behind-the-scenes craft moments.
+            <p className="font-body text-[14px] leading-[1.8] text-[#FFFFFF]/60 font-light">
+              Follow our journey of heritage and artisan stories.
             </p>
           </div>
 
         </div>
       </div>
 
-      {/* ── Bottom bar ── */}
-      <div style={{ borderTop: "1px solid rgba(26,20,16,0.2)" }}>
-        <div className="max-w-[1400px] mx-auto px-10 lg:px-20 py-3 flex flex-col md:flex-row justify-between items-center gap-2">
-          <p className="font-body text-[11px] tracking-[0.15em] uppercase text-[#1A1410]/70 font-medium">
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+        <div className="max-w-[1400px] mx-auto px-10 lg:px-20 py-4 flex flex-col items-center gap-3 text-center">
+          <p className="font-body text-[11px] tracking-[0.15em] uppercase text-[#FFFFFF]/40">
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <div className="flex gap-5 items-center">
+          <div className="flex flex-wrap justify-center gap-8 items-center">
             {LEGAL_LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="font-body text-[11px] tracking-[0.1em] uppercase text-[#1A1410]/70 hover:text-[#1A1410] transition-colors duration-200 font-medium"
+                className="font-body text-[11px] tracking-[0.1em] uppercase text-[#FFFFFF]/40 hover:text-[#FF6B00] transition-colors duration-200"
               >
                 {l.label}
               </Link>
             ))}
           </div>
-          <p className="font-body text-[11px] tracking-[0.12em] uppercase text-[#1A1410]/70 font-medium">
+          <p className="font-body text-[11px] tracking-[0.12em] uppercase text-[#FFFFFF]/40">
             Designed &amp; Developed by{" "}
-            <Link 
-              href="https://www.techsyntricinnovations.in/" 
-              target="_blank" 
+            <Link
+              href="https://www.techsyntricinnovations.in/"
+              target="_blank"
               rel="noopener noreferrer"
-              className="text-[#1A1410] hover:text-[#6B2D0A] hover:underline underline-offset-2 transition-all duration-200"
+              className="text-[#FFFFFF]/60 hover:text-[#FF6B00] transition-all duration-200"
             >
               Techsyntric Innovations
             </Link>

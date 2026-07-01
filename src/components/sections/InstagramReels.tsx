@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { motion } from "framer-motion";
@@ -49,11 +50,11 @@ function ReelCard({
           position: "relative",
           background: "#111",
           boxShadow: featured
-            ? "0 20px 60px rgba(26,20,16,0.22), 0 4px 16px rgba(200,137,42,0.12)"
-            : "0 8px 30px rgba(26,20,16,0.14)",
+            ? "0 20px 60px rgba(27,31,16,0.22), 0 4px 16px rgba(107,112,92,0.12)"
+            : "0 8px 30px rgba(27,31,16,0.14)",
           border: featured
-            ? "1.5px solid rgba(200,137,42,0.35)"
-            : "1px solid rgba(26,20,16,0.1)",
+            ? "1.5px solid rgba(107,112,92,0.35)"
+            : "1px solid rgba(27,31,16,0.1)",
           transition: "box-shadow 0.4s ease",
           cursor: "pointer",
         }}
@@ -79,7 +80,7 @@ function ReelCard({
       {/* Caption */}
       <span
         className="font-body text-[10px] tracking-[0.22em] uppercase"
-        style={{ color: "#6B3A2A", opacity: 0.7 }}
+        style={{ color: "#FF8100" }}
       >
         {reel.caption}
       </span>
@@ -115,69 +116,92 @@ export default function InstagramReels() {
   };
 
   return (
-    <section className="w-full bg-[#E5C18D] py-16 lg:py-20 overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-8 lg:px-16">
+    <section className="w-full py-12 lg:py-16 overflow-hidden text-[#111111]" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF8F3 100%)' }}>
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
 
-        {/* ── Header ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-10"
-        >
-          <span className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
-            Instagram Highlights
-          </span>
-          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1A1410] mb-6">
-            As Seen On Instagram
-          </h2>
-          <p className="font-body text-lg lg:text-xl text-[#1A1410]/70 max-w-2xl mx-auto leading-relaxed">
-            Follow our journey — from the tribal looms of Odisha to the silk villages of Varanasi.
-            Real artisans, real craft, captured as it happens. We believe the story behind every thread matters.
+        {/* ── Standardized Header ── */}
+        <div className="flex flex-col items-center text-center mb-10 lg:mb-12 max-w-4xl mx-auto">
+
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
+          >
+            The <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Stories</span>
+          </motion.h2>
+          <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium">
+             From the tribal looms of Odisha to the silk villages of Varanasi. Catch real-time updates from our artisan households.
           </p>
-        </motion.div>
+        </div>
 
-        {/* ── Reels row ── */}
-        <div
-          className="flex items-center justify-center gap-5 md:gap-6"
-          style={{ alignItems: "flex-end" }}
-        >
+        {/* ── 4-Column Narrative Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 xl:gap-12">
           {REELS.map((reel, i) => (
-            <ReelCard
+            <motion.div
               key={reel.id}
-              reel={reel}
-              index={i}
-              featured={i % 2 !== 0}
-              onEnter={() => handleEnter(reel.id)}
-              onLeave={handleLeave}
-              registerRef={(el) => { videoRefs.current[reel.id] = el; }}
-            />
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.8 }}
+              className="flex flex-col"
+            >
+              {/* Video Container */}
+              <div 
+                onMouseEnter={() => handleEnter(reel.id)}
+                onMouseLeave={handleLeave}
+                className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-[#111] mb-8 group cursor-pointer shadow-xl shadow-black/5"
+              >
+                <video
+                  ref={(el) => { videoRefs.current[reel.id] = el; }}
+                  src={reel.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+
+              {/* Narrative Content */}
+              <div className="flex flex-col gap-3">
+                <h3 className="font-display text-2xl text-[#111111] font-bold">{reel.caption}</h3>
+                <div className="w-8 h-px bg-[#FF6B00]" />
+                <p className="font-body text-sm text-[#111111] font-medium leading-relaxed">
+                  {i === 0 && "Experience the rhythmic clicking of the loom as ancestral motifs arrive in gold."}
+                  {i === 1 && "Documenting the master weavers as they translate ancient symbols into silk."}
+                  {i === 2 && "A raw journey through the dye vats where organic colors find their soul."}
+                  {i === 3 && "Celebrating the final touch as a masterpiece leaves the artisan household."}
+                </p>
+              </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* ── Footer CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center justify-center mt-10"
-        >
-          <a
-            href="https://www.instagram.com/kauseyah.official/"
-            target="_blank"
-            rel="noopener noreferrer"
-            id="instagram-follow-cta"
-            className="group inline-flex items-center gap-3"
-          >
-            <span className="w-8 h-px bg-[#C8892A] transition-all duration-300 group-hover:w-12" />
-            <span className="font-body text-[11px] tracking-[0.28em] uppercase text-[#1A1410] transition-colors duration-300 group-hover:text-[#C8892A]">
-              @kauseyah.official — Follow Us
-            </span>
-            <span className="w-8 h-px bg-[#C8892A] transition-all duration-300 group-hover:w-12" />
-          </a>
-        </motion.div>
+        {/* ── Footer CTAs ── */}
+        <div className="mt-24 flex flex-col items-center gap-16">
+            <a
+              href="mailto:hello@kauseyah.com"
+              className="group relative inline-block text-center"
+            >
+              <span className="block font-display text-3xl md:text-4xl text-[#111111] tracking-tighter transition-all duration-500 group-hover:text-[#FF6B00] group-hover:drop-shadow-[0_4px_12px_rgba(255,107,0,0.5)]">
+                Let's <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Collaborate</span>
+              </span>
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#FF6B00] transition-all duration-500 group-hover:w-[120%] shadow-[0_0_15px_#FF6B00]" />
+            </a>
+
+            <a
+              href="https://www.instagram.com/kauseyah.official/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-6"
+            >
+              <div className="w-12 lg:w-24 h-px bg-[#111111]/20 transition-all duration-500 group-hover:w-32 group-hover:bg-[#FF6B00]" />
+              <span className="font-body text-[11px] font-black tracking-[0.4em] text-[#111111] uppercase group-hover:text-[#FF6B00] transition-colors">
+                @kauseyah.official
+              </span>
+              <div className="w-12 lg:w-24 h-px bg-[#111111]/20 transition-all duration-500 group-hover:w-32 group-hover:bg-[#FF6B00]" />
+            </a>
+        </div>
 
       </div>
     </section>

@@ -1,29 +1,84 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useScrollY } from "@/hooks";
 import { useCart } from "@/store/CartContext";
 import { NAV_LINKS, SITE_NAME, BRAND_TAGLINE, SHOP_CATEGORY_GROUPS } from "@/constants";
+import { PRODUCTS } from "@/data";
 import { cn } from "@/utils";
-import { Search, Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const scrollY = useScrollY();
   const { itemCount } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const isSolidHeaderPage =
-    pathname === "/about" || pathname === "/contact" || pathname === "/gallery";
+  // Live suggestions derived from product catalog
+  const suggestions = searchQuery.trim().length >= 1
+    ? PRODUCTS.filter((p) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          p.name.toLowerCase().includes(q) ||
+          p.shortDescription.toLowerCase().includes(q) ||
+          p.subcategory?.toLowerCase().includes(q) ||
+          p.tags.some(t => t.toLowerCase().includes(q))
+        );
+      }).slice(0, 6)
+    : [];
+
+  const handleSearchSubmit = useCallback((slug?: string) => {
+    if (slug) {
+      router.push(`/products/${slug}`);
+    } else if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+    setSearchOpen(false);
+    setSearchQuery("");
+    setHighlightedIndex(-1);
+  }, [searchQuery, router]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex(i => Math.min(i + 1, suggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex(i => Math.max(i - 1, -1));
+    } else if (e.key === "Enter") {
+      if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+        handleSearchSubmit(suggestions[highlightedIndex].slug);
+      } else {
+        handleSearchSubmit();
+      }
+    } else if (e.key === "Escape") {
+      setSearchOpen(false);
+      setSearchQuery("");
+      setHighlightedIndex(-1);
+    }
+  };
+
+  // Reset highlight when suggestions change
+  // eslint-disable-next-line
+  useEffect(() => { setHighlightedIndex(-1); }, [searchQuery]);
+
+  const isSolidHeaderPage = false;
   const isScrolled = scrollY > 20;
   const isLightNav = isScrolled || isSolidHeaderPage;
+  const useLightNavText = isScrolled || !isSolidHeaderPage;
 
   const handleShopEnter = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -40,7 +95,7 @@ export default function Navbar() {
         className={cn(
           "fixed z-50 transition-all duration-700",
           isScrolled
-            ? "top-5 left-[7%] right-[7%] rounded-full bg-[#E5C18D]/95 backdrop-blur-xl shadow-[0_8px_40px_rgba(80,45,15,0.25)] border border-[#8B6340]/25"
+            ? "top-4 left-3 right-3 md:top-5 md:left-[7%] md:right-[7%] rounded-full bg-[#111111] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-white/10"
             : isSolidHeaderPage
               ? "top-0 left-0 right-0 bg-white"
               : "top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent"
@@ -50,10 +105,10 @@ export default function Navbar() {
           className={cn(
             "w-full transition-all duration-700",
             isScrolled
-              ? "px-6 lg:px-8 py-3"
+              ? "px-4 sm:px-6 md:px-8 lg:px-12 py-3"
               : isSolidHeaderPage
-                ? "max-w-[1500px] mx-auto px-10 lg:px-20 py-2.5 lg:py-3"
-                : "max-w-[1500px] mx-auto px-10 lg:px-20 py-5 lg:py-6"
+                ? "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-2.5 lg:py-3"
+                : "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-1"
           )}
         >
           <div className="flex items-center justify-between w-full">
@@ -63,113 +118,275 @@ export default function Navbar() {
               <Link
                 href="/"
                 className={cn(
-                  "relative block transition-all duration-500",
-                  !isScrolled && !isSolidHeaderPage && "mt-2"
+                  "relative block transition-all duration-500"
                 )}
               >
                 <Image
                   src="/images/logo1.png"
                   alt={SITE_NAME}
-                  width={isScrolled ? 140 : isSolidHeaderPage ? 132 : 180}
-                  height={isScrolled ? 48 : isSolidHeaderPage ? 44 : 70}
+                  width={isScrolled ? 140 : isSolidHeaderPage ? 132 : 150}
+                  height={isScrolled ? 48 : isSolidHeaderPage ? 44 : 50}
                   className={cn(
-                    "object-contain",
-                    isScrolled ? "h-10 w-auto" : isSolidHeaderPage ? "h-9 lg:h-10 w-auto" : "h-auto"
+                    "object-contain max-w-[140px] sm:max-w-none transition-all duration-300",
+                    isScrolled ? "h-8 sm:h-10 w-auto" : isSolidHeaderPage ? "h-7 sm:h-9 lg:h-10 w-auto" : "h-8 sm:h-10 lg:h-12 w-auto"
                   )}
                   priority
                 />
               </Link>
             </div>
 
-            {/* CENTER: Nav Links */}
-            <div className={cn(
-              "hidden lg:flex flex-1 justify-center items-center gap-10",
-              !isSolidHeaderPage && !isScrolled && "-mt-2"
-            )}>
-              {NAV_LINKS.map((link) => {
-                if (link.label === "Shop Now") {
-                  return (
-                    <div
-                      key={link.href}
-                      className="relative py-3"
-                      onMouseEnter={handleShopEnter}
-                      onMouseLeave={handleShopLeave}
+            {/* CENTER: Nav Links or Search Input */}
+            {searchOpen ? (
+              <div className="flex-1 max-w-2xl mx-8 hidden lg:flex flex-col items-center relative">
+                {/* Input Bar */}
+                <div className={cn(
+                  "flex items-center gap-3 rounded-full px-5 py-2.5 w-full transition-all duration-300 shadow-lg",
+                  isScrolled
+                    ? "bg-white/15 border border-white/20 backdrop-blur-xl text-white ring-1 ring-[#FF6B00]/40"
+                    : "bg-white border border-[#FF6B00]/30 text-[#111111] ring-1 ring-[#FF6B00]/20 shadow-[0_4px_24px_rgba(255,107,0,0.10)]"
+                )}>
+                  <Search size={16} className="text-[#FF6B00] shrink-0" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder="Search sarees, crafts, artisans..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className={cn(
+                      "bg-transparent border-none text-sm outline-none w-full font-body font-medium tracking-wide",
+                      isScrolled ? "placeholder-white/40 text-white" : "placeholder-stone-400 text-[#111111]"
+                    )}
+                    autoFocus
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => { setSearchQuery(""); setHighlightedIndex(-1); inputRef.current?.focus(); }}
+                      className="text-stone-400 hover:text-[#FF6B00] transition-colors cursor-pointer shrink-0"
                     >
-                      <button className="group flex items-center gap-1">
-                        <span className={cn(
-                          "font-body text-[12px] tracking-[0.18em] font-normal uppercase transition-colors duration-400 ease-out",
-                          isLightNav
-                            ? "text-[#0D0603] group-hover:text-[#6B2D0A]"
-                            : "text-white/75 group-hover:text-white"
-                        )}>
-                          {link.label}
+                      <X size={14} />
+                    </button>
+                  )}
+                  <div className="w-px h-4 bg-stone-300/40 shrink-0" />
+                  <button
+                    onClick={() => handleSearchSubmit()}
+                    className="shrink-0 bg-[#FF6B00] hover:bg-[#e55f00] text-white rounded-full px-3 py-1 text-xs font-body font-semibold tracking-wider transition-colors duration-200"
+                  >
+                    Search
+                  </button>
+                  <button
+                    onClick={() => { setSearchOpen(false); setSearchQuery(""); setHighlightedIndex(-1); }}
+                    className="text-stone-400 hover:text-[#FF6B00] transition-colors cursor-pointer shrink-0"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Suggestions Dropdown */}
+                <AnimatePresence>
+                  {suggestions.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute top-[calc(100%+10px)] left-0 right-0 z-[200] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.18)] border border-white/10 bg-white backdrop-blur-2xl"
+                    >
+                      {/* Suggestion header */}
+                      <div className="px-4 pt-3 pb-2 border-b border-stone-100 flex items-center justify-between">
+                        <span className="font-body text-[10px] tracking-[0.2em] uppercase text-stone-400 font-semibold">
+                          {suggestions.length} result{suggestions.length !== 1 ? "s" : ""}
                         </span>
-                        <ChevronDown
-                          size={12}
-                          strokeWidth={2}
-                          className={cn(
-                            "transition-all duration-300",
-                            megaMenuOpen ? "rotate-180" : "rotate-0",
-                            isLightNav ? "text-[#0D0603]" : "text-white/75"
-                          )}
-                        />
-                      </button>
-                      {/* Underline */}
+                        <span className="font-body text-[10px] text-stone-300">↑↓ navigate · Enter to open</span>
+                      </div>
+
+                      {/* Suggestion Items */}
+                      <ul className="py-1">
+                        {suggestions.map((product, idx) => {
+                          const primaryImg = product.images.find(img => img.isPrimary)?.url || product.images[0]?.url;
+                          const isHighlighted = idx === highlightedIndex;
+                          return (
+                            <li key={product.id}>
+                              <button
+                                onMouseEnter={() => setHighlightedIndex(idx)}
+                                onMouseLeave={() => setHighlightedIndex(-1)}
+                                onClick={() => handleSearchSubmit(product.slug)}
+                                className={cn(
+                                  "w-full flex items-center gap-3 px-4 py-3 transition-colors duration-150 text-left group",
+                                  isHighlighted ? "bg-[#FFF5EE]" : "hover:bg-stone-50"
+                                )}
+                              >
+                                {/* Thumbnail */}
+                                <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 bg-stone-100 border border-stone-100">
+                                  <Image
+                                    src={primaryImg}
+                                    alt={product.name}
+                                    width={44}
+                                    height={44}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+
+                                {/* Info */}
+                                <div className="flex-1 min-w-0">
+                                  <p className={cn(
+                                    "font-body text-sm font-semibold leading-tight truncate transition-colors",
+                                    isHighlighted ? "text-[#FF6B00]" : "text-[#111111] group-hover:text-[#FF6B00]"
+                                  )}>
+                                    {product.name}
+                                  </p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="font-body text-[10px] font-bold tracking-[0.12em] uppercase text-[#FF6B00]/70 bg-[#FF6B00]/10 px-2 py-0.5 rounded-full">
+                                      {product.subcategory ?? product.category}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Price */}
+                                <div className="flex-shrink-0 text-right">
+                                  <p className="font-body text-sm font-bold text-[#111111]">
+                                    ₹{product.price.toLocaleString("en-IN")}
+                                  </p>
+                                  <ArrowUpRight size={13} className={cn("ml-auto transition-opacity", isHighlighted ? "opacity-100 text-[#FF6B00]" : "opacity-0")} />
+                                </div>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+
+                      {/* View all footer */}
+                      <div className="border-t border-stone-100 px-4 py-2.5">
+                        <button
+                          onClick={() => handleSearchSubmit()}
+                          className="w-full flex items-center justify-center gap-2 font-body text-xs font-semibold tracking-[0.15em] uppercase text-[#FF6B00] hover:text-[#e55f00] transition-colors py-0.5"
+                        >
+                          View all results for "{searchQuery}"
+                          <ArrowRight size={12} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* No results state */}
+                  {searchQuery.trim().length >= 2 && suggestions.length === 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute top-[calc(100%+10px)] left-0 right-0 z-[200] rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)] border border-stone-100 px-6 py-6 text-center"
+                    >
+                      <p className="font-body text-sm text-stone-400">No products found for <span className="font-semibold text-[#111111]">"{searchQuery}"</span></p>
+                      <p className="font-body text-xs text-stone-300 mt-1">Try searching for sarees, crafts, or artisan names</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className={cn(
+                "hidden lg:flex flex-1 justify-center items-center gap-10"
+              )}>
+                {NAV_LINKS.map((link) => {
+                  if (link.label === "Shop Now") {
+                    return (
+                      <div
+                        key={link.href}
+                        className="relative py-3"
+                        onMouseEnter={handleShopEnter}
+                        onMouseLeave={handleShopLeave}
+                      >
+                        <button className="group flex items-center gap-1">
+                          <span className={cn(
+                            "font-body text-[12px] tracking-[0.18em] font-normal uppercase transition-colors duration-400 ease-out",
+                            useLightNavText
+                              ? isScrolled ? "text-[#FFFFFF] group-hover:text-[#FF8100]"
+                                : "text-[#FFFFFF]/85 group-hover:text-[#FFFFFF]"
+                              : "text-[#111111] group-hover:text-[#FF8100]"
+                          )}>
+                            {link.label}
+                          </span>
+                          <ChevronDown
+                            size={12}
+                            strokeWidth={2}
+                            className={cn(
+                              "transition-all duration-300",
+                              megaMenuOpen ? "rotate-180" : "rotate-0",
+                              useLightNavText
+                                ? "text-white"
+                                : "text-[#111111]"
+                            )}
+                          />
+                        </button>
+                        {/* Underline */}
+                        <span className="absolute bottom-1.5 left-0 right-0 flex justify-center">
+                          <span className={cn(
+                            "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
+                            useLightNavText
+                              ? isScrolled ? "bg-white" : "bg-white/80"
+                              : "bg-[#FF6B00]"
+                          )} />
+                        </span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="group relative py-3 whitespace-nowrap"
+                    >
+                      <span className={cn(
+                        "font-body text-[12px] tracking-[0.18em] font-normal uppercase",
+                        "transition-colors duration-400 ease-out",
+                        useLightNavText
+                          ? isScrolled ? "text-[#FFFFFF] group-hover:text-[#FF8100]"
+                            : "text-[#FFFFFF]/85 group-hover:text-[#FFFFFF]"
+                          : "text-[#111111] group-hover:text-[#FF8100]"
+                      )}>
+                        {link.label}
+                      </span>
                       <span className="absolute bottom-1.5 left-0 right-0 flex justify-center">
                         <span className={cn(
                           "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
-                          isLightNav ? "bg-[#6B2D0A]" : "bg-white/80"
+                          useLightNavText
+                            ? isScrolled ? "bg-white" : "bg-white/80"
+                            : "bg-[#FF6B00]"
                         )} />
                       </span>
-                    </div>
+                    </Link>
                   );
-                }
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="group relative py-3 whitespace-nowrap"
-                  >
-                    <span className={cn(
-                      "font-body text-[12px] tracking-[0.18em] font-normal uppercase",
-                      "transition-colors duration-400 ease-out",
-                      isLightNav
-                        ? "text-[#1A1410] group-hover:text-[#6B2D0A]"
-                        : "text-white/75 group-hover:text-white"
-                    )}>
-                      {link.label}
-                    </span>
-                    <span className="absolute bottom-1.5 left-0 right-0 flex justify-center">
-                      <span className={cn(
-                        "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
-                        isLightNav ? "bg-[#6B2D0A]" : "bg-white/80"
-                      )} />
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
+                })}
+              </div>
+            )}
 
             {/* RIGHT: Icons */}
             <div className={cn(
-              "flex flex-shrink-0 items-center justify-end gap-8 transition-colors duration-500",
-              isLightNav ? "text-[#0D0603]" : "text-white"
+              "flex flex-shrink-0 items-center justify-end gap-3 sm:gap-6 lg:gap-8 transition-colors duration-500",
+              useLightNavText
+                ? "text-[#FFFFFF]"
+                : "text-[#111111]"
             )}>
-              <button aria-label="Search" className="hidden sm:block transition-all duration-300 hover:-translate-y-0.5 hover:text-[#C8892A]">
-                <Search strokeWidth={1.5} size={19} />
-              </button>
-              <Link href="/account" className="hidden sm:block transition-all duration-300 hover:-translate-y-0.5 hover:text-[#C8892A]">
+              {!searchOpen && (
+                <button
+                  aria-label="Search"
+                  onClick={() => setSearchOpen(true)}
+                  className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5 cursor-pointer", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}
+                >
+                  <Search strokeWidth={1.5} size={19} />
+                </button>
+              )}
+              <Link href="/login" className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
                 <User strokeWidth={1.5} size={19} />
               </Link>
-              <Link href="/wishlist" className="hidden sm:block transition-all duration-300 hover:-translate-y-0.5 hover:text-[#C8892A]">
+              <Link href="/wishlist" className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
                 <Heart strokeWidth={1.5} size={19} />
               </Link>
-              <Link href="/cart" className="relative transition-all duration-300 hover:-translate-y-0.5 flex items-center hover:text-[#C8892A]">
+              <Link href="/cart" className={cn("relative transition-all duration-300 hover:-translate-y-0.5 flex items-center", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
                 <ShoppingBag strokeWidth={1.5} size={19} />
                 {itemCount > 0 && (
                   <span className={cn(
                     "absolute -top-2 -right-2 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold",
-                    isLightNav ? "bg-[#C8892A] text-white" : "bg-white text-black"
+                    isScrolled ? "bg-[#111111] text-[#FFFFFF]" : isLightNav ? "bg-[#FF8100] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111]"
                   )}>
                     {itemCount}
                   </span>
@@ -194,8 +411,8 @@ export default function Navbar() {
             className={cn(
               "fixed z-[39] left-1/2 -translate-x-1/2",
               "w-[min(calc(100vw-2rem),90rem)]",
-              "rounded-2xl bg-white border border-[#8B6340]/15",
-              "shadow-[0_12px_48px_rgba(80,45,15,0.12)] transition-all duration-700 overflow-hidden",
+              "rounded-2xl bg-white border border-[#A3AD81]",
+              "shadow-[0_12px_48px_rgba(27,31,16,0.12)] transition-all duration-700 overflow-hidden",
               isScrolled ? "top-[6.25rem]" : "top-[7rem]"
             )}
             onMouseEnter={handleShopEnter}
@@ -209,16 +426,16 @@ export default function Navbar() {
                       href={group.href}
                       className="group inline-flex items-start"
                     >
-                      <span className="font-body text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase text-[#0D0603] group-hover:text-[#6B2D0A] transition-colors duration-200 leading-normal">
+                      <span className="font-body text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase text-[#111111] group-hover:text-[#FF6B00] transition-colors duration-200 leading-normal">
                         {group.label}
                       </span>
                     </Link>
-                    <ul className="flex flex-col gap-2.5 pl-3 border-l border-[#8B6340]/35">
+                    <ul className="flex flex-col gap-2.5 pl-3 border-l border-[#FF6B00]/35">
                       {group.items.map((item) => (
                         <li key={item.href}>
                           <Link
                             href={item.href}
-                            className="block font-body text-[13px] text-[#2C1810] hover:text-[#6B2D0A] transition-colors duration-200 leading-[1.65]"
+                            className="block font-body text-[13px] text-[#111111] hover:text-[#FF6B00] transition-colors duration-200 leading-[1.65]"
                           >
                             {item.label}
                           </Link>
@@ -230,10 +447,10 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end px-8 lg:px-12 py-4 border-t border-[#8B6340]/12 bg-[#FAF7F2]">
+            <div className="flex items-center justify-end px-8 lg:px-12 py-4 border-t border-[#FF6B00]/12 bg-[#F1F3E0]">
               <Link
                 href="/collections"
-                className="flex items-center gap-2 font-body text-xs font-medium tracking-[0.18em] uppercase text-[#2C1810] hover:text-[#6B2D0A] transition-colors duration-200"
+                className="flex items-center gap-2 font-body text-xs font-medium tracking-[0.18em] uppercase text-[#111111] hover:text-[#FF6B00] transition-colors duration-200"
               >
                 View All Collections <ArrowRight size={12} />
               </Link>
@@ -251,14 +468,14 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[100] bg-[#1A1410]/97 backdrop-blur-2xl text-[#F5ECD7] lg:hidden flex flex-col overflow-y-auto"
+            className="fixed inset-0 z-[100] bg-[#111111]/97 backdrop-blur-2xl text-[#F1F3E0] lg:hidden flex flex-col overflow-y-auto"
           >
-            <div className="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-[#1A1410]/97 backdrop-blur-2xl z-10">
+            <div className="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-[#111111]/97 backdrop-blur-2xl z-10">
               <div>
-                <span className="font-display text-2xl text-[#C8892A] block">{SITE_NAME}</span>
-                <span className="font-body text-[9px] tracking-[0.3em] text-[#C8892A]/60 uppercase">{BRAND_TAGLINE}</span>
+                <span className="font-display text-2xl text-[#FF6B00] block">{SITE_NAME}</span>
+                <span className="font-body text-[9px] tracking-[0.3em] text-[#FF6B00]/60 uppercase">{BRAND_TAGLINE}</span>
               </div>
-              <button onClick={() => setMobileOpen(false)} className="text-[#F5ECD7]/80 hover:text-white transition-transform hover:rotate-90 duration-300">
+              <button onClick={() => setMobileOpen(false)} className="text-[#F1F3E0]/80 hover:text-white transition-transform hover:rotate-90 duration-300 mr-4">
                 <X strokeWidth={1.5} size={28} />
               </button>
             </div>
@@ -277,10 +494,10 @@ export default function Navbar() {
                         onClick={() => setMobileShopOpen(!mobileShopOpen)}
                         className="w-full flex items-center justify-between py-4 border-b border-white/5"
                       >
-                        <span className="font-display text-3xl text-[#F5ECD7]">{link.label}</span>
+                        <span className="font-display text-3xl text-[#F1F3E0]">{link.label}</span>
                         <ChevronDown
                           size={20}
-                          className={cn("transition-transform duration-300 text-[#C8892A]", mobileShopOpen ? "rotate-180" : "")}
+                          className={cn("transition-transform duration-300 text-[#FF6B00]", mobileShopOpen ? "rotate-180" : "")}
                         />
                       </button>
                       <AnimatePresence>
@@ -300,8 +517,7 @@ export default function Navbar() {
                                     onClick={() => setMobileOpen(false)}
                                     className="flex items-center gap-2 mb-2"
                                   >
-                                    <span className="text-base">{group.icon}</span>
-                                    <span className="font-body text-[11px] font-bold tracking-[0.2em] uppercase text-[#C8892A]">
+                                    <span className="font-body text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B00]">
                                       {group.label}
                                     </span>
                                   </Link>
@@ -311,7 +527,7 @@ export default function Navbar() {
                                         <Link
                                           href={item.href}
                                           onClick={() => setMobileOpen(false)}
-                                          className="font-body text-[13px] text-[#F5ECD7]/60 hover:text-[#F5ECD7] transition-colors"
+                                          className="font-body text-[13px] text-[#F1F3E0]/60 hover:text-[#F1F3E0] transition-colors"
                                         >
                                           {item.label}
                                         </Link>
@@ -338,7 +554,7 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block font-display text-3xl text-[#F5ECD7] hover:text-[#C8892A] transition-colors py-4"
+                      className="block font-display text-3xl text-[#F1F3E0] hover:text-[#FF6B00] transition-colors py-4"
                     >
                       {link.label}
                     </Link>

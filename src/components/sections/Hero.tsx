@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="relative h-screen w-full flex flex-col justify-end">
+    <section className="relative min-h-[100dvh] w-full flex flex-col justify-end overflow-hidden">
       {/* Background Video — full bleed */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-[#1A1410]">
+      <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-white">
         <video
           src="/videos/hvideo1.mp4"
           autoPlay
@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
 
       {/* Content — anchored to bottom left */}
-      <div className="relative z-10 w-full px-10 lg:px-20 pb-10 lg:pb-14">
+      <div className="relative z-10 w-full px-5 sm:px-10 lg:px-20 pb-8 sm:pb-10 lg:pb-14">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -31,30 +31,29 @@ export default function Hero() {
           className="max-w-2xl"
         >
           {/* Headline */}
-          <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-white mb-5 tracking-tight drop-shadow-2xl">
-            Woven by Hands.<br />
-            <span className="text-[#E7D6B8] italic font-light">Born from Tribes.</span>
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl leading-[0.9] text-[#FFFFFF] mb-8 tracking-tighter drop-shadow-2xl">
+            Woven by <span className="text-[#FF6B00] italic font-light">hands</span><br />
+            Rooted in <span className="text-[#FF6B00] italic font-light">heritage</span>
           </h1>
 
-          {/* Divider */}
-          <div className="w-10 h-[1.5px] bg-[#C8892A] mb-6" />
+          <div className="w-10 h-[1.5px] bg-[#FF6B00] mb-6" />
 
           {/* Short description */}
-          <p className="font-body text-[15px] font-light tracking-wide text-white/70 mb-10 leading-relaxed max-w-md">
-            India&apos;s heritage, ethically woven — handlooms, textiles &amp; tribal artistry.
+          <p className="font-body text-base lg:text-lg font-light tracking-wide text-[#FFFFFF]/90 mb-10 leading-relaxed max-w-md drop-shadow-md">
+            Handlooms, tribal crafts and conscious design- created with tribal communities to preserve India&apos;s living
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4 lg:gap-6 mt-4">
             <Link
               href="/collections"
-              className="btn bg-[#E7D6B8] text-[#1A1410] border-none px-8 py-3 text-[11px] font-bold tracking-[0.2em] hover:bg-white transition-all shadow-lg uppercase"
+              className="inline-flex items-center justify-center bg-[#FF6B00] text-[#FFFFFF] border-none px-8 py-4 text-[12px] font-bold tracking-[0.25em] hover:bg-[#FFFFFF] hover:text-[#111111] hover:-translate-y-1 transition-all duration-300 shadow-[0_5px_20px_rgba(128,0,0,0.25)] uppercase rounded-sm"
             >
               Shop Now
             </Link>
             <Link
               href="/about"
-              className="btn bg-transparent border border-white/40 text-white hover:bg-white/10 px-8 py-3 text-[11px] font-bold tracking-[0.2em] transition-all uppercase backdrop-blur-sm"
+              className="inline-flex items-center justify-center bg-[#FFFFFF]/10 border border-[#FFFFFF]/40 text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.25em] hover:-translate-y-1 transition-all duration-300 uppercase backdrop-blur-md rounded-sm shadow-xl"
             >
               Our Story
             </Link>

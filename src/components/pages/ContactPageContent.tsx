@@ -42,13 +42,13 @@ const fadeUp = {
 };
 
 const inputClass =
-  "w-full rounded-xl border border-[#E8E0D4] bg-white pl-11 pr-4 py-3.5 font-body text-[15px] text-[#0D0603] placeholder:text-[#2C1810]/40 focus:border-[#C8892A] focus:outline-none focus:ring-2 focus:ring-[#C8892A]/15 transition-all duration-200";
+  "w-full rounded-xl border border-[#E5E5E5] bg-white pl-11 pr-4 py-3.5 font-body text-[15px] text-[#111111] placeholder:text-[#111111]/40 focus:border-[#FF6B00] focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/15 transition-all duration-200";
 
 const textareaClass =
-  "w-full rounded-xl border border-[#E8E0D4] bg-white pl-11 pr-4 pt-3.5 pb-3.5 font-body text-[15px] text-[#0D0603] placeholder:text-[#2C1810]/40 focus:border-[#C8892A] focus:outline-none focus:ring-2 focus:ring-[#C8892A]/15 transition-all duration-200 min-h-[100px] resize-y";
+  "w-full rounded-xl border border-[#E5E5E5] bg-white pl-11 pr-4 pt-3.5 pb-3.5 font-body text-[15px] text-[#111111] placeholder:text-[#111111]/40 focus:border-[#FF6B00] focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/15 transition-all duration-200 min-h-[100px] resize-y";
 
 const labelClass =
-  "block font-body text-[11px] font-semibold tracking-[0.14em] uppercase text-[#6B3A2A] mb-2.5";
+  "block font-body text-[11px] font-semibold tracking-[0.14em] uppercase text-[#FF6B00] mb-2.5";
 
 function FormField({
   id,
@@ -70,7 +70,7 @@ function FormField({
         <Icon
           size={16}
           strokeWidth={1.5}
-          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6B3A2A]/65 transition-colors duration-200 group-focus-within:text-[#6B2D0A]"
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#FF6B00]/65 transition-colors duration-200 group-focus-within:text-[#FF6B00]"
           aria-hidden
         />
         {children}
@@ -89,7 +89,7 @@ function MessageField() {
         <MessageSquare
           size={16}
           strokeWidth={1.5}
-          className="pointer-events-none absolute left-4 top-4 text-[#6B3A2A]/65 transition-colors duration-200 group-focus-within:text-[#6B2D0A]"
+          className="pointer-events-none absolute left-4 top-4 text-[#FF6B00]/65 transition-colors duration-200 group-focus-within:text-[#FF6B00]"
           aria-hidden
         />
         <textarea
@@ -104,57 +104,54 @@ function MessageField() {
 
 export default function ContactPageContent() {
   return (
-    <main className="bg-[#F9F5EE]">
-      {/* ── Navbar clearance + separation from hero ── */}
-      <div className="h-[4.25rem] lg:h-[4.5rem]" aria-hidden />
-
+    <main className="bg-[#FEF9F9] text-[#111111]">
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#E5C18D] pt-10 lg:pt-12 pb-16 lg:pb-20 overflow-hidden">
-        <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
-            >
-              <div className="flex items-center gap-3 mb-5">
-                <span className="w-8 h-px bg-[#6B3A2A]" />
-                <span className="font-body text-[11px] tracking-[0.35em] text-[#6B3A2A] uppercase font-semibold">
-                  {CONTACT_HERO.eyebrow}
-                </span>
-              </div>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#0D0603] mb-5 leading-[1.05]">
-                {CONTACT_HERO.title}
-              </h1>
-              <div className="w-12 h-[2px] bg-[#6B3A2A] mb-6" />
-              <p className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed max-w-xl">
-                {CONTACT_HERO.intro}
-              </p>
-            </motion.div>
+      <section className="w-full bg-[#0D0400] pt-32 lg:pt-36 pb-20 lg:pb-28 overflow-hidden relative">
+        {/* Decorative gradient glowing orb */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-gradient-to-b from-[#FF6B00]/8 to-transparent blur-[80px]" />
+        </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 32 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.95, delay: 0.35, ease: [0.16, 1, 0.3, 1] as const }}
-              className="lg:ml-auto lg:max-w-xs xl:max-w-sm lg:pl-16 xl:pl-24 lg:border-l lg:border-[#6B3A2A]/20 lg:pt-2"
-            >
-              <p className="font-display text-xl md:text-2xl italic text-[#1A1410]/85 leading-snug mb-5">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-8 lg:px-20 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
+            className="flex flex-col items-center justify-center"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-8 h-px bg-[#FF6B00]" />
+              <span className="font-body text-[11px] tracking-[0.35em] text-[#FF6B00] uppercase font-bold">
+                {CONTACT_HERO.eyebrow}
+              </span>
+              <span className="w-8 h-px bg-[#FF6B00]" />
+            </div>
+
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white mb-8 leading-[0.9]">
+              Contact <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.15)]">Us</span>
+            </h1>
+
+            <div className="w-16 h-[2px] bg-[#FF6B00] mb-8" />
+
+            <p className="font-body text-lg md:text-xl lg:text-2xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-8 font-light">
+              {CONTACT_HERO.intro}
+            </p>
+
+            <div className="flex flex-col items-center max-w-md mx-auto pt-6 border-t border-[#FF6B00]/15">
+              <p className="font-display text-lg md:text-xl italic text-white/95 leading-relaxed mb-4">
                 &ldquo;{CONTACT_HERO.quote}&rdquo;
               </p>
-
-              <div className="w-8 h-px bg-[#6B3A2A] mb-4" />
-
-              <p className="font-body text-[14px] tracking-[0.08em] text-[#6B3A2A] uppercase font-semibold">
-                {CONTACT_HERO.note}
+              <p className="font-body text-[11px] tracking-[0.2em] text-[#FF6B00] uppercase font-bold">
+                — {CONTACT_HERO.note}
               </p>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── Form + Info ── */}
       <section className="bg-white pt-14 lg:pt-20 pb-20 lg:pb-28">
-        <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-20">
           <motion.div
             initial="hidden"
             whileInView="show"
@@ -164,15 +161,15 @@ export default function ContactPageContent() {
             <motion.p
               variants={fadeUp}
               custom={0}
-              className="font-display text-2xl md:text-3xl text-[#0D0603] leading-snug mb-6"
+              className="font-display text-2xl md:text-3xl text-[#111111] leading-snug mb-6"
             >
               Send us a message — we&apos;re always happy to help.
             </motion.p>
-            <motion.div variants={fadeUp} custom={1} className="w-12 h-[2px] bg-[#C8892A] mb-6" />
+            <motion.div variants={fadeUp} custom={1} className="w-12 h-[2px] bg-[#FF6B00] mb-6" />
             <motion.p
               variants={fadeUp}
               custom={2}
-              className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed"
+              className="font-body text-[16px] lg:text-[17px] text-[#111111]/80 leading-relaxed"
             >
               Fill out the form below and our team will get back to you. For wholesale or
               partnership enquiries, you can also reach us directly by email.
@@ -186,15 +183,17 @@ export default function ContactPageContent() {
               whileInView="show"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="rounded-2xl border border-[#E8E0D4] bg-[#F9F5EE] p-6 lg:p-8"
+              className="rounded-2xl border border-[#111111]/10 bg-white p-6 lg:p-8 shadow-sm"
             >
-              <div className="flex items-start gap-4 mb-6 pb-6 border-b border-[#C8892A]/25">
-                <div className="w-11 h-11 rounded-full bg-[#E5C18D] border border-[#C8892A]/35 flex items-center justify-center text-[#6B2D0A] flex-shrink-0">
+              <div className="flex items-start gap-4 mb-6 pb-6 border-b border-[#111111]/15">
+                <div className="w-11 h-11 rounded-full bg-[#F1F3E0] border border-[#FF6B00]/15 flex items-center justify-center text-[#FF6B00] flex-shrink-0">
                   <Mail size={18} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h2 className="font-display text-3xl text-[#0D0603] mb-1.5">Send a Message</h2>
-                  <p className="font-body text-[14px] text-[#2C1810]/70 leading-relaxed">
+                  <h2 className="font-display text-3xl md:text-4xl tracking-tighter text-[#111111] mb-1.5 leading-[0.85]">
+                    Send a <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Message</span>
+                  </h2>
+                  <p className="font-body text-[14px] text-[#111111]/75 leading-relaxed">
                     We typically respond within 24 hours on business days.
                   </p>
                 </div>
@@ -213,12 +212,12 @@ export default function ContactPageContent() {
                 <MessageField />
 
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-1">
-                  <p className="font-body text-[13px] text-[#2C1810]/60 leading-relaxed max-w-sm">
+                  <p className="font-body text-[13px] text-[#111111]/70 leading-relaxed max-w-sm">
                     By submitting, you agree to be contacted about your enquiry.
                   </p>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#0D0603] text-white px-8 py-3.5 font-body text-[11px] tracking-[0.22em] uppercase hover:bg-[#6B2D0A] hover:shadow-[0_8px_24px_rgba(107,45,10,0.2)] transition-all duration-300 sm:flex-shrink-0"
+                    className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#FF6B00] text-[#F8EDED] px-8 py-3.5 font-body text-[11px] tracking-[0.22em] uppercase hover:bg-[#111111] transition-all duration-300 sm:flex-shrink-0"
                   >
                     Submit Message
                     <ArrowRight size={14} />
@@ -236,46 +235,46 @@ export default function ContactPageContent() {
               variants={fadeUp}
               className="lg:pt-20 xl:pt-24"
             >
-              <div className="lg:pl-10 xl:pl-12 lg:border-l lg:border-[#6B3A2A]/40 space-y-8">
+              <div className="lg:pl-10 xl:pl-12 lg:border-l lg:border-[#FF6B00]/40 space-y-8">
                 <div className="space-y-4">
                   <a
                     href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}
-                    className="flex items-center gap-3 font-body text-[17px] text-[#0D0603] hover:text-[#6B2D0A] transition-colors duration-200"
+                    className="flex items-center gap-3 font-body text-[17px] text-[#111111] hover:text-[#FF6B00] transition-colors duration-200"
                   >
-                    <Phone size={18} strokeWidth={1.5} className="text-[#6B3A2A] flex-shrink-0" />
+                    <Phone size={18} strokeWidth={1.5} className="text-[#FF6B00] flex-shrink-0" />
                     {CONTACT_PHONE}
                   </a>
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className="flex items-center gap-3 font-body text-[17px] text-[#0D0603] hover:text-[#6B2D0A] transition-colors duration-200"
+                    className="flex items-center gap-3 font-body text-[17px] text-[#111111] hover:text-[#FF6B00] transition-colors duration-200"
                   >
-                    <Mail size={18} strokeWidth={1.5} className="text-[#6B3A2A] flex-shrink-0" />
+                    <Mail size={18} strokeWidth={1.5} className="text-[#FF6B00] flex-shrink-0" />
                     {CONTACT_EMAIL}
                   </a>
                 </div>
 
                 <div>
-                  <p className="font-body text-[11px] tracking-[0.14em] uppercase text-[#2C1810]/50 mb-4">
+                  <p className="font-body text-[11px] tracking-[0.14em] uppercase text-[#111111]/50 mb-4">
                     Follow Us
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <Link
                       href={SOCIAL_LINKS.instagram}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#C4A882]/40 bg-[#F3EBD8]/50 px-4 py-2.5 font-body text-[12px] text-[#2C1810]/80 hover:border-[#C8892A]/60 hover:text-[#6B2D0A] transition-all duration-200"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/20 bg-[#F1F3E0] px-4 py-2.5 font-body text-[12px] text-[#111111]/80 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] transition-all duration-200"
                     >
                       {SOCIAL_ICONS.instagram}
                       Instagram
                     </Link>
                     <Link
                       href={SOCIAL_LINKS.facebook}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#C4A882]/40 bg-[#F3EBD8]/50 px-4 py-2.5 font-body text-[12px] text-[#2C1810]/80 hover:border-[#C8892A]/60 hover:text-[#6B2D0A] transition-all duration-200"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/20 bg-[#F1F3E0] px-4 py-2.5 font-body text-[12px] text-[#111111]/80 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] transition-all duration-200"
                     >
                       {SOCIAL_ICONS.facebook}
                       Facebook
                     </Link>
                     <Link
                       href={SOCIAL_LINKS.linkedin}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#C4A882]/40 bg-[#F3EBD8]/50 px-4 py-2.5 font-body text-[12px] text-[#2C1810]/80 hover:border-[#C8892A]/60 hover:text-[#6B2D0A] transition-all duration-200"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/20 bg-[#F1F3E0] px-4 py-2.5 font-body text-[12px] text-[#111111]/80 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] transition-all duration-200"
                     >
                       {SOCIAL_ICONS.linkedin}
                       LinkedIn
@@ -283,14 +282,14 @@ export default function ContactPageContent() {
                   </div>
                 </div>
 
-                <div className="-mt-1 pt-3 border-t border-[#6B3A2A]/40">
-                  <p className="font-display text-xl text-[#0D0603] mb-2">Wholesale &amp; Partnerships</p>
-                  <p className="font-body text-[14px] text-[#2C1810]/70 leading-relaxed mb-4">
+                <div className="-mt-1 pt-3 border-t border-[#FF6B00]/40">
+                  <p className="font-display text-xl text-[#111111] mb-2">Wholesale &amp; Partnerships</p>
+                  <p className="font-body text-[14px] text-[#111111]/70 leading-relaxed mb-4">
                     Interested in stocking Kauseyah or collaborating with our artisan network?
                   </p>
                   <a
                     href={`mailto:${CONTACT_EMAIL}?subject=Partnership Inquiry`}
-                    className="inline-flex items-center gap-2 font-body text-[11px] tracking-[0.18em] uppercase text-[#6B2D0A] hover:text-[#0D0603] transition-colors duration-200"
+                    className="inline-flex items-center gap-2 font-body text-[11px] tracking-[0.18em] uppercase text-[#FF6B00] hover:text-[#111111] transition-colors duration-200"
                   >
                     Email us directly
                     <ArrowRight size={12} />

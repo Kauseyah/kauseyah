@@ -73,87 +73,57 @@ export default function FeaturedIn() {
   const duplicatedItems = [...FEATURED_IN, ...FEATURED_IN, ...FEATURED_IN];
 
   return (
-    <section className="w-full bg-white py-16 lg:py-24 overflow-hidden">
-      <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
+    <section className="w-full pt-8 pb-12 lg:pt-8 lg:pb-16 overflow-hidden border-b border-[#FFD4A8]" style={{ background: 'linear-gradient(180deg, #FFF8F3 0%, #FFFFFF 100%)' }}>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
 
-        {/* Header */}
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="mb-12 text-center"
-        >
-          <motion.span
-            variants={fadeIn}
-            custom={0}
-            className="font-body text-[11px] font-bold tracking-[0.3em] text-[#C8892A] uppercase block mb-3"
+        {/* ── Standardized Header ── */}
+        <div className="flex flex-col items-center text-center mb-10 lg:mb-12 max-w-4xl mx-auto">
+
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
           >
-            Global Recognition
-          </motion.span>
-          <motion.h2
-            variants={fadeIn}
-            custom={1}
-            className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1A1410]"
-          >
-            Featured In
+            Press & <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Mentions</span>
           </motion.h2>
-          <motion.p
-            variants={fadeIn}
-            custom={2}
-            className="font-body text-base text-[#3D2B1F]/80 mt-4 max-w-2xl mx-auto"
-          >
-            Honored to be recognized by leading publications worldwide for our commitment to preserving India&apos;s tribal heritage
-          </motion.p>
-        </motion.div>
+          <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium">
+             Honored to be recognized by leading publications worldwide for our commitment to preserving artisan legacy.
+          </p>
+        </div>
       </div>
 
-      {/* Auto-scrolling carousel - full width */}
-      <div className="relative overflow-hidden w-full">
+      {/* Auto-scrolling carousel - bigger & clearer */}
+      <div className="relative overflow-hidden w-full flex">
         <motion.div
-          className="flex gap-8"
+          className="flex gap-20 md:gap-40 items-center whitespace-nowrap px-10"
           animate={{
-            x: -((FEATURED_IN.length * 128) + (FEATURED_IN.length - 1) * 32),
+            x: ["0%", "-50%"],
           }}
           transition={{
-            x: {
-              duration: 25,
+              duration: 35,
               repeat: Infinity,
               repeatType: "loop",
               ease: "linear",
-            },
           }}
         >
-            {duplicatedItems.map((item, i) => (
+            {[...FEATURED_IN, ...FEATURED_IN, ...FEATURED_IN, ...FEATURED_IN].map((item, i) => (
               <div
                 key={`${item.id}-${i}`}
-                className="flex-shrink-0 flex flex-col items-center group cursor-pointer"
+                className="flex-shrink-0 flex flex-col items-center gap-6 group cursor-pointer"
+                onMouseEnter={() => setHoveredItem(item)}
+                onMouseLeave={() => setHoveredItem(null)}
               >
-                {/* Instagram-style circular logo with gradient ring */}
-                <Link 
-                  href={item.url} 
-                  className="relative" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => setHoveredItem(item)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                >
-                  {/* Logo container */}
-                  <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full border-2 border-[#EAE6D9] bg-[#F2EFEA] flex items-center justify-center p-2">
-                    <Image
-                      src={item.logo}
-                      alt={item.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                </Link>
-
-                {/* Name */}
-                <div className="mt-4 text-center">
-                  <p className="font-body text-sm font-semibold text-[#1A1410] group-hover:text-[#C8892A] transition-colors">
-                    {item.name}
-                  </p>
+                <div className="relative w-40 h-24 md:w-60 md:h-32 transition-transform duration-500 group-hover:scale-105">
+                  <Image
+                    src={item.logo}
+                    alt={item.name}
+                    fill
+                    className="object-contain"
+                  />
                 </div>
+                <span className="font-body text-[13px] font-bold tracking-[0.1em] text-[#111111]/60 uppercase transition-colors group-hover:text-[#FF6B00]">
+                  {item.name}
+                </span>
               </div>
             ))}
           </motion.div>
@@ -175,7 +145,7 @@ export default function FeaturedIn() {
                 exit={{ y: 20 }}
                 className="bg-white rounded-2xl p-8 shadow-2xl max-w-md mx-4 text-center"
               >
-                <div className="relative w-32 h-32 mx-auto mb-4 rounded-full border-2 border-[#EAE6D9] bg-[#F2EFEA] flex items-center justify-center p-3">
+                <div className="relative w-32 h-32 mx-auto mb-4 rounded-full border-2 border-[#E5E5E5] bg-[#FFFFFF] flex items-center justify-center p-3">
                   <Image
                     src={hoveredItem.logo}
                     alt={hoveredItem.name}
@@ -183,8 +153,9 @@ export default function FeaturedIn() {
                     className="object-contain"
                   />
                 </div>
-                <h3 className="font-display text-2xl text-[#1A1410] mb-2">{hoveredItem.name}</h3>
-                <p className="font-body text-sm text-[#1A1410] font-medium leading-relaxed">{hoveredItem.description}</p>
+                <h3 className="font-display text-2xl text-[#111111] mb-2">{hoveredItem.name}</h3>
+                <p className="font-body text-sm text-[#111111] font-medium leading-relaxed">{hoveredItem.description}</p>
+                <div className="w-12 h-0.5 bg-[#FF6B00] mx-auto mt-4" />
               </motion.div>
             </motion.div>
           )}

@@ -1,16 +1,25 @@
 @import "tailwindcss";
 
+@theme {
+}
+
 /* ─── CSS Custom Properties ──────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Color tokens */
-    --color-earth:    #6B3A2A;   /* deep terracotta */
-    --color-ochre:    #C8892A;   /* warm ochre gold */
-    --color-forest:   #2D4A3E;   /* dark forest green */
-    --color-sand:     #F5ECD7;   /* warm parchment */
-    --color-ink:      #1A1410;   /* deep warm black */
-    --color-mist:     #F9F5EE;   /* off-white background */
-    --color-clay:     #D4603A;   /* vibrant terracotta accent */
+    /* Brand palette — Orange · White · Black */
+    --color-ivory:    #FFF8F3;   /* warm cream base — feels orange, not cold white */
+    --color-sand:     #FFF2E6;   /* deeper warm cream for alternate sections */
+    --color-card:     #FFFFFF;   /* pure white cards for contrast */
+    --color-ink:      #0D0400;   /* warm near-black (orange undertone) */
+    --color-muted:    #6B4F3A;   /* warm muted brown */
+    --color-brand:    #FF6B00;   /* Heritage Orange */
+    --color-brand-deep:#1A0800;  /* Deep orange-black */
+    --color-brand-mid: #FF8C1A;  /* Saffron Orange */
+    --color-brand-lite: #FFD4A8; /* Soft amber tint */
+    --color-btn:      #111111;   /* primary button */
+    --color-btn-hover:#FF6B00;   /* button hover */
+    --color-border:   #FFD4A8;   /* warm amber borders */
+    --color-footer:   #1A0800;   /* Deep orange-black footer */
 
     /* Typography */
     --font-body:      var(--font-inter), system-ui, sans-serif;
@@ -21,7 +30,6 @@
     --section-px:     clamp(1.25rem, 5vw, 5rem);
   }
 
-  /* ─── Base Resets & Globals ──────────────────────────────────────────── */
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -33,7 +41,7 @@
 
   body {
     font-family: var(--font-body);
-    background-color: var(--color-mist);
+    background-color: var(--color-ivory);
     color: var(--color-ink);
     line-height: 1.65;
   }
@@ -60,14 +68,13 @@
   }
 
   ::selection {
-    background-color: var(--color-ochre);
+    background-color: var(--color-accent);
     color: #fff;
   }
 
-  /* ─── Scrollbar ──────────────────────────────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--color-sand); }
-  ::-webkit-scrollbar-thumb { background: var(--color-ochre); border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: var(--color-ivory); }
+  ::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 3px; }
 }
 
 /* ─── Utility Classes ────────────────────────────────────────────────────── */
@@ -81,27 +88,66 @@
   .font-display { font-family: var(--font-display); }
   .font-body    { font-family: var(--font-body); }
 
-  /* Text gradients */
-  .text-gradient-earth {
-    background: linear-gradient(135deg, var(--color-earth), var(--color-ochre));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .bg-ivory  { background-color: var(--color-ivory); }
+  .bg-sand   { background-color: var(--color-sand); }
+  .bg-card   { background-color: var(--color-card); }
+  .bg-brand  { background-color: var(--color-brand-deep); }
+  .bg-olive  { background-color: var(--color-olive); }
+  .text-ink  { color: var(--color-ink); }
+  .text-muted { color: var(--color-muted); }
+  .text-brand { color: var(--color-brand); }
+  .text-brand-lite { color: var(--color-brand-lite); }
+  .border-brand { border-color: var(--color-border); }
+
+  /* Orange ↔ White blends */
+  .bg-blend-orange-center {
+    background: linear-gradient(
+      180deg,
+      #FFFFFF 0%,
+      #FFFAF2 10%,
+      #FFF5E6 25%,
+      #FFE8CC 42%,
+      #FFD699 50%,
+      #FFE8CC 58%,
+      #FFF5E6 75%,
+      #FFFAF2 90%,
+      #FFFFFF 100%
+    );
   }
 
-  /* Micro-animation utilities */
+  .bg-blend-orange-fade-down {
+    background: linear-gradient(
+      180deg,
+      #FFF5E6 0%,
+      #FFFAF2 18%,
+      #FFE8CC 42%,
+      #FFD699 62%,
+      #FFF0E0 82%,
+      #FFFFFF 100%
+    );
+  }
+
+  .bg-blend-orange-footer {
+    background: linear-gradient(
+      180deg,
+      #FFFFFF 0%,
+      #FFF5E6 22%,
+      #FFE8CC 48%,
+      #FF8100 72%,
+      #111111 100%
+    );
+  }
+
   .transition-base {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Focus ring */
   .focus-ring:focus-visible {
-    outline: 2px solid var(--color-ochre);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: 2px;
   }
 
-  /* Aspect ratios */
   .aspect-product  { aspect-ratio: 3 / 4; }
   .aspect-banner   { aspect-ratio: 16 / 6; }
   .aspect-square   { aspect-ratio: 1 / 1; }
@@ -126,23 +172,24 @@
   }
 
   .btn-primary {
-    background-color: var(--color-earth);
+    background-color: var(--color-btn);
     color: #fff;
   }
   .btn-primary:hover {
-    background-color: var(--color-clay);
+    background-color: var(--color-btn-hover);
     transform: translateY(-1px);
-    box-shadow: 0 6px 24px rgba(107, 58, 42, 0.3);
+    box-shadow: 0 6px 24px rgba(17, 17, 17, 0.2);
   }
 
   .btn-outline {
     background-color: transparent;
-    color: var(--color-earth);
-    border: 1.5px solid var(--color-earth);
+    color: var(--color-ink);
+    border: 1.5px solid var(--color-border);
   }
   .btn-outline:hover {
-    background-color: var(--color-earth);
+    background-color: var(--color-btn);
     color: #fff;
+    border-color: var(--color-btn);
   }
 
   .btn-ghost {
@@ -150,23 +197,21 @@
     color: var(--color-ink);
   }
   .btn-ghost:hover {
-    background-color: rgba(0,0,0,0.06);
+    background-color: rgba(0, 0, 0, 0.04);
   }
 
-  /* Card */
   .card {
-    background: #fff;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
   .card:hover {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
   }
 
-  /* Badge */
   .badge {
     display: inline-flex;
     align-items: center;
@@ -177,7 +222,5 @@
     text-transform: uppercase;
     border-radius: 2px;
   }
-  .badge-earth  { background: var(--color-earth);  color: #fff; }
-  .badge-ochre  { background: var(--color-ochre);  color: #fff; }
-  .badge-forest { background: var(--color-forest); color: #fff; }
+  .badge-accent { background: var(--color-accent); color: #fff; }
 }
