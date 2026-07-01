@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import WhoWeAre from "@/components/sections/WhoWeAre";
+import LifestyleGallery from "@/components/sections/LifestyleGallery";
+import HandEmbroideredToys from "@/components/sections/HandEmbroideredToys";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import FeaturedIn from "@/components/sections/FeaturedIn";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import Testimonials from "@/components/sections/Testimonials";
+import Achievements from "@/components/sections/Achievements";
 import InstagramReels from "@/components/sections/InstagramReels";
-import FAQ from "@/components/sections/FAQ";
 
 export const metadata: Metadata = {
   title: "Kauseyah - Grassroot | Local | Indigenous",
@@ -21,7 +23,13 @@ export default function HomePage() {
       {/* 2. Who We Are */}
       <WhoWeAre />
 
-      {/* 3. Featured Products */}
+      {/* 3. Lifestyle Gallery */}
+      <LifestyleGallery />
+
+      {/* Hand Embroidered Toys */}
+      <HandEmbroideredToys />
+
+      {/* 4. Featured Products */}
       <FeaturedProducts />
 
       {/* 4. Featured In */}
@@ -33,11 +41,11 @@ export default function HomePage() {
       {/* 5. Testimonials */}
       <Testimonials />
 
-      {/* 6. Instagram Reels */}
-      <InstagramReels />
+      {/* 6. Our Achievements */}
+      <Achievements />
 
-      {/* 7. FAQ */}
-      <FAQ />
+      {/* 7. Instagram Reels */}
+      <InstagramReels />
 
     </main>
   );

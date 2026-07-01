@@ -16,54 +16,38 @@ const fadeUp = {
 };
 
 const CATEGORY_ACCENTS: Record<string, string> = {
-  handlooms: "#C8892A",
-  jewellery: "#8B5E7A",
-  "home-living": "#5A7A5A",
-  "conscious-gifting": "#C85A2A",
-  "tribal-crafts": "#2A5A8B",
-  upcycled: "#6B7A3A",
+  handlooms: "#FF6B00",
+  jewellery: "#FF8100",
+  "home-living": "#111111",
+  "conscious-gifting": "#111111",
+  "tribal-crafts": "#FF6B00",
+  upcycled: "#FFB347",
 };
 
 export default function ShopCategories() {
   return (
-    <section className="w-full bg-[#FAF8F5] pt-36 lg:pt-44 pb-24 lg:pb-32 overflow-hidden">
-      <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
+    <section className="w-full pt-12 lg:pt-16 pb-12 lg:pb-16 overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFF8F3 0%, #FFFFFF 50%, #FFF8F3 100%)' }}>
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-20">
 
-        {/* ── Section Header ── */}
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mb-16 border-b border-[#E8E0D4] pb-12"
-        >
-          <motion.div variants={fadeUp} custom={0} className="flex items-center gap-4 mb-5">
-            <span className="w-8 h-px bg-[#C8892A]" />
-            <span className="font-body text-[11px] tracking-[0.35em] text-[#C8892A] uppercase font-semibold">
-              {BRAND_TAGLINE}
-            </span>
-          </motion.div>
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <motion.h2
-              variants={fadeUp}
-              custom={1}
-              className="font-display text-5xl md:text-6xl lg:text-7xl text-[#0D0603]"
-            >
-              Shop Now
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              custom={2}
-              className="font-body text-[15px] text-[#2C1810]/70 max-w-sm leading-relaxed lg:text-right"
-            >
-              From the loom to your doorstep — ethically made, indigenously crafted, consciously chosen.
-            </motion.p>
-          </div>
-        </motion.div>
+        {/* ── Standardized Header ── */}
+        <div className="flex flex-col items-center text-center mb-10 lg:mb-12 max-w-4xl mx-auto">
+
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
+          >
+            Shop the <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Anthology</span>
+          </motion.h2>
+          <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium">
+             From the loom to your doorstep — ethically made, indigenously crafted treasures.
+          </p>
+        </div>
 
         {/* ── Category Grid ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {SHOP_CATEGORY_GROUPS.map((group, i) => {
-            const accent = CATEGORY_ACCENTS[group.id] ?? "#C8892A";
+            const accent = CATEGORY_ACCENTS[group.id] ?? "#FF6B00";
             return (
               <motion.div
                 key={group.id}
@@ -75,7 +59,7 @@ export default function ShopCategories() {
               >
                 <Link
                   href={group.href}
-                  className="group relative flex flex-col rounded-2xl bg-white border border-[#E8E0D4] hover:border-[#C8892A]/40 hover:shadow-[0_12px_40px_rgba(80,45,15,0.08)] transition-all duration-400 p-8 min-h-[260px] overflow-hidden"
+                  className="group relative flex flex-col rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#FF6B00]/40 hover:shadow-[0_12px_40px_rgba(107,112,92,0.08)] transition-all duration-400 p-8 min-h-[260px] overflow-hidden"
                 >
                   {/* Top accent strip */}
                   <div
@@ -85,20 +69,20 @@ export default function ShopCategories() {
 
                   {/* Arrow */}
                   <div className="flex items-start justify-end mb-6">
-                    <span className="w-9 h-9 rounded-full border border-[#E8E0D4] flex items-center justify-center group-hover:border-[#C8892A]/50 group-hover:bg-[#C8892A]/5 transition-all duration-300">
+                    <span className="w-9 h-9 rounded-full border border-[#E5E5E5] flex items-center justify-center group-hover:border-[#FF6B00]/50 group-hover:bg-[#FF6B00]/5 transition-all duration-300">
                       <ArrowRight
                         size={16}
-                        className="text-[#0D0603]/30 group-hover:text-[#C8892A] group-hover:translate-x-0.5 transition-all duration-300"
+                        className="text-[#111111]/30 group-hover:text-[#FF6B00] group-hover:translate-x-0.5 transition-all duration-300"
                       />
                     </span>
                   </div>
 
                   {/* Body */}
                   <div className="mt-auto">
-                    <h3 className="font-display text-2xl lg:text-3xl text-[#0D0603] mb-2.5 group-hover:text-[#6B2D0A] transition-colors duration-300">
+                    <h3 className="font-display text-2xl lg:text-3xl text-[#111111] mb-2.5 group-hover:text-[#FF6B00] transition-colors duration-300">
                       {group.label}
                     </h3>
-                    <p className="font-body text-[14px] text-[#2C1810]/65 mb-6 leading-relaxed">
+                    <p className="font-body text-[14px] text-[#111111]/65 mb-6 leading-relaxed">
                       {group.description}
                     </p>
 
@@ -107,7 +91,7 @@ export default function ShopCategories() {
                       {group.items.slice(0, 4).map((item) => (
                         <span
                           key={item.href}
-                          className="font-body text-[10px] tracking-[0.1em] uppercase px-3 py-1.5 rounded-full bg-[#FAF8F5] border border-[#E8E0D4] text-[#2C1810]/60 group-hover:border-[#C8892A]/25 group-hover:text-[#2C1810]/80 transition-all duration-300"
+                          className="font-body text-[10px] tracking-[0.1em] uppercase px-3 py-1.5 rounded-full bg-white border border-[#E5E5E5] text-[#111111]/60 group-hover:border-[#111111]/30 group-hover:text-[#111111] transition-all duration-300"
                         >
                           {item.label}
                         </span>
@@ -143,7 +127,7 @@ export default function ShopCategories() {
         >
           <Link
             href="/collections"
-            className="inline-flex items-center gap-3 rounded-full bg-[#0D0603] text-white px-10 py-4 font-body text-[11px] tracking-[0.25em] uppercase hover:bg-[#6B2D0A] transition-all duration-300 shadow-[0_4px_20px_rgba(13,6,3,0.15)]"
+            className="inline-flex items-center gap-3 rounded-full bg-[#111111] text-white px-10 py-4 font-body text-[11px] tracking-[0.25em] uppercase hover:bg-[#FF8100] transition-all duration-300 shadow-[0_4px_20px_rgba(31,33,26,0.15)]"
           >
             Explore All Collections
             <ArrowRight size={14} />

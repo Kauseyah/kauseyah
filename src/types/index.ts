@@ -1,10 +1,12 @@
 // ─── Product Types ───────────────────────────────────────────────────────────
 
 export type ProductCategory =
-  | "clothing"
-  | "handloom"
-  | "tribal-gifts"
-  | "accessories";
+  | "handlooms"
+  | "jewellery"
+  | "home-living"
+  | "conscious-gifting"
+  | "tribal-crafts"
+  | "upcycled-waste";
 
 export type ProductTag =
   | "handmade"
@@ -29,6 +31,14 @@ export interface ProductVariant {
   price: number;
 }
 
+export interface Review {
+  id: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -49,6 +59,9 @@ export interface Product {
   isAvailable: boolean;
   isFeatured: boolean;
   createdAt: string;
+  rating?: number;
+  reviewsCount?: number;
+  reviews?: Review[];
 }
 
 // ─── Collection Types ─────────────────────────────────────────────────────────

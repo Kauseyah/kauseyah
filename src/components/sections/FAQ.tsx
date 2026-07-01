@@ -1,5 +1,7 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
@@ -55,7 +57,7 @@ function AccordionItem({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.7, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="border-b border-[#C8892A]/15"
+      className="border-b border-[#111111]/10"
     >
       <button
         onClick={onToggle}
@@ -67,13 +69,13 @@ function AccordionItem({
         <div className="flex items-start gap-5">
           <span
             className="font-body text-[12px] font-medium tracking-[0.2em] pt-[1px] flex-shrink-0 transition-colors duration-300"
-            style={{ color: isOpen ? "#C8892A" : "rgba(26,20,16,0.5)" }}
+            style={{ color: isOpen ? "#FF6B00" : "rgba(17,17,17,0.4)" }}
           >
             {String(index + 1).padStart(2, "0")}
           </span>
           <span
             className="font-display text-[1.2rem] md:text-[1.35rem] leading-snug transition-colors duration-300"
-            style={{ color: isOpen ? "#6B3A2A" : "#1A1410" }}
+            style={{ color: isOpen ? "#FF6B00" : "#111111" }}
           >
             {item.q}
           </span>
@@ -83,9 +85,9 @@ function AccordionItem({
         <span
           className="flex-shrink-0 w-6 h-6 mt-[2px] flex items-center justify-center border transition-all duration-300"
           style={{
-            borderColor: isOpen ? "#C8892A" : "rgba(26,20,16,0.18)",
-            color: isOpen ? "#C8892A" : "#1A1410",
-            background: isOpen ? "rgba(200,137,42,0.06)" : "transparent",
+            borderColor: isOpen ? "#FF6B00" : "rgba(17,17,17,0.15)",
+            color: isOpen ? "#FF6B00" : "#111111",
+            background: isOpen ? "rgba(255,107,0,0.08)" : "transparent",
           }}
         >
           <svg
@@ -117,7 +119,7 @@ function AccordionItem({
             style={{ overflow: "hidden" }}
           >
             <p
-              className="font-body text-[15px] md:text-[16px] leading-relaxed pb-6 pl-10 text-[#1A1410]/85"
+              className="font-body text-[15px] md:text-[16px] leading-relaxed pb-6 pl-10 text-[#111111]/70"
             >
               {item.a}
             </p>
@@ -135,45 +137,45 @@ export default function FAQ() {
   const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id));
 
   return (
-    <section className="w-full bg-[#F9F5EE] py-20 lg:py-28">
-      <div className="max-w-[1100px] mx-auto px-8 lg:px-16">
+    <section className="relative w-full py-20 lg:py-28 overflow-hidden text-[#111111]" style={{ background: 'linear-gradient(180deg, #FFF8F3 0%, #FFFFFF 100%)' }}>
+      {/* Decorative orange radial glow (CSS only) */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden>
+        <div className="absolute top-0 right-1/4 w-[500px] h-[300px] rounded-full" style={{ background: 'radial-gradient(ellipse, rgba(255,107,0,0.06) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,107,0,0.2), transparent)' }} />
+      </div>
+
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
 
         {/* ── Grid: heading left, accordion right ── */}
         <div className="grid lg:grid-cols-[1fr_1.6fr] gap-12 xl:gap-20 items-start">
 
-          {/* LEFT — heading block */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:sticky lg:top-24"
-          >
-            <span className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
-              Got Questions?
-            </span>
-            <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1A1410] mb-6">
-              Frequently Asked
-            </h2>
-            <div className="w-10 h-[1.5px] bg-[#C8892A] mb-7" />
-            <p className="font-body text-lg lg:text-xl text-[#1A1410]/70 leading-relaxed mb-8">
-              Everything you need to know about our handloom collections, ethical sourcing,
-              care instructions, and how we bring India&apos;s artisan legacy to your door.
+          {/* LEFT — Standardized Header */}
+          <div className="lg:sticky lg:top-24">
+
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
+            >
+              Frequently <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Asked</span>
+            </motion.h2>
+            <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium mb-12">
+               Everything you need to know about our handloom collections, ethical sourcing, and artisan legacy.
             </p>
-            <p className="font-body text-[15px] leading-relaxed text-[#1A1410]/70 mb-10">
-              Can&apos;t find your answer? We&apos;re always happy to help — reach out to us directly
+            <p className="font-body text-[15px] leading-relaxed text-[#111111]/70 mb-10">
+              Can't find your answer? We're always happy to help — reach out to us directly
               and our team will get back to you within 24 hours.
             </p>
             <a
               href="/contact"
               className="inline-flex items-center gap-4 group"
             >
-              <span className="w-8 h-px bg-[#C8892A] transition-all duration-300 group-hover:w-12" />
-              <span className="font-body text-[11px] tracking-[0.28em] uppercase text-[#1A1410] transition-colors duration-300 group-hover:text-[#C8892A]">
+              <span className="w-8 h-px bg-[#FF6B00] transition-all duration-300 group-hover:w-12" />
+              <span className="font-body text-[11px] tracking-[0.28em] uppercase text-[#111111] transition-colors duration-300 group-hover:text-[#FF6B00]">
                 Contact Us
               </span>
             </a>
-          </motion.div>
+          </div>
 
           {/* RIGHT — accordion */}
           <div>

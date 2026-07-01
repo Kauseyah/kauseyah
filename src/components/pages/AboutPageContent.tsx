@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Heart, Leaf, Shield, Target, Eye } from "lucide-react";
-import { FOUNDER, ABOUT_KAUSEYAH, BRAND_TAGLINE, SITE_TAGLINE } from "@/constants";
+import { FOUNDER, ABOUT_KAUSEYAH, BRAND_TAGLINE } from "@/constants";
 
 const BRAND_PILLARS = BRAND_TAGLINE.split("|").map((item) => item.trim());
 
@@ -101,17 +101,17 @@ function MissionVisionBlock({
         <motion.div
           whileHover={{ scale: 1.15, rotate: 8 }}
           transition={{ type: "spring", stiffness: 400, damping: 14 }}
-          className="text-[#6B3A2A] flex-shrink-0"
+          className="text-[#111111] flex-shrink-0"
         >
           <Icon size={18} strokeWidth={1.75} />
         </motion.div>
-        <span className="font-body text-[10px] font-bold tracking-[0.22em] uppercase text-[#6B3A2A] group-hover:text-[#1A1410] transition-colors duration-300">
+        <span className="font-body text-[10px] font-bold tracking-[0.22em] uppercase text-[#111111]/80 group-hover:text-black transition-colors duration-300">
           {item.num} — {item.id}
         </span>
       </div>
 
       <motion.h3
-        className="font-display text-2xl lg:text-3xl text-[#1A1410] mb-3 leading-tight group-hover:text-[#6B3A2A] transition-colors duration-300"
+        className="font-display text-2xl lg:text-3xl text-[#111111] mb-3 leading-tight group-hover:text-black transition-colors duration-300"
         whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         style={{ transformOrigin: isRight ? "right center" : "left center" }}
@@ -124,7 +124,7 @@ function MissionVisionBlock({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7, delay: isRight ? 0.2 : 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="font-body text-[15px] lg:text-[16px] text-[#1A1410] leading-[1.65] mb-4"
+        className="font-body text-[15px] lg:text-[16px] text-[#111111]/85 leading-[1.65] mb-4"
       >
         {item.text}
       </motion.p>
@@ -139,9 +139,9 @@ function MissionVisionBlock({
             transition={{ duration: 0.55, delay: 0.25 + j * 0.1, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{
               x: isRight ? -8 : 8,
-              color: "#1A1410",
+              color: "#111111",
             }}
-            className="font-body text-[14px] text-[#6B3A2A] leading-snug cursor-default transition-colors duration-300"
+            className="font-body text-[14px] text-[#111111]/80 leading-snug cursor-default transition-colors duration-300"
           >
             — {line}
           </motion.p>
@@ -153,25 +153,25 @@ function MissionVisionBlock({
 
 function MissionVisionSection() {
   return (
-    <section className="bg-[#E5C18D] py-14 lg:py-16 overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-10 lg:px-16">
+    <section className="bg-[#FFF8F3] py-14 lg:py-16 overflow-hidden">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-8 lg:px-16">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-12"
         >
-          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#1A1410] uppercase block mb-3">
+          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#111111]/80 uppercase block mb-3">
             What Drives Us
           </motion.span>
           <motion.h2
             variants={fadeUp}
             custom={1}
-            className="font-display text-3xl md:text-4xl lg:text-5xl text-[#1A1410]"
+            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            Mission &amp; Vision
+            Mission &amp; <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Vision</span>
           </motion.h2>
         </motion.div>
 
@@ -187,21 +187,21 @@ function MissionVisionSection() {
             className="hidden lg:flex flex-col items-center pt-4"
           >
             <motion.div
-              className="w-px h-14 bg-[#6B3A2A]/25 origin-top"
+              className="w-px h-14 bg-[#111111]/30 origin-top"
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             />
             <motion.span
-              className="font-display text-2xl text-[#6B3A2A]/50 my-3 cursor-default"
-              whileHover={{ scale: 1.2, color: "#6B3A2A" }}
+              className="font-display text-2xl text-[#111111]/60 my-3 cursor-default"
+              whileHover={{ scale: 1.2, color: "#111111" }}
               transition={{ type: "spring", stiffness: 400, damping: 16 }}
             >
               &amp;
             </motion.span>
             <motion.div
-              className="w-px h-14 bg-[#6B3A2A]/25 origin-bottom"
+              className="w-px h-14 bg-[#111111]/30 origin-bottom"
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true }}
@@ -217,14 +217,14 @@ function MissionVisionSection() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="lg:hidden flex items-center gap-4 origin-center"
           >
-            <div className="flex-1 h-px bg-[#6B3A2A]/25" />
+            <div className="flex-1 h-px bg-[#111111]/30" />
             <motion.span
-              className="font-display text-2xl text-[#6B3A2A]/50"
+              className="font-display text-2xl text-[#111111]/60"
               whileHover={{ scale: 1.15 }}
             >
               &amp;
             </motion.span>
-            <div className="flex-1 h-px bg-[#6B3A2A]/25" />
+            <div className="flex-1 h-px bg-[#111111]/30" />
           </motion.div>
 
           <MissionVisionBlock item={MISSION_VISION[1]} align="left" />
@@ -236,99 +236,108 @@ function MissionVisionSection() {
 
 export default function AboutPageContent() {
   return (
-    <main className="bg-[#F9F5EE]">
-      {/* ── Navbar clearance + separation from hero ── */}
-      <div className="h-[4.25rem] lg:h-[4.5rem]" aria-hidden />
-
+    <main className="bg-white">
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#E5C18D] pt-10 lg:pt-12 pb-16 lg:pb-20 overflow-hidden">
-        <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
-          <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 items-start">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <div className="flex items-center gap-3 mb-5">
-                <span className="w-8 h-px bg-[#6B3A2A]" />
-                <span className="font-body text-[11px] tracking-[0.35em] text-[#6B3A2A] uppercase font-semibold">
-                  Our Heritage
-                </span>
-              </div>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#0D0603] mb-5 leading-[1.05]">
-                Our Story
-              </h1>
-              <div className="w-12 h-[2px] bg-[#6B3A2A] mb-6" />
-              <p className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed max-w-xl">
-                Born from a love of indigenous art — a living bridge between India&apos;s master artisans
-                and the world.
-              </p>
-            </motion.div>
+      <section className="w-full bg-[#0D0400] pt-32 lg:pt-36 pb-20 lg:pb-32 overflow-hidden relative">
+        {/* Decorative gradient glowing orb */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-gradient-to-b from-[#FF6B00]/8 to-transparent blur-[80px]" />
+        </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 32 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.95, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:ml-auto lg:max-w-xs xl:max-w-sm lg:pl-16 xl:pl-24 lg:border-l lg:border-[#6B3A2A]/20 lg:pt-2"
-            >
-              <p className="font-display text-xl md:text-2xl italic text-[#1A1410]/85 leading-snug mb-5">
-                &ldquo;Every thread carries a story, every pattern a prayer.&rdquo;
-              </p>
+        <div className="max-w-[900px] mx-auto px-4 sm:px-8 lg:px-20 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center justify-center"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-8 h-px bg-[#FF6B00]" />
+              <span className="font-body text-[11px] tracking-[0.35em] text-[#FF6B00] uppercase font-bold">
+                Our Heritage
+              </span>
+              <span className="w-8 h-px bg-[#FF6B00]" />
+            </div>
 
-              <div className="w-8 h-px bg-[#6B3A2A] mb-4" />
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white mb-8 leading-[0.9]">
+              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.15)]">Story</span>
+            </h1>
 
-              <p className="font-display text-lg md:text-xl text-[#0D0603] leading-snug mb-5">
-                {SITE_TAGLINE.split(".")[0]}.{" "}
-                <span className="italic text-[#6B2D0A]">{SITE_TAGLINE.split(".")[1]?.trim()}.</span>
-              </p>
+            <div className="w-16 h-[2px] bg-[#FF6B00] mb-8" />
 
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                {BRAND_PILLARS.map((pillar, index) => (
-                  <span key={pillar} className="flex items-center gap-4">
-                    <span className="font-body text-[10px] tracking-[0.24em] text-[#6B3A2A] uppercase font-semibold">
-                      {pillar}
-                    </span>
-                    {index < BRAND_PILLARS.length - 1 && (
-                      <span className="hidden sm:block w-px h-3 bg-[#6B3A2A]/35" aria-hidden />
-                    )}
+            <p className="font-body text-lg md:text-xl lg:text-2xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-12 font-light">
+              Born from a love of indigenous art — a living bridge between India&apos;s master artisans
+              and the world.
+            </p>
+
+            {/* Brand pillars */}
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+              {BRAND_PILLARS.map((pillar, index) => (
+                <span key={pillar} className="flex items-center gap-6">
+                  <span className="font-body text-[11px] tracking-[0.3em] text-[#FFF8F3]/80 uppercase font-semibold hover:text-[#FF6B00] transition-colors duration-300">
+                    {pillar}
                   </span>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+                  {index < BRAND_PILLARS.length - 1 && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00]/70 animate-pulse" aria-hidden />
+                  )}
+                </span>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── Founder Story ── */}
-      <section className="bg-[#F9F5EE] pt-14 lg:pt-20 pb-20 lg:pb-28">
-        <div className="max-w-[1500px] mx-auto px-10 lg:px-20">
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-60px" }}
-            className="max-w-3xl mb-14 lg:mb-20"
-          >
-            <motion.h2
-              variants={fadeUp}
-              custom={0}
-              className="font-display text-3xl md:text-4xl lg:text-[2.65rem] text-[#0D0603] leading-snug mb-6"
+      <section className="bg-white pt-14 lg:pt-20 pb-20 lg:pb-28">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-20">
+          
+          {/* Two-column layout for Story + Image */}
+          <div className="grid lg:grid-cols-[1.25fr_1fr] gap-12 xl:gap-20 items-center mb-16 lg:mb-24">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-60px" }}
             >
-              {ABOUT_KAUSEYAH.title}
-            </motion.h2>
-            <motion.div variants={fadeUp} custom={1} className="w-12 h-[2px] bg-[#C8892A] mb-6" />
-            <div className="space-y-5">
-              {ABOUT_KAUSEYAH.paragraphs.map((paragraph, index) => (
-                <motion.p
-                  key={paragraph.slice(0, 40)}
-                  variants={fadeUp}
-                  custom={index + 2}
-                  className="font-body text-[16px] lg:text-[17px] text-[#2C1810]/80 leading-relaxed"
-                >
-                  {paragraph}
-                </motion.p>
-              ))}
-            </div>
-          </motion.div>
+              <motion.h2
+                variants={fadeUp}
+                custom={0}
+                className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
+              >
+                The Kauseyah <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Story</span>
+              </motion.h2>
+              <motion.div variants={fadeUp} custom={1} className="w-12 h-[2px] bg-[#FF6B00] mb-6" />
+              <div className="space-y-5">
+                {ABOUT_KAUSEYAH.paragraphs.map((paragraph, index) => (
+                  <motion.p
+                    key={paragraph.slice(0, 40)}
+                    variants={fadeUp}
+                    custom={index + 2}
+                    className="font-body text-[16px] lg:text-[17px] text-[#111111]/80 leading-relaxed"
+                  >
+                    {paragraph}
+                  </motion.p>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right Column: Artisan Workshop Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full aspect-[4/3] md:aspect-[16/11] lg:aspect-[4/3] xl:aspect-[16/11] overflow-hidden rounded-2xl border border-[#FF6B00]/10 shadow-[0_15px_50px_rgba(0,0,0,0.05)] bg-white/50"
+            >
+              <Image
+                src="/images/artisan_workshop_portrait_1782640198563.png"
+                alt="Artisan weaving at the handloom in Chhattisgarh workshop"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 550px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0400]/10 to-transparent" />
+            </motion.div>
+          </div>
 
           <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
             <motion.div
@@ -336,7 +345,7 @@ export default function AboutPageContent() {
               whileInView="show"
               viewport={{ once: true, margin: "-80px" }}
               variants={fadeUp}
-              className="relative h-[360px] md:h-[480px] overflow-hidden rounded-2xl"
+              className="relative h-[360px] md:h-[480px] overflow-hidden rounded-2xl order-2 lg:order-1"
             >
               <Image
                 src="/images/about/about.jpeg"
@@ -345,21 +354,22 @@ export default function AboutPageContent() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0603]/25 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/25 to-transparent" />
             </motion.div>
 
             <motion.div
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-80px" }}
+              className="order-1 lg:order-2"
             >
-              <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
+              <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-4">
                 The Founder
               </motion.span>
-              <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl text-[#0D0603] mb-2">
-                {FOUNDER.name}
+              <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-4 leading-[0.85] text-[#111111]">
+                Meet The <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Founder</span>
               </motion.h2>
-              <motion.p variants={fadeUp} custom={2} className="font-body text-[13px] font-semibold tracking-[0.12em] text-[#6B2D0A] uppercase mb-6">
+              <motion.p variants={fadeUp} custom={2} className="font-body text-[13px] font-semibold tracking-[0.12em] text-[#FF6B00] uppercase mb-6">
                 {FOUNDER.title}
               </motion.p>
               <div className="space-y-5 mb-8">
@@ -368,13 +378,13 @@ export default function AboutPageContent() {
                     key={paragraph.slice(0, 40)}
                     variants={fadeUp}
                     custom={index + 3}
-                    className="font-body text-[16px] text-[#2C1810]/80 leading-relaxed"
+                    className="font-body text-[16px] text-[#111111]/80 leading-relaxed"
                   >
                     {paragraph}
                   </motion.p>
                 ))}
               </div>
-              <motion.p variants={fadeUp} custom={5} className="font-display text-lg text-[#6B2D0A]">
+              <motion.p variants={fadeUp} custom={5} className="font-display text-lg text-[#FF6B00]">
                 — {FOUNDER.role}
               </motion.p>
             </motion.div>
@@ -385,19 +395,19 @@ export default function AboutPageContent() {
       <MissionVisionSection />
 
       {/* ── Core Values ── */}
-      <section className="bg-[#F9F5EE] py-20 lg:py-28">
-        <div className="max-w-[1200px] mx-auto px-10 lg:px-16">
+      <section className="bg-white py-20 lg:py-28">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-8 lg:px-16">
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
             className="mb-14 lg:mb-16"
           >
-            <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
+            <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-4">
               What We Stand For
             </motion.span>
-            <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl text-[#0D0603]">
-              Core Values
+            <motion.h2 variants={fadeUp} custom={1} className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]">
+              Core <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Values</span>
             </motion.h2>
           </motion.div>
 
@@ -410,32 +420,32 @@ export default function AboutPageContent() {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.8, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -5 }}
-                className={`group ${i > 0 ? "md:border-l md:border-[#C8892A]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
+                className={`group ${i > 0 ? "md:border-l md:border-[#FF6B00]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
               >
                 <div className="flex items-center gap-3 mb-5">
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 6 }}
                     transition={{ type: "spring", stiffness: 400, damping: 14 }}
-                    className="text-[#C8892A] flex-shrink-0"
+                    className="text-[#FF6B00] flex-shrink-0"
                   >
                     <value.icon size={22} strokeWidth={1.75} />
                   </motion.div>
-                  <span className="font-body text-[11px] font-bold tracking-[0.25em] uppercase text-[#6B3A2A] group-hover:text-[#1A1410] transition-colors duration-300">
+                  <span className="font-body text-[11px] font-bold tracking-[0.25em] uppercase text-[#FF6B00] group-hover:text-[#111111] transition-colors duration-300">
                     0{i + 1}
                   </span>
                 </div>
 
                 <motion.h3
-                  className="font-display text-2xl lg:text-[1.75rem] text-[#0D0603] mb-3 group-hover:text-[#6B2D0A] transition-colors duration-300"
+                  className="font-display text-2xl lg:text-[1.75rem] text-[#111111] mb-3 group-hover:text-[#FF6B00] transition-colors duration-300"
                   whileHover={{ x: 4 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   {value.title}
                 </motion.h3>
 
-                <div className="h-px w-10 bg-[#C8892A] mb-4 group-hover:w-16 transition-all duration-500 ease-out" />
+                <div className="h-px w-10 bg-[#FF6B00] mb-4 group-hover:w-16 transition-all duration-500 ease-out" />
 
-                <p className="font-body text-[15px] lg:text-[16px] text-[#1A1410] leading-[1.75] group-hover:text-[#2C1810] transition-colors duration-300">
+                <p className="font-body text-[15px] lg:text-[16px] text-[#111111] leading-[1.75] group-hover:text-[#111111] transition-colors duration-300">
                   {value.text}
                 </p>
               </motion.div>

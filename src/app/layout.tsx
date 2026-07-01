@@ -60,15 +60,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorant.variable} h-full antialiased scroll-smooth`}
+      className={`${inter.variable} ${cormorant.variable} h-full antialiased scroll-smooth overflow-x-hidden`}
     >
-      <body className="min-h-full flex flex-col bg-[#F9F5EE] text-stone-900">
+      <body className="min-h-full flex flex-col bg-white text-[#1C1C1C] overflow-x-hidden max-w-[100vw]">
         <CartProvider>
-          <Loader />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <WhatsAppFloat />
+          <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col min-h-screen">
+            <Loader />
+            <Navbar />
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
+            <WhatsAppFloat />
+          </div>
         </CartProvider>
       </body>
     </html>
