@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TESTIMONIALS = [
   {
@@ -33,92 +35,116 @@ const TESTIMONIALS = [
 type Testimonial = (typeof TESTIMONIALS)[number];
 
 export default function Testimonials() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const next = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+  }, []);
+
+  const prev = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+  }, []);
+
+  // Auto-play logic
+  useEffect(() => {
+    const timer = setInterval(() => {
+      next();
+    }, 6000); // 6 seconds per story
+    return () => clearInterval(timer);
+  }, [next]);
+
   return (
-    // Switching back to the site's light sand theme, ensuring text is dark
-    <section 
-      className="w-full relative py-16 lg:py-28 overflow-hidden text-[#1A1410]"
-      style={{
-        backgroundColor: "#F9F5EE",
-        borderTop: "1px solid #EAE6D9"
-      }}
-    >
-      <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-        
-        {/* ── Header ── 
-            Removed motion trigger from header entirely to guarantee visibility if intersection observer was failing. */}
-        <div className="text-center mb-20 flex flex-col items-center">
-          <span className="font-body text-[12px] font-bold tracking-[0.3em] text-[#1A1410]/60 uppercase block mb-4">
-            Words From Our Patrons
-          </span>
-          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-[#1A1410] mb-6">
-            The Kauseyah Experience
-          </h2>
-          <p className="font-body text-lg lg:text-xl text-[#1A1410]/70 max-w-2xl mx-auto leading-relaxed">
-            Discover how our handwoven textiles have touched lives. Our patrons share their stories of authenticity, elegance, and the timeless art of Kauseyah.
-          </p>
+    // Switching back to the site's light sage theme, ensuring text is dark
+    <section className="relative w-full py-12 lg:py-16 bg-white overflow-hidden">
+      {/* Background Large Number */}
+      <div className="absolute top-20 right-10 lg:right-40 pointer-events-none select-none">
+        <span className="font-display text-[200px] lg:text-[400px] text-[#FF6B00]/5 leading-none">
+          0{activeIndex + 1}
+        </span>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-32">
+          
+          {/* ── Standardized Header ── */}
+          <div className="flex flex-col pt-10">
+
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
+            >
+              Loved by Our <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Clients</span>
+            </motion.h2>
+            <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium mb-12">
+               Hear from those who cherish the silent rhythmic clicking of our ancestral looms.
+            </p>
+
+            {/* Navigation Controls below header for layout balance */}
+            <div className="flex items-center gap-8 mt-6 md:mt-20">
+              <button 
+                onClick={prev}
+                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="transition-transform group-hover:-translate-x-1">
+                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Prev
+              </button>
+              <div className="w-12 h-px bg-[#FF6B00]/20" />
+              <button 
+                onClick={next}
+                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
+              >
+                Next
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="rotate-180 transition-transform group-hover:translate-x-1">
+                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* ── Right Column: Testimonial Narrative ── */}
+          <div className="relative pt-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col"
+              >
+                {/* 5 Stars Accent */}
+                <div className="flex gap-1.5 text-[#FF6B00] mb-6">
+                  {[1,2,3,4,5].map(star => (
+                    <svg key={star} width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  ))}
+                </div>
+
+                <p className="font-display text-xl md:text-2xl lg:text-[28px] text-[#111111] leading-[1.7] mb-10 italic tracking-tight font-medium">
+                  &ldquo;{TESTIMONIALS[activeIndex].text}&rdquo;
+                </p>
+
+                <div className="flex items-center gap-6">
+                  <div className="w-6 h-px bg-[#FF6B00]/30" />
+                  <div className="flex flex-col">
+                    <span className="font-display text-xl lg:text-2xl text-[#111111]">
+                      {TESTIMONIALS[activeIndex].name}
+                    </span>
+                    <span className="font-body text-[10px] uppercase font-bold tracking-[0.2em] text-[#FF6B00]/60 mt-1">
+                       {TESTIMONIALS[activeIndex].location}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
         </div>
-
-        {/* ── Full Width Moving Carousel ── */}
-        <div className="overflow-hidden relative flex items-stretch py-4">
-          <motion.div
-            className="flex gap-6 cursor-grab active:cursor-grabbing"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              duration: 35,
-              ease: "linear",
-              repeat: Infinity,
-            }}
-          >
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((item, index) => (
-              <div key={index} className="w-[320px] md:w-[400px] flex-shrink-0 h-full">
-                <TestimonialCard item={item} className="h-full" />
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Light gradient overlays to soften edges of the carousel */}
-          <div className="absolute top-0 bottom-0 left-0 w-16 lg:w-32 bg-gradient-to-r from-[#F9F5EE] to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-0 bottom-0 right-0 w-16 lg:w-32 bg-gradient-to-l from-[#F9F5EE] to-transparent z-10 pointer-events-none" />
-        </div>
-
       </div>
     </section>
-  );
-}
-
-function TestimonialCard({ item, className = "" }: { item: Testimonial; className?: string }) {
-  return (
-    <div
-      className={`group flex flex-col bg-[#F3EFE6] p-8 lg:p-10 border border-[#EAE6D9] rounded-xl hover:bg-white hover:border-[#C8892A]/40 hover:shadow-[0_20px_50px_rgba(200,137,42,0.12)] hover:-translate-y-2 transition-all duration-500 cursor-pointer ${className}`}
-    >
-      <div className="flex justify-between items-start mb-6">
-        <span className="font-display text-5xl text-[#DAB785] leading-[0.5] block mt-2 opacity-80">
-          &ldquo;
-        </span>
-        <div className="flex gap-[2px] text-[#C8892A]">
-          {/* Five tiny stars */}
-          {[1,2,3,4,5].map(star => (
-            <svg key={star} width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-          ))}
-        </div>
-      </div>
-      
-      <p className="font-body text-[14px] xl:text-[15px] text-[#2A231C]/90 leading-relaxed mb-6 flex-1">
-        {item.text}
-      </p>
-      
-      <div className="flex items-center gap-4 mt-auto border-t border-[#EAE6D9]/80 pt-5">
-        <div className="flex flex-col">
-          <span className="font-display text-xl font-bold text-[#1A1410] tracking-wide">
-            {item.name}
-          </span>
-          <span className="font-body text-[10px] font-bold uppercase tracking-[0.2em] text-[#8C5E20] mt-1">
-            {item.location}
-          </span>
-        </div>
-      </div>
-    </div>
   );
 }
