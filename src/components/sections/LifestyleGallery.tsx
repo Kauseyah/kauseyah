@@ -14,7 +14,7 @@ const COLLECTION_CATEGORIES = [
     subtitle: "Heritage Bridal",
     gridClass: "lg:col-span-8 lg:row-span-1",
     position: "center 15%",
-    href: "/products?category=handlooms&subcategory=Sarees"
+    href: "/collections/handlooms?subcategory=Sarees"
   },
   {
     title: "Contemporary Menswear",
@@ -22,7 +22,7 @@ const COLLECTION_CATEGORIES = [
     subtitle: "Modern Heritage",
     gridClass: "lg:col-span-4 lg:row-span-1",
     position: "center 10%",
-    href: "/products/men-kosa-jacket"
+    href: "/collections/kosa-jackets"
   },
   {
     title: "Get your custom outfit done",
@@ -30,7 +30,7 @@ const COLLECTION_CATEGORIES = [
     subtitle: "Artisan Bespoke",
     gridClass: "lg:col-span-4 lg:row-span-1",
     position: "center 20%",
-    href: "/products?category=handlooms&subcategory=Easy+Cotton+Kurtis"
+    href: "/collections/handlooms?subcategory=Easy+Cotton+Kurtis"
   },
   {
     title: "Shop our seasonal edit",
@@ -38,7 +38,7 @@ const COLLECTION_CATEGORIES = [
     subtitle: "Curated Handloom",
     gridClass: "lg:col-span-8 lg:row-span-1",
     position: "center 15%",
-    href: "/products?category=jewellery"
+    href: "/collections/jewellery"
   }
 ];
 

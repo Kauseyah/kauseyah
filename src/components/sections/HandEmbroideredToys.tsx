@@ -14,7 +14,7 @@ const TOYS = [
     subtitle: "Heritage Craft",
     span: "md:col-span-7",
     height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]",
-    href: "/products?category=upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
   },
   {
     title: "Embroidered Camel",
@@ -22,7 +22,7 @@ const TOYS = [
     subtitle: "Desert Nomads",
     span: "md:col-span-5",
     height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]",
-    href: "/products?category=upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
   },
   {
     title: "Stitched Elephant",
@@ -38,7 +38,7 @@ const TOYS = [
     subtitle: "Infant Joy",
     span: "md:col-span-4",
     height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]",
-    href: "/products?category=upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
   },
   {
     title: "Woven Bird",
@@ -46,7 +46,7 @@ const TOYS = [
     subtitle: "Nostalgic Sky",
     span: "md:col-span-4",
     height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]",
-    href: "/products?category=upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
   }
 ];
 
@@ -142,7 +142,7 @@ export default function HandEmbroideredToys() {
             className="group inline-flex items-center gap-4 border-b border-[#111111]/30 pb-2 hover:border-[#FF6B00] transition-colors"
           >
             <span className="font-body text-xs font-black tracking-[0.3em] uppercase text-[#111111] group-hover:text-[#FF6B00] transition-colors">
-              Explore All Toys
+              Shop our conscious toys
             </span>
             <ArrowUpRight size={16} className="text-[#111111] group-hover:text-[#FF6B00] transition-colors" />
           </Link>

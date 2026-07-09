@@ -5,7 +5,7 @@ import LifestyleGallery from "@/components/sections/LifestyleGallery";
 import HandEmbroideredToys from "@/components/sections/HandEmbroideredToys";
 import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import FeaturedIn from "@/components/sections/FeaturedIn";
-import WhyChooseUs from "@/components/sections/WhyChooseUs";
+import CuratedGiftHampers from "@/components/sections/CuratedGiftHampers";
 import Testimonials from "@/components/sections/Testimonials";
 import Achievements from "@/components/sections/Achievements";
 import InstagramReels from "@/components/sections/InstagramReels";
@@ -35,8 +35,9 @@ export default function HomePage() {
       {/* 4. Featured In */}
       <FeaturedIn />
 
-      {/* 5. Why Choose Us */}
-      <WhyChooseUs />
+      {/* Gift Hampers */}
+      <CuratedGiftHampers />
+
 
       {/* 5. Testimonials */}
       <Testimonials />

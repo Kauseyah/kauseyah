@@ -44,18 +44,18 @@ const MISSION_VISION = [
 const VALUES = [
   {
     icon: Shield,
-    title: "Authenticity",
-    text: "Sourcing directly from genuine artisans — every piece traceable to the hands that made it.",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainability",
-    text: "Eco-friendly materials, slow fashion, and zero-waste practices woven into everything we do.",
+    title: "Tribal Heritage",
+    text: "Honouring the wisdom, artistry, and traditions of India's tribal communities.",
   },
   {
     icon: Heart,
-    title: "Empowerment",
-    text: "Uplifting tribal and indigenous communities through fair wages and long-term partnerships.",
+    title: "Handcrafted Excellence",
+    text: "Celebrating timeless craftsmanship through skilled hands, thoughtful design, and exceptional attention to detail.",
+  },
+  {
+    icon: Leaf,
+    title: "Conscious Design",
+    text: "Creating responsibly with sustainable practices, ethical craftsmanship, and enduring quality.",
   },
 ];
 
@@ -95,9 +95,9 @@ function MissionVisionBlock({
       variants={slideIn}
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
-      className={`group ${isRight ? "lg:text-right" : ""}`}
+      className={`group text-center ${isRight ? "lg:text-right" : "lg:text-left"}`}
     >
-      <div className={`flex items-center gap-2.5 mb-3 ${isRight ? "lg:justify-end" : ""}`}>
+      <div className={`flex items-center justify-center gap-2.5 mb-3 ${isRight ? "lg:justify-end" : "lg:justify-start"}`}>
         <motion.div
           whileHover={{ scale: 1.15, rotate: 8 }}
           transition={{ type: "spring", stiffness: 400, damping: 14 }}
@@ -129,7 +129,7 @@ function MissionVisionBlock({
         {item.text}
       </motion.p>
 
-      <div className={`space-y-1 ${isRight ? "lg:flex lg:flex-col lg:items-end" : ""}`}>
+      <div className={`space-y-1 flex flex-col items-center ${isRight ? "lg:items-end" : "lg:items-start"}`}>
         {item.highlights.map((line, j) => (
           <motion.p
             key={line}
@@ -161,7 +161,7 @@ function MissionVisionSection() {
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-12"
         >
-          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#111111]/80 uppercase block mb-3">
+          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-3">
             What Drives Us
           </motion.span>
           <motion.h2
@@ -401,7 +401,7 @@ export default function AboutPageContent() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mb-14 lg:mb-16"
+            className="mb-14 lg:mb-16 text-center md:text-left"
           >
             <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-4">
               What We Stand For
@@ -420,9 +420,9 @@ export default function AboutPageContent() {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.8, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -5 }}
-                className={`group ${i > 0 ? "md:border-l md:border-[#FF6B00]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
+                className={`group flex flex-col items-center text-center md:items-start md:text-left ${i > 0 ? "md:border-l md:border-[#FF6B00]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
               >
-                <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center justify-center md:justify-start gap-3 mb-5">
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 6 }}
                     transition={{ type: "spring", stiffness: 400, damping: 14 }}

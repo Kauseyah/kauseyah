@@ -179,7 +179,7 @@ export default function CollectionDetailPageClient({
             <div className="text-center py-24 bg-white border border-[#FF6B00]/10 rounded-2xl p-8 max-w-lg mx-auto">
               <p className="font-body text-stone-500 text-lg mb-6">No products found in this category yet.</p>
               <Link 
-                href="/products"
+                href="/collections"
                 className="inline-block bg-[#111111] text-white px-6 py-3 rounded-xl font-body text-xs font-bold uppercase tracking-wider hover:bg-[#FF6B00] transition-colors"
               >
                 Browse All Products

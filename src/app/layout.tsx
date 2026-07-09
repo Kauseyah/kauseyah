@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Loader from "@/components/Loader";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import { Toaster } from "react-hot-toast";
 
 // ─── Fonts ────────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white text-[#1C1C1C] overflow-x-hidden max-w-[100vw]">
         <CartProvider>
           <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col min-h-screen">
+            <Toaster position="top-center" />
             <Loader />
             <Navbar />
             <main className="flex-1 w-full">{children}</main>

@@ -3,6 +3,7 @@
 
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import Link from "next/link";
 
 const REELS = [
   { id: "r1", url: "/videos/reel1.mp4", caption: "Handloom Heritage" },
@@ -179,15 +180,15 @@ export default function InstagramReels() {
 
         {/* ── Footer CTAs ── */}
         <div className="mt-24 flex flex-col items-center gap-16">
-            <a
-              href="mailto:hello@kauseyah.com"
+            <Link
+              href="/contact"
               className="group relative inline-block text-center"
             >
               <span className="block font-display text-3xl md:text-4xl text-[#111111] tracking-tighter transition-all duration-500 group-hover:text-[#FF6B00] group-hover:drop-shadow-[0_4px_12px_rgba(255,107,0,0.5)]">
-                Let's <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Collaborate</span>
+                Let's <span className="text-[#FF6B00] italic font-light drop-shadow-sm">work together</span>
               </span>
               <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#FF6B00] transition-all duration-500 group-hover:w-[120%] shadow-[0_0_15px_#FF6B00]" />
-            </a>
+            </Link>
 
             <a
               href="https://www.instagram.com/kauseyah.official/"
@@ -197,7 +198,7 @@ export default function InstagramReels() {
             >
               <div className="w-12 lg:w-24 h-px bg-[#111111]/20 transition-all duration-500 group-hover:w-32 group-hover:bg-[#FF6B00]" />
               <span className="font-body text-[11px] font-black tracking-[0.4em] text-[#111111] uppercase group-hover:text-[#FF6B00] transition-colors">
-                @kauseyah.official
+                Follow us on Instagram for more
               </span>
               <div className="w-12 lg:w-24 h-px bg-[#111111]/20 transition-all duration-500 group-hover:w-32 group-hover:bg-[#FF6B00]" />
             </a>

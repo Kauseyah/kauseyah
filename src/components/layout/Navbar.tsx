@@ -27,6 +27,8 @@ export default function Navbar() {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+
+
   // Live suggestions derived from product catalog
   const suggestions = searchQuery.trim().length >= 1
     ? PRODUCTS.filter((p) => {
@@ -75,7 +77,7 @@ export default function Navbar() {
   // eslint-disable-next-line
   useEffect(() => { setHighlightedIndex(-1); }, [searchQuery]);
 
-  const isSolidHeaderPage = false;
+  const isSolidHeaderPage = pathname !== "/";
   const isScrolled = scrollY > 20;
   const isLightNav = isScrolled || isSolidHeaderPage;
   const useLightNavText = isScrolled || !isSolidHeaderPage;
@@ -89,6 +91,10 @@ export default function Navbar() {
     closeTimerRef.current = setTimeout(() => setMegaMenuOpen(false), 150);
   };
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <>
       <header
@@ -97,7 +103,7 @@ export default function Navbar() {
           isScrolled
             ? "top-4 left-3 right-3 md:top-5 md:left-[7%] md:right-[7%] rounded-full bg-[#111111] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-white/10"
             : isSolidHeaderPage
-              ? "top-0 left-0 right-0 bg-white"
+              ? "top-0 left-0 right-0 bg-[#FFF8F3] border-b border-[#E5E5E5]/60"
               : "top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent"
         )}
       >

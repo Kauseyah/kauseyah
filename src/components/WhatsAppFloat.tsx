@@ -3,8 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
+import { usePathname } from "next/navigation";
+
 export default function WhatsAppFloat() {
   const [showLabel, setShowLabel] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Show label after 1s delay
@@ -30,6 +33,10 @@ export default function WhatsAppFloat() {
     };
   }, []);
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center">
       {/* ── Community Label ── */}
@@ -41,7 +48,7 @@ export default function WhatsAppFloat() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 10 }}
             transition={{ duration: 0.4 }}
-            className="mr-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-xl border border-[#FF6B00]/20 select-none hidden md:block"
+            className="mr-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-xl border border-[#FF6B00]/20 select-none block"
           >
             <span className="font-body text-[12px] font-bold tracking-tight text-[#111111]">
               Join the kauseyah community?

@@ -182,7 +182,7 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
   {
     label: "Shop Now",
-    href: "/collections",
+    href: "/products",
     children: [
       // ── Handlooms ──
       { label: "Sarees", href: "/collections/sarees" },
