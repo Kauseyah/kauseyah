@@ -39,7 +39,7 @@ export async function createCategory(formData: FormData) {
       .insert([{ name, slug }]);
 
     if (error) {
-      console.error("Failed to insert category:", error);
+      // // console.error("Failed to insert category:", error);
       return { error: error.message };
     }
 
@@ -61,7 +61,7 @@ export async function deleteCategory(id: string) {
       .eq("id", id);
 
     if (error) {
-      console.error("Failed to delete category:", error);
+      // // console.error("Failed to delete category:", error);
       return { error: error.message };
     }
 

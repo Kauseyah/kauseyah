@@ -52,16 +52,16 @@ export async function updateProfile(formData: { full_name: string, phone: string
         data: { full_name }
       });
       if (updateError) {
-        console.warn("Could not update auth metadata (safe to ignore):", updateError.message);
+        // // console.warn("Could not update auth metadata (safe to ignore):", updateError.message);
       }
     } catch (e: any) {
-      console.warn("Caught updateUser exception:", e.message);
+      // // console.warn("Caught updateUser exception:", e.message);
     }
 
     revalidatePath("/account");
     return { success: true };
   } catch (error: any) {
-    console.error("Update profile error:", error);
+    // // console.error("Update profile error:", error);
     return { error: "An unexpected error occurred" };
   }
 }

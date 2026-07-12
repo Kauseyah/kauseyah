@@ -122,6 +122,23 @@
   }
 }
 
+/* ─── Navbar Text Color Override ─────────────────────────────────────────── */
+/* Forces white text on navbar when React component requests light text        */
+header[data-light-text="true"] a,
+header[data-light-text="true"] button,
+header[data-light-text="true"] span,
+header[data-light-text="true"] svg {
+  color: #FFFFFF !important;
+}
+
+/* Force dark text on navbar when React component requests dark text         */
+header[data-light-text="false"] a,
+header[data-light-text="false"] button,
+header[data-light-text="false"] span,
+header[data-light-text="false"] svg {
+  color: #111111 !important;
+}
+
 /* ─── Utility Classes ────────────────────────────────────────────────────── */
 @layer utilities {
   .container-site {

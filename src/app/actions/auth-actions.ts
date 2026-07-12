@@ -1,6 +1,47 @@
 "use server";
 
+
 import { createClient } from "@/utils/supabase/server";
+import { headers } from "next/headers";
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_ATTEMPTS = 5;
+
+async function enforceRateLimit(ip: string) {
+  if (ip === 'unknown') return true;
+
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  // Check recent attempts
+  const timeLimit = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+  
+  const { count, error } = await supabaseAdmin
+    .from('login_attempts')
+    .select('*', { count: 'exact', head: true })
+    .eq('ip_address', ip)
+    .gt('attempt_time', timeLimit);
+
+  // If table doesn't exist yet, we fail open to not break login before SQL is run
+  if (error) return true;
+
+  if (count && count >= MAX_ATTEMPTS) {
+    return false; // Blocked
+  }
+  return true;
+}
+
+async function logFailedAttempt(ip: string) {
+  if (ip === 'unknown') return;
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  await supabaseAdmin.from('login_attempts').insert({ ip_address: ip });
+}
 
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
@@ -8,6 +49,14 @@ export async function login(formData: FormData) {
 
   if (!email || !password) {
     return { error: "Email and password are required" };
+  }
+
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') || 'unknown';
+
+  const isAllowed = await enforceRateLimit(ip);
+  if (!isAllowed) {
+    return { error: "Too many failed attempts. Please try again in 15 minutes." };
   }
 
   const supabase = await createClient();
@@ -18,6 +67,7 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
+    await logFailedAttempt(ip);
     return { error: error.message };
   }
 
@@ -74,10 +124,9 @@ export async function logout() {
   return { success: true };
 }
 
-import nodemailer from 'nodemailer';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
 
-export async function sendPasswordResetEmail(email: string) {
+export async function sendPasswordResetEmail(email: string, redirectPath: string = '/reset-password') {
   if (!email) return { error: "Email is required" };
 
   try {
@@ -92,7 +141,7 @@ export async function sendPasswordResetEmail(email: string) {
       type: 'recovery',
       email: email,
       options: {
-        redirectTo: `${siteUrl}/admin/reset-password`
+        redirectTo: `${siteUrl}${redirectPath}`
       }
     });
     
@@ -100,24 +149,16 @@ export async function sendPasswordResetEmail(email: string) {
     
     const actionLink = data.properties.action_link;
     
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const mailOptions = {
-      from: process.env.SMTP_FROM_EMAIL || '"Kauseyah Admin" <admin@kauseyah.com>',
+    const { error: resendError } = await resend.emails.send({
+      from: 'Kauseyah <admin@kauseyah.com>',
       to: email,
       subject: 'Password Reset Request',
       html: `
         <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto;">
           <h2 style="color: #1a1a1a;">Password Reset</h2>
-          <p style="color: #4a4a4a;">You requested a password reset for your Kauseyah admin account.</p>
+          <p style="color: #4a4a4a;">You requested a password reset for your Kauseyah account.</p>
           <p style="color: #4a4a4a;">Please click the button below to securely reset your password:</p>
           <div style="margin: 30px 0;">
             <a href="${actionLink}" style="background-color: #FF6B00; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Reset Password</a>
@@ -125,14 +166,17 @@ export async function sendPasswordResetEmail(email: string) {
           <p style="color: #71717a; font-size: 14px;">If you didn't request this, you can safely ignore this email.</p>
         </div>
       `,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (resendError) {
+      // // console.error("Resend error:", resendError);
+      return { error: resendError.message || "Failed to send email via Resend." };
+    }
     
     return { success: true };
   } catch (error: any) {
-    console.error("Error sending password reset email:", error);
-    return { error: error.message || "Failed to send email. Please check SMTP configuration." };
+    // // console.error("Error sending password reset email:", error);
+    return { error: error.message || "Failed to send email. Please check email configuration." };
   }
 }
 

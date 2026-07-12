@@ -238,10 +238,11 @@ export default function AboutPageContent() {
   return (
     <main className="bg-white">
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#0D0400] pt-32 lg:pt-36 pb-20 lg:pb-32 overflow-hidden relative">
-        {/* Decorative gradient glowing orb */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-gradient-to-b from-[#FF6B00]/8 to-transparent blur-[80px]" />
+      <section className="w-full min-h-[50svh] lg:min-h-[100svh] pt-20 pb-10 lg:pb-0 flex flex-col justify-center overflow-hidden relative border-b border-[#FF6B00]/10">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/about-hero.webp" alt="About Kauseyah" fill className="object-cover object-center" priority />
+          <div className="absolute inset-0 bg-[#0D0400]/60" />
         </div>
 
         <div className="max-w-[900px] mx-auto px-4 sm:px-8 lg:px-20 text-center relative z-10">
@@ -251,7 +252,7 @@ export default function AboutPageContent() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center"
           >
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-px bg-[#FF6B00]" />
               <span className="font-body text-[11px] tracking-[0.35em] text-[#FF6B00] uppercase font-bold">
                 Our Heritage
@@ -259,13 +260,13 @@ export default function AboutPageContent() {
               <span className="w-8 h-px bg-[#FF6B00]" />
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white mb-8 leading-[0.9]">
-              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.15)]">Story</span>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl tracking-tighter text-white mb-4 leading-[0.9] drop-shadow-lg">
+              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.25)]">Story</span>
             </h1>
 
-            <div className="w-16 h-[2px] bg-[#FF6B00] mb-8" />
+            <div className="w-16 h-[2px] bg-[#FF6B00] mb-6" />
 
-            <p className="font-body text-lg md:text-xl lg:text-2xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-12 font-light">
+            <p className="font-body text-base md:text-lg lg:text-xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-8 font-light drop-shadow-md">
               Born from a love of indigenous art — a living bridge between India&apos;s master artisans
               and the world.
             </p>
@@ -274,7 +275,7 @@ export default function AboutPageContent() {
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
               {BRAND_PILLARS.map((pillar, index) => (
                 <span key={pillar} className="flex items-center gap-6">
-                  <span className="font-body text-[11px] tracking-[0.3em] text-[#FFF8F3]/80 uppercase font-semibold hover:text-[#FF6B00] transition-colors duration-300">
+                  <span className="font-body text-[11px] tracking-[0.3em] text-[#FFF8F3]/90 uppercase font-semibold hover:text-[#FF6B00] transition-colors duration-300 drop-shadow-md">
                     {pillar}
                   </span>
                   {index < BRAND_PILLARS.length - 1 && (

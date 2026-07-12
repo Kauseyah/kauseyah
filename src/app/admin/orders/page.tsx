@@ -2,16 +2,31 @@ import { createClient } from "@supabase/supabase-js";
 import { Search, Eye } from "lucide-react";
 import Link from "next/link";
 
-export default async function AdminOrders() {
+import Pagination from "@/components/admin/Pagination";
+
+export default async function AdminOrders({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
   
-  const { data: orders } = await supabase
+  const resolvedParams = await searchParams;
+  const page = Number(resolvedParams?.page) || 1;
+  const limit = 10;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data: orders, count } = await supabase
     .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  const totalPages = Math.ceil((count || 0) / limit);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl">
@@ -46,7 +61,7 @@ export default async function AdminOrders() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-sm overflow-hidden">
+      <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-sm overflow-hidden pb-4">
         <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <table className="w-full text-sm text-left">
             <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
@@ -117,6 +132,7 @@ export default async function AdminOrders() {
             </tbody>
           </table>
         </div>
+        <Pagination currentPage={page} totalPages={totalPages} />
       </div>
     </div>
   );

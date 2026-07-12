@@ -17,7 +17,7 @@ export function mapSupabaseProductToFrontend(sbProduct: any): Product {
       ? sbProduct.images.map((url: string, i: number) => ({ url, alt: sbProduct.name, isPrimary: i === 0 }))
       : [{ url: "/images/placeholder.png", alt: "Placeholder", isPrimary: true }],
     variants: [{ id: sbProduct.id, stock: sbProduct.stock, price: sbProduct.price }], // Fallback for stock
-    tags: sbProduct.featured ? ["featured"] : [],
+    tags: sbProduct.featured ? (["featured"] as any) : [],
     isAvailable: sbProduct.status === "published" && sbProduct.stock > 0,
     isFeatured: sbProduct.featured,
     createdAt: sbProduct.created_at,

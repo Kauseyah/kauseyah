@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     
     return NextResponse.json(order);
   } catch (error: any) {
-    console.error("Razorpay error full object:", JSON.stringify(error, null, 2));
+    // console.error("Razorpay error full object:", JSON.stringify(error, null, 2));
     
     // Razorpay often wraps the message in error.error.description
     const errorMsg = error?.error?.description || error?.description || error?.message || "Failed to create order";

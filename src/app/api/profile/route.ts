@@ -45,7 +45,7 @@ export async function PUT(request: Request) {
   }
 
   if (!user) {
-    console.error("Auth error in PUT /api/profile:", userError);
+    // console.error("Auth error in PUT /api/profile:", userError);
     return NextResponse.json({ error: userError?.message || "Unauthorized - Please log in again" }, { status: 401 });
   }
 
@@ -75,10 +75,10 @@ export async function PUT(request: Request) {
       data: { full_name }
     });
     if (updateError) {
-      console.warn("Could not sync auth metadata:", updateError.message);
+      // console.warn("Could not sync auth metadata:", updateError.message);
     }
   } catch (e: any) {
-    console.warn("Caught updateUser exception:", e.message);
+    // console.warn("Caught updateUser exception:", e.message);
   }
 
   return NextResponse.json(data);

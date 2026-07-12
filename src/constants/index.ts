@@ -214,7 +214,6 @@ export const NAV_LINKS: NavLink[] = [
     ],
   },
   { label: "Our Story", href: "/about" },
-  { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];

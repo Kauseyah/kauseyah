@@ -76,7 +76,7 @@ export default function FeaturedProductsClient({ featuredProducts }: { featuredP
                 className="group bg-white border border-[#E5E5E5] hover:shadow-[0_20px_40px_rgba(107,112,92,0.06)] hover:border-[#FF6B00]/30 transition-all duration-500 flex flex-col w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 snap-center sm:snap-start"
               >
               {/* Image Header */}
-              <div className="relative w-full aspect-[4/3] sm:aspect-[4/5] overflow-hidden bg-sand">
+              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#FFF8F3]">
                 <Image
                   src={product.images.find((img: any) => img.isPrimary)?.url || product.images[0].url}
                   alt={product.images.find((img: any) => img.isPrimary)?.alt || product.name}

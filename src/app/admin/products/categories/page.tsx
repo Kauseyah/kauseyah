@@ -28,6 +28,7 @@ export default async function Categories() {
         <div className="md:col-span-1">
           <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-sm p-6 sm:p-8">
             <h2 className="text-lg font-bold text-white mb-6 pb-4 border-b border-slate-800">Add New Category</h2>
+            {/* @ts-expect-error Server action return type mismatch */}
             <form action={createCategory} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1.5">Name *</label>

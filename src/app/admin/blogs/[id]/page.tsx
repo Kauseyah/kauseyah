@@ -8,6 +8,7 @@ import { updateBlog } from "@/app/actions/blog-actions";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 import { use } from "react";
+import toast from "react-hot-toast";
 
 export default function EditBlog({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);

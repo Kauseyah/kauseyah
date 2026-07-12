@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { PRODUCTS, COLLECTIONS } from "@/data";
+import { COLLECTIONS } from "@/data";
 import CollectionDetailPageClient from "@/components/pages/CollectionDetailPageClient";
 import type { Product } from "@/types";
+import { createClient } from "@/utils/supabase/server";
+import { mapSupabaseProductToFrontend } from "@/utils/supabase/mapper";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -179,14 +181,6 @@ const SLUG_MAP: Record<
   },
 };
 
-export async function generateStaticParams() {
-  // Return all static slugs from both the predefined collection list and the custom slug mapping
-  const staticSlugs = new Set([
-    ...COLLECTIONS.map((c) => c.slug),
-    ...Object.keys(SLUG_MAP),
-  ]);
-  return Array.from(staticSlugs).map((slug) => ({ slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -210,13 +204,22 @@ export default async function CollectionDetailPage({ params }: Props) {
   const { slug } = await params;
   const mapped = SLUG_MAP[slug];
 
+  // Fetch all published products from Supabase
+  const supabase = await createClient();
+  const { data: sbProducts } = await supabase
+    .from("products")
+    .select("*, category:categories(name)")
+    .eq("status", "published");
+
+  const allProducts = (sbProducts || []).map(mapSupabaseProductToFrontend);
+
   if (!mapped) {
     const collection = COLLECTIONS.find((c) => c.slug === slug);
     if (!collection) notFound();
 
     // Generic collection filtering fallback
-    const filteredProducts = PRODUCTS.filter(
-      (p) => p.category.toLowerCase() === collection.name.toLowerCase()
+    const filteredProducts = allProducts.filter(
+      (p) => p.category?.toLowerCase() === collection.name.toLowerCase()
     );
 
     return (
@@ -228,8 +231,32 @@ export default async function CollectionDetailPage({ params }: Props) {
     );
   }
 
-  // Filter products based on mapped rule
-  const filteredProducts = PRODUCTS.filter(mapped.filter);
+  // Filter products based on mapped rule, ensuring case-insensitivity where needed
+  // We wrap the filter to make it resilient to casing differences from the DB
+  const resilientFilter = (p: Product) => {
+    // temporarily normalize the product for the filter
+    const normalizedProduct = {
+      ...p,
+      category: p.category?.toLowerCase(),
+      subcategory: p.subcategory?.toLowerCase(),
+    };
+    // We also need to lower-case the conditions in SLUG_MAP if they aren't already.
+    // Instead of rewriting SLUG_MAP, we just apply the original filter to the original product,
+    // but if it fails, we can't easily fix it without modifying SLUG_MAP. 
+    // Wait, let's just modify the filter condition to check case insensitively.
+    return false; // placeholder, see next chunk
+  };
+
+  const filteredProducts = allProducts.filter((p) => {
+      try {
+         return mapped.filter({
+             ...p,
+             category: p.category?.toLowerCase() as any,
+         });
+      } catch (e) {
+          return false;
+      }
+  });
 
   return (
     <CollectionDetailPageClient

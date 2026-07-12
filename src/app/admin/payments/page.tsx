@@ -3,18 +3,33 @@ import { createClient } from "@supabase/supabase-js";
 import { Search } from "lucide-react";
 import PaymentsTable from "./PaymentsTable";
 
-export default async function AdminPayments() {
+import Pagination from "@/components/admin/Pagination";
+
+export default async function AdminPayments({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   // Use service role key to bypass missing RLS policies
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
   
+  const resolvedParams = await searchParams;
+  const page = Number(resolvedParams?.page) || 1;
+  const limit = 10;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
   // Fetch payments from the orders table since payments are stored on the order record
-  const { data: payments } = await supabase
+  const { data: payments, count } = await supabase
     .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false });
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  const totalPages = Math.ceil((count || 0) / limit);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-7xl">
@@ -29,6 +44,7 @@ export default async function AdminPayments() {
 
       {/* Payments Table */}
       <PaymentsTable payments={payments || []} />
+      <Pagination currentPage={page} totalPages={totalPages} />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import sanitizeHtml from "sanitize-html";
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -59,7 +60,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
         <div 
           className="prose prose-stone prose-lg max-w-none prose-headings:font-display prose-headings:text-[#111111] prose-p:font-body prose-p:text-stone-600 prose-a:text-[#FF6B00] hover:prose-a:text-[#FF6B00]/80"
-          dangerouslySetInnerHTML={{ __html: blog.content || "" }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(blog.content || "") }}
         />
       </article>
     </main>

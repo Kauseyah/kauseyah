@@ -32,13 +32,45 @@ export async function updateSession(request: NextRequest) {
   const { data: { user }, error } = await supabase.auth.getUser()
 
   // Protect admin routes
-  if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
+  if (
+    request.nextUrl.pathname.startsWith('/admin') && 
+    !request.nextUrl.pathname.startsWith('/admin/login') &&
+    !request.nextUrl.pathname.startsWith('/admin/forgot-password') &&
+    !request.nextUrl.pathname.startsWith('/admin/reset-password')
+  ) {
     if (!user) {
       // no user, redirect to login
       const url = request.nextUrl.clone()
       url.pathname = '/admin/login'
       return NextResponse.redirect(url)
     }
+
+    // --- STRICT JWT CHECKING ---
+    // Enforce a strict 4-hour session limit from the time the JWT was issued
+    if (user.last_sign_in_at) {
+      const lastSignIn = new Date(user.last_sign_in_at).getTime()
+      const now = Date.now()
+      const STRICT_TIMEOUT_MS = 4 * 60 * 60 * 1000 // 4 hours in milliseconds
+
+      if (now - lastSignIn > STRICT_TIMEOUT_MS) {
+        // Token is older than strict timeout, forcefully invalidate it
+        await supabase.auth.signOut()
+
+        const url = request.nextUrl.clone()
+        url.pathname = '/admin/login'
+        url.searchParams.set('timeout', 'true') // Let the frontend know the session expired
+        const redirectResponse = NextResponse.redirect(url)
+
+        // Ensure we preserve the Set-Cookie headers that wipe the session
+        supabaseResponse.headers.forEach((value, key) => {
+          if (key.toLowerCase() === 'set-cookie') {
+            redirectResponse.headers.append(key, value)
+          }
+        })
+        return redirectResponse
+      }
+    }
+    // ---------------------------
 
     // Checking if user has admin role from user_roles table
     const { data: roleData } = await supabase

@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+ 
 "use client";
 
 import Image from "next/image";
@@ -14,7 +14,7 @@ const TOYS = [
     subtitle: "Heritage Craft",
     span: "md:col-span-7",
     height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]",
-    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   },
   {
     title: "Embroidered Camel",
@@ -22,7 +22,7 @@ const TOYS = [
     subtitle: "Desert Nomads",
     span: "md:col-span-5",
     height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]",
-    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   },
   {
     title: "Stitched Elephant",
@@ -30,7 +30,7 @@ const TOYS = [
     subtitle: "Animal Kingdom",
     span: "md:col-span-4",
     height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]",
-    href: "/products/upcycled-cotton-elephant"
+    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   },
   {
     title: "Fabric Rattle",
@@ -38,7 +38,7 @@ const TOYS = [
     subtitle: "Infant Joy",
     span: "md:col-span-4",
     height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]",
-    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   },
   {
     title: "Woven Bird",
@@ -46,7 +46,7 @@ const TOYS = [
     subtitle: "Nostalgic Sky",
     span: "md:col-span-4",
     height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]",
-    href: "/collections/upcycled-waste&subcategory=Textile+Toys"
+    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   }
 ];
 

@@ -82,7 +82,7 @@ export async function createProduct(formData: FormData) {
     revalidatePath("/admin/products");
     return { success: true };
   } catch (error: any) {
-    console.error("Product creation failed:", error);
+    // // console.error("Product creation failed:", error);
     return { error: error.message || "Failed to create product" };
   }
 }
@@ -151,7 +151,7 @@ export async function updateProduct(id: string, formData: FormData) {
     revalidatePath("/admin/products");
     return { success: true };
   } catch (error: any) {
-    console.error("Product update failed:", error);
+    // // console.error("Product update failed:", error);
     return { error: error.message || "Failed to update product" };
   }
 }

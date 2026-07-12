@@ -41,7 +41,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     .single();
 
   if (orderError) {
-    console.error("Failed to insert order:", orderError);
+    // // console.error("Failed to insert order:", orderError);
     return { error: `Failed to create order: ${orderError.message}` };
   }
 
@@ -58,7 +58,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     .insert(orderItemsData);
 
   if (itemsError) {
-    console.error("Failed to insert order items:", itemsError);
+    // // console.error("Failed to insert order items:", itemsError);
     return { error: `Order created but failed to add items: ${itemsError.message}` };
   }
 
@@ -80,14 +80,14 @@ export async function createOrder(orderData: any, cartItems: any[]) {
           .eq("id", item.product.id);
       }
     } catch (err) {
-      console.error(`Failed to update stock for product ${item.product.id}:`, err);
+      // // console.error(`Failed to update stock for product ${item.product.id}:`, err);
     }
   }
 
   // 4. Send HTML Email Receipt
   // Fire and forget so it doesn't block the checkout response
   if (user.email) {
-    sendOrderReceipt(user.email, order.id, orderData, cartItems).catch(console.error);
+    sendOrderReceipt(user.email, order.id, orderData, cartItems).catch(() => {});
   }
 
   return { success: true, orderId: order.id };

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
     }
   } catch (error: any) {
-    console.error("Razorpay verification error:", error);
+    // console.error("Razorpay verification error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to verify payment" },
       { status: 500 }

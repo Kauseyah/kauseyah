@@ -36,7 +36,7 @@ export default function AccountSidebar() {
         }
       })
       .catch(err => {
-        console.error("Profile fetch error:", err);
+        // console.error("Profile fetch error:", err);
       })
       .finally(() => setIsLoading(false));
   }, []);

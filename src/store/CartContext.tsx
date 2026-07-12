@@ -82,7 +82,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const parsed = JSON.parse(savedCart);
         dispatch({ type: "INIT_CART", cart: parsed });
       } catch (e) {
-        console.error("Failed to parse cart from local storage", e);
+        // console.error("Failed to parse cart from local storage", e);
       }
     }
     setIsInitialized(true);

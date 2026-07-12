@@ -30,7 +30,7 @@ export async function updateOrderStatus(orderId: string, formData: FormData) {
     .eq("id", orderId);
 
   if (error) {
-    console.error("Error updating order:", error);
+    // // console.error("Error updating order:", error);
     return { error: error.message };
   }
 

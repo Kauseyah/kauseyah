@@ -16,7 +16,7 @@ export default function ForgotPassword() {
     setLoading(true);
     setError(null);
     
-    const res = await sendPasswordResetEmail(email);
+    const res = await sendPasswordResetEmail(email, '/admin/reset-password');
     
     if (res?.error) {
       setError(res.error);

@@ -46,7 +46,7 @@ export async function toggleCustomerStatus(customerId: string, currentStatus: bo
   });
 
   if (authError) {
-    console.error("Auth ban error:", authError);
+    // // console.error("Auth ban error:", authError);
     // Don't fail the whole request if they just don't have an auth account yet, 
     // but log it for debugging.
   }

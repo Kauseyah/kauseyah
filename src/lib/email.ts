@@ -7,12 +7,12 @@ export async function sendOrderReceipt(
   cartItems: any[]
 ) {
   try {
-    if (!process.env.RESEND) {
-      console.warn("RESEND API key not configured. Email receipt generated but not sent.");
+    if (!process.env.RESEND_API_KEY) {
+      // console.warn("RESEND API key not configured. Email receipt generated but not sent.");
       return { success: false, reason: "No RESEND credentials" };
     }
 
-    const resend = new Resend(process.env.RESEND);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Generate HTML for cart items
     const itemsHtml = cartItems.map(item => `
@@ -35,9 +35,9 @@ export async function sendOrderReceipt(
         <div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E5DFD5; border-radius: 16px; overflow: hidden; color: #2D2825; line-height: 1.6; box-shadow: 0 8px 24px rgba(0,0,0,0.04);">
           
           <!-- Header -->
-          <div style="text-align: center; padding: 40px 20px; background-color: #FFFFFF; border-bottom: 3px solid #FF6B00;">
-            <h1 style="color: #FF6B00; margin: 0; font-size: 42px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif;">KAUSEYAH</h1>
-            <p style="color: #666666; margin-top: 10px; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Thank you for your purchase</p>
+          <div style="text-align: center; padding: 40px 20px 30px 20px; background-color: #FFFFFF; border-bottom: 3px solid #FF6B00;">
+            <img src="https://kauseyah.com/images/logo1.png" alt="KAUSEYAH" style="height: 60px; width: auto; display: inline-block;" />
+            <p style="color: #666666; margin-top: 15px; margin-bottom: 0; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">Thank you for your purchase</p>
           </div>
 
           <div style="padding: 40px 30px;">
@@ -87,13 +87,14 @@ export async function sendOrderReceipt(
             <table style="width: 100%; border-collapse: collapse; margin-top: 40px; border-top: 1px solid #E5DFD5;">
               <tr>
                 <td style="padding-top: 24px; text-align: left; color: #666666; font-size: 13px; font-weight: 500; line-height: 1.6; vertical-align: bottom;">
-                  <strong style="color: #2D2825; font-size: 15px; font-weight: 800;">KAUSEYAH STORE</strong><br/>
-                  123 Heritage Weavers Lane, Handloom District<br/>
-                  Bhopal, Madhya Pradesh - 462022<br/>
-                  <strong style="color: #2D2825;">GSTIN:</strong> 23XXXXX1234X1ZX
+                  <strong style="color: #2D2825; font-size: 15px; font-weight: 800;">KAUSEYAH</strong><br/>
+                  PAIDIGHANTOM SHWETA<br/>
+                  OFFICER COLONY, POST-SAKTI, TAH-SAKTI<br/>
+                  Janjgir Champa, Chhattisgarh, 495689<br/>
+                  <strong style="color: #2D2825;">GSTIN:</strong> 22GNTPS0943E1ZR
                 </td>
                 <td style="padding-top: 24px; text-align: right; color: #666666; font-size: 13px; font-weight: 500; vertical-align: bottom;">
-                  <div style="font-family: 'Brush Script MT', cursive, serif; font-size: 32px; color: #FF6B00; margin-bottom: 4px; padding-right: 5px;">Kauseyah</div>
+                  <img src="https://kauseyah.com/sign.png" alt="Authorized Signatory" style="height: 60px; width: auto; margin-bottom: 8px; display: inline-block;" /><br/>
                   Authorized Signatory
                 </td>
               </tr>
@@ -108,21 +109,21 @@ export async function sendOrderReceipt(
     `;
 
     const { data, error } = await resend.emails.send({
-      from: 'Kauseyah Store <onboarding@resend.dev>',
+      from: 'Kauseyah Store <orders@kauseyah.com>',
       to: [customerEmail],
       subject: `Your Kauseyah Order Receipt (#${shortOrderId})`,
       html: htmlContent,
     });
 
     if (error) {
-      console.error("Resend API error:", error);
+      // console.error("Resend API error:", error);
       return { success: false, error };
     }
 
-    console.log("Email Receipt sent via Resend API: %s", data?.id);
+    // console.log("Email Receipt sent via Resend API: %s", data?.id);
     return { success: true };
   } catch (error) {
-    console.error("Error sending email receipt:", error);
+    // console.error("Error sending email receipt:", error);
     return { success: false, error };
   }
 }

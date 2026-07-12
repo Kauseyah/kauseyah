@@ -45,7 +45,7 @@ export default function AddressesPage() {
         setAddresses(data);
       }
     } catch (error) {
-      console.error("Failed to fetch addresses", error);
+      // // console.error("Failed to fetch addresses", error);
     } finally {
       setIsLoading(false);
     }

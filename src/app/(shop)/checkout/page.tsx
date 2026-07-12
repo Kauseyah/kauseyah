@@ -22,10 +22,25 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [isFetchingAddresses, setIsFetchingAddresses] = useState(true);
 
+  // Form fields
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("online");
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      let user = null;
+      try {
+        const { data } = await supabase.auth.getUser();
+        user = data.user;
+      } catch (e) {
+        // console.error("Auth fetch failed:", e);
+      }
+      
       if (!user) {
         router.push("/login?redirectTo=/checkout");
       } else {
@@ -49,7 +64,7 @@ export default function CheckoutPage() {
             }
           }
         } catch (e) {
-          console.error("Failed to fetch addresses:", e);
+          // // console.error("Failed to fetch addresses:", e);
         } finally {
           setIsFetchingAddresses(false);
           setIsLoadingAuth(false);
@@ -73,14 +88,6 @@ export default function CheckoutPage() {
     setPincode(addr.postal_code || "");
   };
 
-  // Form fields
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("online");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +139,7 @@ export default function CheckoutPage() {
             
             setTimeout(async () => {
               const randomId = "KAS-" + Math.floor(100000 + Math.random() * 900000);
-              console.log("Mock Payment Success");
+              // // console.log("Mock Payment Success");
 
               const orderData = {
                 id: randomId,
@@ -221,7 +228,7 @@ export default function CheckoutPage() {
               setOrderPlaced(true);
               clearCart();
             } catch (error: any) {
-              console.error("Verification error:", error);
+              // // console.error("Verification error:", error);
               toast.error(error.message || "Payment verification failed");
             } finally {
               setIsProcessing(false);
@@ -266,7 +273,7 @@ export default function CheckoutPage() {
         razorpay.open();
       }
     } catch (err: any) {
-      console.error(err);
+      // // console.error(err);
       toast.error(err.message || "An error occurred");
       setIsProcessing(false);
     }

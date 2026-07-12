@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
+import { login } from "@/app/actions/auth-actions";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLogin() {
@@ -18,32 +18,16 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
     
-    const supabase = createClient();
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const res = await login(formData);
 
-    if (authError) {
-      setError(authError.message);
+    if (res?.error) {
+      setError(res.error);
       setLoading(false);
       return;
-    }
-
-    if (data.user) {
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', data.user.id)
-        .single();
-        
-      if (roleError || roleData?.role !== 'admin') {
-        setError("Unauthorized access. Admin privileges required.");
-        await supabase.auth.signOut();
-        setLoading(false);
-        return;
-      }
     }
 
     router.push("/admin");
@@ -91,9 +75,9 @@ export default function AdminLogin() {
             <div>
               <div className="flex items-center justify-between mb-1.5 px-1">
                 <label htmlFor="password" className="block text-sm font-medium text-ink">Password</label>
-                <Link href="/admin/forgot-password" className="text-[13px] font-bold text-[#FF6B00] hover:text-[#e66000] transition-colors">
+                <a href="/admin/forgot-password" className="text-[13px] font-bold text-[#FF6B00] hover:text-[#e66000] transition-colors cursor-pointer">
                   Forgot Password?
-                </Link>
+                </a>
               </div>
               <div className="relative">
                 <input

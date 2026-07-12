@@ -50,9 +50,9 @@ function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className="font-body text-[11px] font-semibold text-[#111111]/80 ml-1">Password</label>
-          <button type="button" className="font-body text-[11px] font-semibold text-[#FF6B00] hover:text-[#e55f00] transition-colors">
+          <Link href="/forgot-password" className="font-body text-[11px] font-semibold text-[#FF6B00] hover:text-[#e55f00] transition-colors">
             Forgot Password?
-          </button>
+          </Link>
         </div>
         <div className="relative">
           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111]/40" strokeWidth={1.5} />
@@ -120,7 +120,7 @@ export default function LoginPage() {
         <div className="w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#FFF8F3] relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-b from-[#FF6B00]/5 to-transparent rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
           
-          <div className="w-full max-w-[420px] bg-white p-6 md:p-8 rounded-[1.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.06)] border border-[#E5E5E5]/60 relative z-10">
+          <div className="w-full max-w-[420px] bg-white p-6 md:p-8 rounded-[1.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.06)] border border-[#111111] relative z-10">
             <div className="mb-6 text-center">
               <div className="w-10 h-10 bg-[#FFF8F3] rounded-full flex items-center justify-center mx-auto mb-4">
                 <UserIcon className="w-4 h-4 text-[#FF6B00]" strokeWidth={1.5} />

@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import Link from "next/link";
 import { TrendingUp, ArrowRight, ShoppingBag, UserPlus, Clock, Calendar } from "lucide-react";
 
@@ -9,6 +10,12 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Use service role to bypass RLS for admin metrics
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // Fetch metrics and recent data
   const [
     { count: productsCount }, 
@@ -18,12 +25,12 @@ export default async function AdminDashboard() {
     { data: recentOrders },
     { data: recentCustomers }
   ] = await Promise.all([
-    supabase.from('products').select('*', { count: 'exact', head: true }),
-    supabase.from('orders').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }).neq('role', 'admin'),
-    supabase.from('orders').select('total_amount').eq('payment_status', 'paid'),
-    supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(5),
-    supabase.from('profiles').select('*').neq('role', 'admin').order('created_at', { ascending: false }).limit(4)
+    supabaseAdmin.from('products').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('orders').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true }).neq('role', 'admin'),
+    supabaseAdmin.from('orders').select('total_amount').eq('payment_status', 'paid'),
+    supabaseAdmin.from('orders').select('*').order('created_at', { ascending: false }).limit(5),
+    supabaseAdmin.from('profiles').select('*').neq('role', 'admin').order('created_at', { ascending: false }).limit(4)
   ]);
 
   const totalRevenue = paidOrders?.reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0) || 0;
