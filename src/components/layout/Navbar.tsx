@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+ 
 "use client";
 
 import Link from "next/link";
@@ -10,8 +10,10 @@ import { useCart } from "@/store/CartContext";
 import { NAV_LINKS, SITE_NAME, BRAND_TAGLINE, SHOP_CATEGORY_GROUPS } from "@/constants";
 import { PRODUCTS } from "@/data";
 import { cn } from "@/utils";
-import { Search, Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/utils/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,6 +28,18 @@ export default function Navbar() {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkAuth();
+  }, []);
+
+
 
   // Live suggestions derived from product catalog
   const suggestions = searchQuery.trim().length >= 1
@@ -72,13 +86,30 @@ export default function Navbar() {
   };
 
   // Reset highlight when suggestions change
-  // eslint-disable-next-line
+   
   useEffect(() => { setHighlightedIndex(-1); }, [searchQuery]);
 
-  const isSolidHeaderPage = false;
+  const isSolidHeaderPage = pathname !== "/";
   const isScrolled = scrollY > 20;
-  const isLightNav = isScrolled || isSolidHeaderPage;
-  const useLightNavText = isScrolled || !isSolidHeaderPage;
+  
+   // Auth pages have a full-width solid black background
+  const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password", "/account"].some((p) => pathname === p || pathname?.startsWith(p + "/"));
+
+  // Only these pages have a DARK hero image behind the navbar (need white text before scroll)
+  const hasDarkHero = ["/", "/blog", "/contact", "/about"].some(
+    (p) => pathname === p || (p !== "/" && pathname?.startsWith(p))
+  );
+
+  // On all other pages (cart, account, checkout, collections, products etc.) force dark pill nav
+  // Except for auth pages which use a full-width solid black nav
+  const forceScrolledStyle = !hasDarkHero && !isAuthPage && !isScrolled;
+
+  // Use light text (white) if:
+  // - It's scrolled (pill nav is dark)
+  // - We're forcing the scrolled style (pill nav is dark)
+  // - It's a page with a dark hero
+  // - Or it's an auth page (solid black background)
+  const useLightNavText = isScrolled || forceScrolledStyle || hasDarkHero || isAuthPage;
 
   const handleShopEnter = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -86,25 +117,35 @@ export default function Navbar() {
   };
 
   const handleShopLeave = () => {
-    closeTimerRef.current = setTimeout(() => setMegaMenuOpen(false), 150);
+    closeTimerRef.current = setTimeout(() => {
+      setMegaMenuOpen(false);
+    }, 150);
   };
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <>
       <header
+        data-nav-transparent={(isScrolled || forceScrolledStyle) ? "false" : "true"}
+        data-light-text={useLightNavText ? "true" : "false"}
         className={cn(
           "fixed z-50 transition-all duration-700",
-          isScrolled
-            ? "top-4 left-3 right-3 md:top-5 md:left-[7%] md:right-[7%] rounded-full bg-[#111111] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-white/10"
-            : isSolidHeaderPage
-              ? "top-0 left-0 right-0 bg-white"
-              : "top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent"
+          isScrolled || forceScrolledStyle
+            ? "top-2 left-3 right-3 md:top-3 md:left-[7%] md:right-[7%] rounded-full bg-[#111111] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-white/10"
+            : isAuthPage
+              ? "top-0 left-0 right-0 bg-[#111111]"
+              : isSolidHeaderPage
+                ? "top-0 left-0 right-0 bg-transparent backdrop-blur-[2px]"
+                : "top-0 left-0 right-0 bg-gradient-to-b from-black/75 via-black/40 to-transparent"
         )}
       >
         <nav
           className={cn(
             "w-full transition-all duration-700",
-            isScrolled
+            isScrolled || forceScrolledStyle
               ? "px-4 sm:px-6 md:px-8 lg:px-12 py-3"
               : isSolidHeaderPage
                 ? "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-2.5 lg:py-3"
@@ -124,11 +165,11 @@ export default function Navbar() {
                 <Image
                   src="/images/logo1.png"
                   alt={SITE_NAME}
-                  width={isScrolled ? 140 : isSolidHeaderPage ? 132 : 150}
-                  height={isScrolled ? 48 : isSolidHeaderPage ? 44 : 50}
+                  width={isScrolled ? 180 : isSolidHeaderPage ? 170 : 200}
+                  height={isScrolled ? 60 : isSolidHeaderPage ? 56 : 70}
                   className={cn(
-                    "object-contain max-w-[140px] sm:max-w-none transition-all duration-300",
-                    isScrolled ? "h-8 sm:h-10 w-auto" : isSolidHeaderPage ? "h-7 sm:h-9 lg:h-10 w-auto" : "h-8 sm:h-10 lg:h-12 w-auto"
+                    "object-contain max-w-[180px] sm:max-w-none transition-all duration-300",
+                    isScrolled ? "h-10 sm:h-12 w-auto" : isSolidHeaderPage ? "h-10 sm:h-12 lg:h-14 w-auto" : "h-12 sm:h-14 lg:h-16 w-auto"
                   )}
                   priority
                 />
@@ -284,7 +325,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className={cn(
-                "hidden lg:flex flex-1 justify-center items-center gap-10"
+                "hidden lg:flex flex-1 justify-center items-center gap-10 lg:gap-12 xl:gap-16"
               )}>
                 {NAV_LINKS.map((link) => {
                   if (link.label === "Shop Now") {
@@ -296,25 +337,20 @@ export default function Navbar() {
                         onMouseLeave={handleShopLeave}
                       >
                         <button className="group flex items-center gap-1">
-                          <span className={cn(
-                            "font-body text-[12px] tracking-[0.18em] font-normal uppercase transition-colors duration-400 ease-out",
-                            useLightNavText
-                              ? isScrolled ? "text-[#FFFFFF] group-hover:text-[#FF8100]"
-                                : "text-[#FFFFFF]/85 group-hover:text-[#FFFFFF]"
-                              : "text-[#111111] group-hover:text-[#FF8100]"
-                          )}>
+                          <span
+                            className="font-body text-[12px] tracking-[0.18em] font-bold uppercase transition-colors duration-300"
+                            style={{ color: useLightNavText ? (isScrolled ? '#FFFFFF' : '#FFFFFF') : '#111111' }}
+                          >
                             {link.label}
                           </span>
                           <ChevronDown
                             size={12}
                             strokeWidth={2}
-                            className={cn(
-                              "transition-all duration-300",
-                              megaMenuOpen ? "rotate-180" : "rotate-0",
-                              useLightNavText
-                                ? "text-white"
-                                : "text-[#111111]"
-                            )}
+                            className="transition-all duration-300"
+                            style={{
+                              transform: megaMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                              color: useLightNavText ? (isScrolled ? '#FFFFFF' : '#FFFFFF') : '#111111'
+                            }}
                           />
                         </button>
                         {/* Underline */}
@@ -335,16 +371,12 @@ export default function Navbar() {
                       href={link.href}
                       className="group relative py-3 whitespace-nowrap"
                     >
-                      <span className={cn(
-                        "font-body text-[12px] tracking-[0.18em] font-normal uppercase",
-                        "transition-colors duration-400 ease-out",
-                        useLightNavText
-                          ? isScrolled ? "text-[#FFFFFF] group-hover:text-[#FF8100]"
-                            : "text-[#FFFFFF]/85 group-hover:text-[#FFFFFF]"
-                          : "text-[#111111] group-hover:text-[#FF8100]"
-                      )}>
-                        {link.label}
-                      </span>
+                      <span
+                          className="font-body text-[12px] tracking-[0.18em] font-bold uppercase transition-colors duration-300"
+                          style={{ color: useLightNavText ? (isScrolled ? '#FFFFFF' : '#FFFFFF') : '#111111' }}
+                        >
+                          {link.label}
+                        </span>
                       <span className="absolute bottom-1.5 left-0 right-0 flex justify-center">
                         <span className={cn(
                           "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
@@ -360,12 +392,10 @@ export default function Navbar() {
             )}
 
             {/* RIGHT: Icons */}
-            <div className={cn(
-              "flex flex-shrink-0 items-center justify-end gap-3 sm:gap-6 lg:gap-8 transition-colors duration-500",
-              useLightNavText
-                ? "text-[#FFFFFF]"
-                : "text-[#111111]"
-            )}>
+            <div
+              className="flex flex-shrink-0 items-center justify-end gap-3 sm:gap-6 lg:gap-8 transition-colors duration-500"
+              style={{ color: useLightNavText ? '#FFFFFF' : '#111111' }}
+            >
               {!searchOpen && (
                 <button
                   aria-label="Search"
@@ -375,7 +405,7 @@ export default function Navbar() {
                   <Search strokeWidth={1.5} size={19} />
                 </button>
               )}
-              <Link href="/login" className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
+              <Link href={user ? "/account" : "/login"} className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
                 <User strokeWidth={1.5} size={19} />
               </Link>
               <Link href="/wishlist" className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
@@ -386,7 +416,7 @@ export default function Navbar() {
                 {itemCount > 0 && (
                   <span className={cn(
                     "absolute -top-2 -right-2 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold",
-                    isScrolled ? "bg-[#111111] text-[#FFFFFF]" : isLightNav ? "bg-[#FF8100] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111]"
+                    isScrolled ? "bg-[#111111] text-[#FFFFFF]" : (isScrolled || isSolidHeaderPage) ? "bg-[#FF8100] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111]"
                   )}>
                     {itemCount}
                   </span>
@@ -411,8 +441,8 @@ export default function Navbar() {
             className={cn(
               "fixed z-[39] left-1/2 -translate-x-1/2",
               "w-[min(calc(100vw-2rem),90rem)]",
-              "rounded-2xl bg-white border border-[#A3AD81]",
-              "shadow-[0_12px_48px_rgba(27,31,16,0.12)] transition-all duration-700 overflow-hidden",
+              "rounded-2xl bg-white border border-stone-100",
+              "shadow-[0_12px_48px_rgba(0,0,0,0.08)] transition-all duration-700 overflow-hidden",
               isScrolled ? "top-[6.25rem]" : "top-[7rem]"
             )}
             onMouseEnter={handleShopEnter}
@@ -447,7 +477,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end px-8 lg:px-12 py-4 border-t border-[#FF6B00]/12 bg-[#F1F3E0]">
+            <div className="flex items-center justify-end px-8 lg:px-12 py-4 border-t border-stone-100 bg-white">
               <Link
                 href="/collections"
                 className="flex items-center gap-2 font-body text-xs font-medium tracking-[0.18em] uppercase text-[#111111] hover:text-[#FF6B00] transition-colors duration-200"
@@ -561,6 +591,22 @@ export default function Navbar() {
                   </motion.li>
                 );
               })}
+              
+              {/* Manual Mobile Account Link */}
+              <motion.li
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: NAV_LINKS.length * 0.08 }}
+                className="border-b border-white/5"
+              >
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block font-display text-3xl text-[#F1F3E0] hover:text-[#FF6B00] transition-colors py-4 flex items-center justify-between"
+                >
+                  Account <User size={24} className="text-[#FF6B00]" />
+                </Link>
+              </motion.li>
             </ul>
           </motion.div>
         )}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
 import {
   GALLERY_HERO,
   GALLERY_INTRO,
@@ -66,10 +67,11 @@ export default function GalleryPageContent() {
   return (
     <main className="bg-[#FEF9F9] text-[#111111]">
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#0D0400] pt-32 lg:pt-36 pb-20 lg:pb-28 overflow-hidden relative">
-        {/* Decorative gradient glowing orb */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-gradient-to-b from-[#FF6B00]/8 to-transparent blur-[80px]" />
+      <section className="w-full min-h-[50svh] lg:min-h-[100svh] pt-20 pb-10 lg:pb-0 flex flex-col justify-center overflow-hidden relative border-b border-[#FF6B00]/10">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/gallery-hero.png" alt="Gallery" fill className="object-cover object-center" priority />
+          <div className="absolute inset-0 bg-[#0D0400]/60" />
         </div>
 
         <div className="max-w-[900px] mx-auto px-4 sm:px-8 lg:px-20 text-center relative z-10">
@@ -79,7 +81,7 @@ export default function GalleryPageContent() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
             className="flex flex-col items-center justify-center"
           >
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-px bg-[#FF6B00]" />
               <span className="font-body text-[11px] tracking-[0.35em] text-[#FF6B00] uppercase font-bold">
                 {GALLERY_HERO.eyebrow}
@@ -87,18 +89,18 @@ export default function GalleryPageContent() {
               <span className="w-8 h-px bg-[#FF6B00]" />
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white mb-8 leading-[0.9]">
-              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.15)]">Gallery</span>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl tracking-tighter text-white mb-4 leading-[0.9] drop-shadow-lg">
+              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.25)]">Gallery</span>
             </h1>
 
-            <div className="w-16 h-[2px] bg-[#FF6B00] mb-8" />
+            <div className="w-16 h-[2px] bg-[#FF6B00] mb-6" />
 
-            <p className="font-body text-lg md:text-xl lg:text-2xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-8 font-light">
+            <p className="font-body text-base md:text-lg lg:text-xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-8 font-light drop-shadow-md">
               {GALLERY_HERO.intro}
             </p>
 
-            <div className="flex flex-col items-center max-w-md mx-auto pt-6 border-t border-[#FF6B00]/15">
-              <p className="font-display text-lg md:text-xl italic text-white/95 leading-relaxed mb-4">
+            <div className="flex flex-col items-center max-w-md mx-auto pt-6 border-t border-[#FF6B00]/15 w-full">
+              <p className="font-display text-lg md:text-xl italic text-white/95 leading-relaxed mb-4 drop-shadow-md">
                 &ldquo;{GALLERY_HERO.quote}&rdquo;
               </p>
               <p className="font-body text-[11px] tracking-[0.2em] text-[#FF6B00] uppercase font-bold">

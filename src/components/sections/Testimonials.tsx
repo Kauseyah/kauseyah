@@ -124,6 +124,7 @@ export default function Testimonials() {
                   ))}
                 </div>
 
+                { }
                 <p className="font-display text-xl md:text-2xl lg:text-[28px] text-[#111111] leading-[1.7] mb-10 italic tracking-tight font-medium">
                   &ldquo;{TESTIMONIALS[activeIndex].text}&rdquo;
                 </p>
@@ -137,6 +138,7 @@ export default function Testimonials() {
                     <span className="font-body text-[10px] uppercase font-bold tracking-[0.2em] text-[#FF6B00]/60 mt-1">
                        {TESTIMONIALS[activeIndex].location}
                     </span>
+                    { }
                   </div>
                 </div>
               </motion.div>

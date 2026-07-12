@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
 import { useState, useMemo } from "react";
@@ -126,7 +126,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
         <nav className="flex items-center gap-2 font-body text-xs text-stone-500 uppercase tracking-widest mb-10">
           <Link href="/" className="hover:text-[#FF6B00]">Home</Link>
           <ChevronRight size={10} />
-          <Link href="/products" className="hover:text-[#FF6B00]">Products</Link>
+          <Link href="/collections" className="hover:text-[#FF6B00]">Products</Link>
           <ChevronRight size={10} />
           <span className="text-[#FF6B00] font-bold">{product.name}</span>
         </nav>
@@ -174,11 +174,14 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
           </div>
 
           {/* Right Column: Detailed Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 bg-white border border-[#FF6B00]/10 rounded-3xl p-6 md:p-8 lg:p-10 shadow-[0_12px_45px_rgba(181,84,26,0.03)] relative overflow-hidden">
+            {/* Soft decorative background glow */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#FF6B00]/5 to-transparent rounded-bl-full pointer-events-none" />
+
             
             {/* Meta category/artisan */}
             <div className="flex flex-wrap items-center gap-2.5 font-body text-[11px] uppercase tracking-widest text-[#FF6B00] font-bold">
-              <span>{product.subcategory || product.category}</span>
+              <span>{(product.subcategory || product.category)?.replace(/-/g, ' ')}</span>
               {product.region && (
                 <>
                   <span className="w-1.5 h-1.5 rounded-full bg-stone-300" />
@@ -349,7 +352,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               </div>
               <div className="flex flex-col items-center gap-2 p-3 bg-stone-50/50 rounded-xl border border-stone-100">
                 <Truck size={18} className="text-[#FF6B00]" />
-                <span>Free Shipping</span>
+                <span>₹200 Shipping</span>
               </div>
               <div className="flex flex-col items-center gap-2 p-3 bg-stone-50/50 rounded-xl border border-stone-100">
                 <RotateCcw size={18} className="text-[#FF6B00]" />

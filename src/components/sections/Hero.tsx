@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Background Video — full bleed */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-white">
         <video
-          src="/videos/hvideo1.mp4"
+          src="/videos/hVideoNew.mp4"
           autoPlay
           loop
           muted
