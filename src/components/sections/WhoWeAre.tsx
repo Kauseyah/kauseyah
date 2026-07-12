@@ -94,25 +94,25 @@ export default function WhoWeAre() {
             className="relative"
           >
             {/* Main tall image */}
-            <div className="relative h-[420px] md:h-[520px] w-full overflow-hidden">
+            <div className="relative h-[420px] md:h-[560px] w-full overflow-hidden rounded-2xl shadow-xl">
               <Image
-                src="/images/who-we-are.png"
+                src="/images/Img1.jpeg"
                 alt="Artisan weaving handloom"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-700 hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 55vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/30 to-transparent pointer-events-none" />
             </div>
 
             {/* Overlapping detail image — bottom right */}
-            <div className="hidden sm:block absolute -bottom-8 -right-6 w-44 md:w-56 h-44 md:h-56 overflow-hidden border-4 border-white shadow-2xl">
+            <div className="hidden sm:block absolute -bottom-10 -right-8 w-52 md:w-64 h-52 md:h-72 overflow-hidden rounded-2xl border-8 border-[#FFF8F3] shadow-[0_20px_40px_rgba(0,0,0,0.15)]">
               <Image
-                src="/images/artisan-detail.png"
+                src="/images/Img3.jpeg"
                 alt="Textile weave detail"
                 fill
-                className="object-cover"
-                sizes="240px"
+                className="object-cover transition-transform duration-700 hover:scale-105"
+                sizes="300px"
               />
             </div>
 

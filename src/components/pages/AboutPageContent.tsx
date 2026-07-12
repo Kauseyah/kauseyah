@@ -44,18 +44,18 @@ const MISSION_VISION = [
 const VALUES = [
   {
     icon: Shield,
-    title: "Authenticity",
-    text: "Sourcing directly from genuine artisans — every piece traceable to the hands that made it.",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainability",
-    text: "Eco-friendly materials, slow fashion, and zero-waste practices woven into everything we do.",
+    title: "Tribal Heritage",
+    text: "Honouring the wisdom, artistry, and traditions of India's tribal communities.",
   },
   {
     icon: Heart,
-    title: "Empowerment",
-    text: "Uplifting tribal and indigenous communities through fair wages and long-term partnerships.",
+    title: "Handcrafted Excellence",
+    text: "Celebrating timeless craftsmanship through skilled hands, thoughtful design, and exceptional attention to detail.",
+  },
+  {
+    icon: Leaf,
+    title: "Conscious Design",
+    text: "Creating responsibly with sustainable practices, ethical craftsmanship, and enduring quality.",
   },
 ];
 
@@ -95,9 +95,9 @@ function MissionVisionBlock({
       variants={slideIn}
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 260, damping: 22 }}
-      className={`group ${isRight ? "lg:text-right" : ""}`}
+      className={`group text-center ${isRight ? "lg:text-right" : "lg:text-left"}`}
     >
-      <div className={`flex items-center gap-2.5 mb-3 ${isRight ? "lg:justify-end" : ""}`}>
+      <div className={`flex items-center justify-center gap-2.5 mb-3 ${isRight ? "lg:justify-end" : "lg:justify-start"}`}>
         <motion.div
           whileHover={{ scale: 1.15, rotate: 8 }}
           transition={{ type: "spring", stiffness: 400, damping: 14 }}
@@ -129,7 +129,7 @@ function MissionVisionBlock({
         {item.text}
       </motion.p>
 
-      <div className={`space-y-1 ${isRight ? "lg:flex lg:flex-col lg:items-end" : ""}`}>
+      <div className={`space-y-1 flex flex-col items-center ${isRight ? "lg:items-end" : "lg:items-start"}`}>
         {item.highlights.map((line, j) => (
           <motion.p
             key={line}
@@ -161,7 +161,7 @@ function MissionVisionSection() {
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-12"
         >
-          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#111111]/80 uppercase block mb-3">
+          <motion.span variants={fadeUp} custom={0} className="font-body text-[11px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-3">
             What Drives Us
           </motion.span>
           <motion.h2
@@ -238,10 +238,11 @@ export default function AboutPageContent() {
   return (
     <main className="bg-white">
       {/* ── Page Hero ── */}
-      <section className="w-full bg-[#0D0400] pt-32 lg:pt-36 pb-20 lg:pb-32 overflow-hidden relative">
-        {/* Decorative gradient glowing orb */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-gradient-to-b from-[#FF6B00]/8 to-transparent blur-[80px]" />
+      <section className="w-full min-h-[50svh] lg:min-h-[100svh] pt-20 pb-10 lg:pb-0 flex flex-col justify-center overflow-hidden relative border-b border-[#FF6B00]/10">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/about-hero.webp" alt="About Kauseyah" fill className="object-cover object-center" priority />
+          <div className="absolute inset-0 bg-[#0D0400]/60" />
         </div>
 
         <div className="max-w-[900px] mx-auto px-4 sm:px-8 lg:px-20 text-center relative z-10">
@@ -251,7 +252,7 @@ export default function AboutPageContent() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center justify-center"
           >
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-px bg-[#FF6B00]" />
               <span className="font-body text-[11px] tracking-[0.35em] text-[#FF6B00] uppercase font-bold">
                 Our Heritage
@@ -259,13 +260,13 @@ export default function AboutPageContent() {
               <span className="w-8 h-px bg-[#FF6B00]" />
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white mb-8 leading-[0.9]">
-              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.15)]">Story</span>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl tracking-tighter text-white mb-4 leading-[0.9] drop-shadow-lg">
+              Our <span className="text-[#FF6B00] italic font-light drop-shadow-[0_2px_8px_rgba(255,107,0,0.25)]">Story</span>
             </h1>
 
-            <div className="w-16 h-[2px] bg-[#FF6B00] mb-8" />
+            <div className="w-16 h-[2px] bg-[#FF6B00] mb-6" />
 
-            <p className="font-body text-lg md:text-xl lg:text-2xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-12 font-light">
+            <p className="font-body text-base md:text-lg lg:text-xl text-[#FFF8F3]/90 leading-relaxed max-w-2xl mb-8 font-light drop-shadow-md">
               Born from a love of indigenous art — a living bridge between India&apos;s master artisans
               and the world.
             </p>
@@ -274,7 +275,7 @@ export default function AboutPageContent() {
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
               {BRAND_PILLARS.map((pillar, index) => (
                 <span key={pillar} className="flex items-center gap-6">
-                  <span className="font-body text-[11px] tracking-[0.3em] text-[#FFF8F3]/80 uppercase font-semibold hover:text-[#FF6B00] transition-colors duration-300">
+                  <span className="font-body text-[11px] tracking-[0.3em] text-[#FFF8F3]/90 uppercase font-semibold hover:text-[#FF6B00] transition-colors duration-300 drop-shadow-md">
                     {pillar}
                   </span>
                   {index < BRAND_PILLARS.length - 1 && (
@@ -401,7 +402,7 @@ export default function AboutPageContent() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="mb-14 lg:mb-16"
+            className="mb-14 lg:mb-16 text-center md:text-left"
           >
             <motion.span variants={fadeUp} custom={0} className="font-body text-[12px] font-bold tracking-[0.3em] text-[#FF6B00] uppercase block mb-4">
               What We Stand For
@@ -420,9 +421,9 @@ export default function AboutPageContent() {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.8, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ y: -5 }}
-                className={`group ${i > 0 ? "md:border-l md:border-[#FF6B00]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
+                className={`group flex flex-col items-center text-center md:items-start md:text-left ${i > 0 ? "md:border-l md:border-[#FF6B00]/25 md:pl-10" : "md:pr-10"} ${i === 1 ? "md:px-10" : ""}`}
               >
-                <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center justify-center md:justify-start gap-3 mb-5">
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 6 }}
                     transition={{ type: "spring", stiffness: 400, damping: 14 }}

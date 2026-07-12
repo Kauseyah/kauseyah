@@ -4,20 +4,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export default function Loader() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
 
   useEffect(() => {
+    const hasSeenLoader = sessionStorage.getItem("kauseyah_has_seen_loader");
+
+    if (hasSeenLoader) {
+      setIsFirstVisit(false);
+      setShowLoader(false);
+      return;
+    }
+
     // Hide loader after 4 seconds for maximum cinematic effect
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setShowLoader(false);
+      sessionStorage.setItem("kauseyah_has_seen_loader", "true");
     }, 3800);
 
     return () => clearTimeout(timer);
   }, []);
 
+  // If they have already seen the loader, return null instantly to bypass any fade-out animations
+  if (!isFirstVisit) return null;
+
   return (
     <AnimatePresence mode="wait">
-      {isLoading && (
+      {showLoader && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}

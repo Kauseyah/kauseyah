@@ -41,13 +41,29 @@ const SOCIAL_ICONS: Record<string, ReactElement> = {
   ),
 };
 
+import { usePathname } from "next/navigation";
+
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
-    <footer className="bg-[#111111] text-white">
-
-      <div style={{ height: "2px", background: "#FF6B00" }} />
-
-      <div className="max-w-[1400px] mx-auto px-10 lg:px-20 pt-8 pb-0">
+    <footer className="relative bg-[#111111] text-white font-body overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 z-20" style={{ height: "2px", background: "#FF6B00" }} />
+      {/* Subtle weave pattern background */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.4]" 
+        style={{
+          backgroundImage: `linear-gradient(rgba(255, 107, 0, 0.15) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255, 107, 0, 0.15) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px"
+        }}
+      />
+      
+      <div className="relative z-10 max-w-[1400px] mx-auto px-10 lg:px-20 pt-8 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr_1.1fr_1.1fr_1fr] gap-8 lg:gap-10 items-start text-center lg:text-left">
 
           <div className="flex flex-col items-center lg:items-start">
@@ -63,13 +79,11 @@ export default function Footer() {
               </Link>
             </div>
 
-            <p className="font-body text-[10px] tracking-[0.3em] text-[#FF6B00] mb-1 uppercase font-bold">
+            <p className="font-body text-[9px] tracking-[0.2em] text-[#FF6B00] mb-2 uppercase font-bold">
               {SITE_TAGLINE}
             </p>
 
-            <div style={{ width: "32px", height: "1px", background: "#FF6B00", marginBottom: "4px" }} />
-
-            <p className="font-body text-[14px] leading-[1.8] text-[#FFFFFF]/80 max-w-[240px] font-light">
+            <p className="font-body text-[12px] leading-[1.6] text-[#FFFFFF]/80 max-w-[220px] font-light">
               India&apos;s handloom heritage, ethically made. Every thread preserves a story.
             </p>
           </div>
@@ -79,24 +93,31 @@ export default function Footer() {
               Quick Links
             </h3>
 
-            <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+            <div className="grid grid-cols-2 gap-y-3 gap-x-4">
               {[
-                { label: "Kauseyah", href: "/" },
                 { label: "About Us", href: "/about" },
                 { label: "Collections", href: "/collections" },
-                { label: "Gallery", href: "/gallery" },
-                { label: "Portfolio", href: "/portfolio" },
+                { label: "Portfolio" },
                 { label: "Contact", href: "/contact" },
-                { label: "FAQ", href: "/faq" },
+                { label: "FAQ" },
                 { label: "Blog", href: "/blog" },
               ].map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="font-body text-[15px] text-[#FFFFFF]/70 hover:text-[#FF6B00] transition-colors duration-200"
-                >
-                  {l.label}
-                </Link>
+                l.href ? (
+                  <Link
+                    key={l.label}
+                    href={l.href}
+                    className="font-body text-[15px] text-[#FFFFFF]/70 hover:text-[#FF6B00] transition-colors duration-200"
+                  >
+                    {l.label}
+                  </Link>
+                ) : (
+                  <span
+                    key={l.label}
+                    className="font-body text-[15px] text-[#FFFFFF]/70"
+                  >
+                    {l.label}
+                  </span>
+                )
               ))}
             </div>
           </div>
@@ -110,9 +131,6 @@ export default function Footer() {
               <div>
                 <p className="font-body text-[14px] leading-[1.7] text-[#FFFFFF]/80">
                   Mon – Sat: 10:00 AM – 7:00 PM
-                </p>
-                <p className="font-body text-[10px] tracking-[0.2em] uppercase font-bold mt-2 text-[#FF6B00]">
-                  By Appointment Only
                 </p>
               </div>
 
@@ -173,7 +191,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+      <div className="mt-8 lg:mt-12" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="max-w-[1400px] mx-auto px-10 lg:px-20 py-4 flex flex-col items-center gap-3 text-center">
           <p className="font-body text-[11px] tracking-[0.15em] uppercase text-[#FFFFFF]/40">
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.

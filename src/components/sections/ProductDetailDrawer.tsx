@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 "use client";
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import { formatPrice } from "@/utils";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/store/CartContext";
 import { Star, ShoppingBag, Heart, X, ShieldCheck, Truck, RotateCcw, Check } from "lucide-react";
 import { motion } from "framer-motion";
@@ -22,6 +23,7 @@ interface ProductDetailDrawerProps {
 }
 
 export default function ProductDetailDrawer({ product, onClose }: ProductDetailDrawerProps) {
+  const router = useRouter();
   const { addItem } = useCart();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedSize, setSelectedSize] = useState(product.variants[0]?.size || "");
@@ -75,16 +77,15 @@ export default function ProductDetailDrawer({ product, onClose }: ProductDetailD
     }
   };
 
-  // Handle Quick Order Submission
-  const handleQuickOrderSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orderName.trim() || !orderPhone.trim() || !orderAddress.trim()) return;
-
-    setOrderSubmitted(true);
-    setOrderName("");
-    setOrderPhone("");
-    setOrderAddress("");
-    setTimeout(() => setOrderSubmitted(false), 5000);
+  // Handle Buy Now (Instant Order)
+  const handleBuyNow = () => {
+    if (selectedVariant) {
+      for (let i = 0; i < quantity; i++) {
+        addItem(product, selectedVariant);
+      }
+      onClose();
+      router.push("/checkout");
+    }
   };
 
   // Colors and sizes arrays
@@ -371,7 +372,7 @@ export default function ProductDetailDrawer({ product, onClose }: ProductDetailD
             </div>
             <div className="flex flex-col items-center gap-2 p-3 bg-stone-100 border border-stone-200/80 rounded-xl">
               <Truck size={16} className="text-[#FF6B00]" />
-              <span>Free Delivery</span>
+              <span>₹200 Shipping</span>
             </div>
             <div className="flex flex-col items-center gap-2 p-3 bg-stone-100 border border-stone-200/80 rounded-xl">
               <RotateCcw size={16} className="text-[#FF6B00]" />
@@ -410,68 +411,18 @@ export default function ProductDetailDrawer({ product, onClose }: ProductDetailD
               ))}
             </div>
 
-            {/* Instant Order Form in Drawer */}
-            <div className="bg-[#FAF0E6] border border-[#FF6B00]/30 p-6 rounded-2xl space-y-4 text-[#111111] shadow-[0_4px_20px_rgba(181,84,26,0.03)]">
-              <h4 className="font-display text-lg text-[#111111] font-bold">Instant Order</h4>
-              <p className="font-body text-stone-700 text-xs leading-relaxed">
-                Fill in your details below to place a quick order for this masterpiece.
+            {/* Buy Now Section */}
+            <div className="bg-[#FAF0E6] border border-[#FF6B00]/30 p-6 rounded-2xl space-y-4 text-[#111111] shadow-[0_4px_20px_rgba(181,84,26,0.03)] text-center">
+              <h4 className="font-display text-lg text-[#111111] font-bold">Buy it now</h4>
+              <p className="font-body text-stone-700 text-xs leading-relaxed max-w-[280px] mx-auto mb-4">
+                Skip the cart and head straight to our secure checkout.
               </p>
-              {orderSubmitted ? (
-                <div className="bg-emerald-50 border border-emerald-250 p-6 rounded-xl flex flex-col items-center justify-center gap-3 text-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                    <Check size={28} strokeWidth={3} />
-                  </div>
-                  <h5 className="font-display text-base font-bold text-emerald-900">Order Placed Successfully!</h5>
-                  <p className="font-body text-[11px] text-emerald-700 max-w-[200px]">
-                    Our team will contact you shortly to confirm your delivery details.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleQuickOrderSubmit} className="space-y-4 font-body text-xs">
-                  <div className="space-y-1.5">
-                    <label className="block text-[#FF6B00] font-extrabold uppercase tracking-widest text-[11px]">Full Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={orderName}
-                      onChange={(e) => setOrderName(e.target.value)}
-                      placeholder="e.g. Aditi Sharma"
-                      className="w-full bg-white border border-stone-400 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-colors placeholder-stone-500 font-medium"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[#FF6B00] font-extrabold uppercase tracking-widest text-[11px]">Phone Number</label>
-                    <input
-                      type="tel"
-                      required
-                      value={orderPhone}
-                      onChange={(e) => setOrderPhone(e.target.value)}
-                      placeholder="e.g. +91 98765 43210"
-                      className="w-full bg-white border border-stone-400 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-colors placeholder-stone-500 font-medium"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[#FF6B00] font-extrabold uppercase tracking-widest text-[11px]">Shipping Address</label>
-                    <textarea
-                      required
-                      rows={3}
-                      value={orderAddress}
-                      onChange={(e) => setOrderAddress(e.target.value)}
-                      placeholder="Enter your complete delivery address with pincode..."
-                      className="w-full bg-white border border-stone-400 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-colors resize-none placeholder-stone-500 font-medium"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full bg-[#111111] hover:bg-[#FF6B00] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors cursor-pointer"
-                  >
-                    Instant Order
-                  </button>
-                </form>
-              )}
+              <button
+                onClick={handleBuyNow}
+                className="w-full bg-[#111111] hover:bg-[#FF6B00] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors cursor-pointer"
+              >
+                Buy Now
+              </button>
             </div>
 
           </div>

@@ -1,305 +1,155 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect } from "react";
+import { User as UserIcon, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { User, LogOut, Package, MapPin, Phone, Mail, Lock, ShieldCheck, ArrowRight } from "lucide-react";
+import { BRAND_TAGLINE } from "@/constants";
 
-interface UserProfile {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-}
+import { useTransition, Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { login } from "@/app/actions/auth-actions";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
-export default function LoginPage() {
-  const [isLoginTab, setIsLoginTab] = useState(true);
-  const [user, setUser] = useState<UserProfile | null>(null);
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/account";
+  const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Form states
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem("kauseyah-user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) return;
-
-    // Simulate login with default dummy data
-    const dummyUser: UserProfile = {
-      name: "Aditi Sharma",
-      email: email,
-      phone: "+91 98765 43210",
-      address: "12, Saree Weavers Colony, Indiranagar, Bangalore - 560038",
-    };
-    localStorage.setItem("kauseyah-user", JSON.stringify(dummyUser));
-    setUser(dummyUser);
-  };
-
-  const handleRegisterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !email || !phone || !address || !password) return;
-
-    const newUser: UserProfile = {
-      name,
-      email,
-      phone,
-      address,
-    };
-    localStorage.setItem("kauseyah-user", JSON.stringify(newUser));
-    setUser(newUser);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("kauseyah-user");
-    setUser(null);
-    setEmail("");
-    setPassword("");
-    setName("");
-    setPhone("");
-    setAddress("");
+  const handleLogin = (formData: FormData) => {
+    startTransition(async () => {
+      const result = await login(formData);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Welcome back!");
+        router.push(redirectTo);
+        router.refresh();
+      }
+    });
   };
 
   return (
-    <main className="bg-[#FFF8F3] min-h-screen pt-36 pb-20">
-      <div className="max-w-4xl mx-auto px-6 md:px-8">
+    <form action={handleLogin} className="space-y-3.5">
+      <div className="space-y-1.5">
+        <label className="font-body text-[11px] font-semibold text-[#111111]/80 ml-1">Email Address</label>
+        <div className="relative">
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111]/40" strokeWidth={1.5} />
+          <input 
+            type="email" 
+            name="email"
+            placeholder="you@example.com" 
+            className="w-full bg-[#FFF8F3]/50 border border-[#E5E5E5] py-2.5 pl-11 pr-4 rounded-xl font-body text-[13px] text-[#111111] outline-none focus:border-[#FF6B00] focus:bg-white focus:shadow-[0_4px_20px_rgba(255,107,0,0.08)] transition-all placeholder:text-[#111111]/30"
+            required
+            disabled={isPending}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <label className="font-body text-[11px] font-semibold text-[#111111]/80 ml-1">Password</label>
+          <Link href="/forgot-password" className="font-body text-[11px] font-semibold text-[#FF6B00] hover:text-[#e55f00] transition-colors">
+            Forgot Password?
+          </Link>
+        </div>
+        <div className="relative">
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111]/40" strokeWidth={1.5} />
+          <input 
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="••••••••" 
+            className="w-full bg-[#FFF8F3]/50 border border-[#E5E5E5] py-2.5 pl-11 pr-11 rounded-xl font-body text-[13px] text-[#111111] outline-none focus:border-[#FF6B00] focus:bg-white focus:shadow-[0_4px_20px_rgba(255,107,0,0.08)] transition-all placeholder:text-[#111111]/30"
+            required
+            disabled={isPending}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#111111]/40 hover:text-[#FF6B00] transition-colors focus:outline-none"
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
+          </button>
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        disabled={isPending}
+        className="w-full group relative flex items-center justify-center gap-2 bg-[#FF6B00] hover:bg-[#e55f00] text-white py-3 mt-6 rounded-xl transition-all duration-300 shadow-[0_8px_20px_rgba(255,107,0,0.25)] hover:shadow-[0_12px_25px_rgba(255,107,0,0.35)] hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:-translate-y-0"
+      >
+        {isPending ? <Loader2 size={16} className="animate-spin" /> : null}
+        <span className="font-body text-[12px] font-bold uppercase tracking-[0.15em]">
+          {isPending ? "Signing In..." : "Sign In"}
+        </span>
+      </button>
+    </form>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <main className="min-h-screen bg-white pt-[64px] lg:pt-[76px]">
+      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-76px)]">
         
-        {user ? (
-          /* ── USER DASHBOARD ── */
-          <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-3xl border border-[#FF6B00]/10 shadow-[0_8px_30px_rgba(181,84,26,0.02)]">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 rounded-full bg-[#FF6B00]/10 border border-[#FF6B00]/20 flex items-center justify-center text-[#FF6B00]">
-                  <User size={32} strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h1 className="font-display text-2xl md:text-3xl text-stone-900 font-bold">Welcome back, {user.name}</h1>
-                  <p className="font-body text-xs text-stone-500 uppercase tracking-widest mt-1">Kauseyah Patron Member</p>
-                </div>
+        {/* Left Column - Typography Focus (Hidden on Mobile) */}
+        <div className="hidden lg:flex relative w-full h-full bg-[#0D0400] items-center justify-center p-20 overflow-hidden">
+          <div className="absolute inset-0 z-0">
+             {/* Soft elegant ambient glows instead of an image */}
+             <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-[#FF6B00]/10 rounded-full blur-[120px]" />
+             <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-[#FF6B00]/10 rounded-full blur-[100px]" />
+          </div>
+          
+          <div className="relative z-10 flex flex-col items-center text-center max-w-xl">
+            <h1 className="font-display text-7xl xl:text-8xl text-white mb-8 tracking-tighter">
+              Kauseyah
+            </h1>
+            <div className="w-12 h-px bg-[#FF6B00] mb-8" />
+            <p className="font-body text-[12px] tracking-[0.4em] text-[#FF6B00] uppercase font-bold mb-10">
+              {BRAND_TAGLINE}
+            </p>
+            <p className="font-body text-lg text-white/70 leading-relaxed font-light max-w-md mx-auto">
+              Celebrating timeless craftsmanship, honoring tribal heritage, and creating responsibly with conscious design.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Column - Form */}
+        <div className="w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-[#FFF8F3] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-b from-[#FF6B00]/5 to-transparent rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+          
+          <div className="w-full max-w-[420px] bg-white p-6 md:p-8 rounded-[1.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.06)] border border-[#111111] relative z-10">
+            <div className="mb-6 text-center">
+              <div className="w-10 h-10 bg-[#FFF8F3] rounded-full flex items-center justify-center mx-auto mb-4">
+                <UserIcon className="w-4 h-4 text-[#FF6B00]" strokeWidth={1.5} />
               </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 border border-stone-200 hover:border-red-200 hover:text-red-500 px-5 py-2.5 rounded-xl font-body text-xs font-semibold uppercase tracking-wider text-stone-600 bg-white transition-colors cursor-pointer"
-              >
-                <LogOut size={14} />
-                Log Out
-              </button>
+              <h2 className="font-display text-2xl md:text-3xl text-[#111111] mb-2">
+                Welcome Back
+              </h2>
+              <p className="font-body text-[13px] text-[#111111]/60 leading-snug max-w-[300px] mx-auto hidden sm:block">
+                Sign in to view your handcrafted collection.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Profile Details */}
-              <div className="md:col-span-1 bg-white p-6 rounded-3xl border border-[#FF6B00]/10 shadow-[0_8px_30px_rgba(181,84,26,0.02)] space-y-6">
-                <h3 className="font-body text-xs font-bold tracking-[0.2em] uppercase text-stone-900 pb-3 border-b border-[#FF6B00]/10">
-                  Profile Information
-                </h3>
-                <div className="space-y-4 font-body text-sm text-stone-700">
-                  <div className="flex items-start gap-3">
-                    <Mail size={16} className="text-[#FF6B00] shrink-0 mt-0.5" />
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-stone-400 block font-bold uppercase tracking-wider">Email Address</span>
-                      <span className="font-medium text-stone-800 break-all">{user.email}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Phone size={16} className="text-[#FF6B00] shrink-0 mt-0.5" />
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-stone-400 block font-bold uppercase tracking-wider">Phone Number</span>
-                      <span className="font-medium text-stone-800">{user.phone}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} className="text-[#FF6B00] shrink-0 mt-0.5" />
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-stone-400 block font-bold uppercase tracking-wider">Delivery Address</span>
-                      <span className="font-medium text-stone-800 leading-relaxed block">{user.address}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <Suspense fallback={<div className="h-[200px] flex items-center justify-center"><Loader2 className="animate-spin text-[#FF6B00]" /></div>}>
+              <LoginForm />
+            </Suspense>
 
-              {/* Order History */}
-              <div className="md:col-span-2 bg-white p-6 rounded-3xl border border-[#FF6B00]/10 shadow-[0_8px_30px_rgba(181,84,26,0.02)] space-y-6">
-                <h3 className="font-body text-xs font-bold tracking-[0.2em] uppercase text-stone-900 pb-3 border-b border-[#FF6B00]/10">
-                  Recent Orders
-                </h3>
-                <div className="space-y-4">
-                  <div className="border border-stone-150 p-5 rounded-2xl flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center bg-[#FAF9F5]">
-                    <div className="space-y-1.5 font-body">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-bold text-xs text-stone-900">#KAS-998310</span>
-                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Delivered</span>
-                      </div>
-                      <p className="text-[11px] text-stone-500">Ordered on June 24, 2026 • 1 Masterpiece Item</p>
-                    </div>
-                    <div className="text-left sm:text-right font-body">
-                      <p className="font-bold text-sm text-[#FF6B00]">₹14,999</p>
-                      <Link href="/products" className="text-[10px] font-bold text-stone-600 hover:text-[#FF6B00] uppercase tracking-wider flex items-center gap-1 mt-1 transition-colors">
-                        View Product <ArrowRight size={10} />
-                      </Link>
-                    </div>
-                  </div>
-
-                  <div className="border border-stone-150 p-5 rounded-2xl flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center bg-[#FAF9F5]">
-                    <div className="space-y-1.5 font-body">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-bold text-xs text-stone-900">#KAS-997284</span>
-                        <span className="bg-stone-100 text-stone-600 border border-stone-200 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Completed</span>
-                      </div>
-                      <p className="text-[11px] text-stone-500">Ordered on May 12, 2026 • 2 Items</p>
-                    </div>
-                    <div className="text-left sm:text-right font-body">
-                      <p className="font-bold text-sm text-[#FF6B00]">₹6,450</p>
-                      <Link href="/products" className="text-[10px] font-bold text-stone-600 hover:text-[#FF6B00] uppercase tracking-wider flex items-center gap-1 mt-1 transition-colors">
-                        View Products <ArrowRight size={10} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-6 text-center">
+              <p className="font-body text-[13px] text-[#111111]/60">
+                New to Kauseyah?{" "}
+                <Link 
+                  href="/register"
+                  className="font-bold text-[#111111] hover:text-[#FF6B00] transition-colors ml-1"
+                >
+                  Create an account
+                </Link>
+              </p>
             </div>
           </div>
-        ) : (
-          /* ── AUTH FORMS ── */
-          <div className="max-w-md mx-auto bg-white border border-[#FF6B00]/10 rounded-3xl p-8 shadow-[0_12px_40px_rgba(181,84,26,0.04)] space-y-6">
-            
-            {/* Tabs */}
-            <div className="flex border-b border-stone-100">
-              <button
-                onClick={() => setIsLoginTab(true)}
-                className={`flex-1 pb-4 text-center font-display text-lg font-semibold transition-colors border-b-2 cursor-pointer ${
-                  isLoginTab ? "border-[#FF6B00] text-stone-900" : "border-transparent text-stone-400 hover:text-stone-600"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setIsLoginTab(false)}
-                className={`flex-1 pb-4 text-center font-display text-lg font-semibold transition-colors border-b-2 cursor-pointer ${
-                  !isLoginTab ? "border-[#FF6B00] text-stone-900" : "border-transparent text-stone-400 hover:text-stone-600"
-                }`}
-              >
-                Create Account
-              </button>
-            </div>
-
-            {isLoginTab ? (
-              /* Sign In Form */
-              <form onSubmit={handleLoginSubmit} className="space-y-4 font-body text-xs">
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Email Address</label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="e.g. aditi@example.com"
-                      className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#111111] hover:bg-[#FF6B00] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors cursor-pointer mt-4"
-                >
-                  Sign In
-                </button>
-              </form>
-            ) : (
-              /* Register Form */
-              <form onSubmit={handleRegisterSubmit} className="space-y-4 font-body text-xs">
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Aditi Sharma"
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Email Address</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. aditi@example.com"
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Phone Number</label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="e.g. +91 98765 43210"
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Shipping Address</label>
-                  <textarea
-                    required
-                    rows={2}
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Complete delivery address with pincode..."
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400 resize-none"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-stone-800 font-bold uppercase tracking-wider text-[10px]">Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Minimum 6 characters"
-                    className="w-full bg-stone-50 border border-stone-300 focus:border-[#FF6B00] px-4 py-3 rounded-xl text-stone-900 text-sm outline-none transition-all placeholder-stone-400"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-[#111111] hover:bg-[#FF6B00] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors cursor-pointer mt-4"
-                >
-                  Create Account
-                </button>
-              </form>
-            )}
-          </div>
-        )}
+        </div>
       </div>
     </main>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
 import type { Cart, CartItem, Product, ProductVariant } from "@/types";
 import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from "@/constants";
 
@@ -10,14 +10,15 @@ type CartAction =
   | { type: "ADD_ITEM"; product: Product; variant: ProductVariant }
   | { type: "REMOVE_ITEM"; variantId: string }
   | { type: "UPDATE_QTY"; variantId: string; quantity: number }
-  | { type: "CLEAR_CART" };
+  | { type: "CLEAR_CART" }
+  | { type: "INIT_CART"; cart: Cart };
 
 function calcCart(items: CartItem[]): Cart {
   const subtotal = items.reduce(
     (sum, item) => sum + item.variant.price * item.quantity,
     0
   );
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
+  const shipping = items.length > 0 ? 200 : 0;
   return { items, subtotal, discount: 0, total: subtotal + shipping };
 }
 
@@ -48,6 +49,8 @@ function cartReducer(state: Cart, action: CartAction): Cart {
     }
     case "CLEAR_CART":
       return calcCart([]);
+    case "INIT_CART":
+      return action.cart;
     default:
       return state;
   }
@@ -70,6 +73,26 @@ const INITIAL_CART: Cart = { items: [], subtotal: 0, discount: 0, total: 0 };
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const savedCart = localStorage.getItem("kauseyah_cart");
+    if (savedCart) {
+      try {
+        const parsed = JSON.parse(savedCart);
+        dispatch({ type: "INIT_CART", cart: parsed });
+      } catch (e) {
+        // console.error("Failed to parse cart from local storage", e);
+      }
+    }
+    setIsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem("kauseyah_cart", JSON.stringify(cart));
+    }
+  }, [cart, isInitialized]);
 
   const addItem = (product: Product, variant: ProductVariant) =>
     dispatch({ type: "ADD_ITEM", product, variant });
