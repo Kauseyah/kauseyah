@@ -18,21 +18,31 @@ export default function EditProductPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [fileName, setFileName] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
   const [product, setProduct] = useState<any>(null);
+  const [isCustomSubcategory, setIsCustomSubcategory] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [status, setStatus] = useState("draft");
 
   useEffect(() => {
     const fetchData = async () => {
       const supabase = createClient();
       
-      // Fetch categories
-      const { data: cats } = await supabase.from("categories").select("*");
-      if (cats) setCategories(cats);
+      const [catsRes, subcatsRes] = await Promise.all([
+        supabase.from("categories").select("*"),
+        supabase.from("subcategories").select("*")
+      ]);
+      
+      if (catsRes.data) setCategories(catsRes.data);
+      if (subcatsRes.data) setSubcategories(subcatsRes.data);
       
       // Fetch product details
       if (id) {
         const { data: prod, error } = await supabase.from("products").select("*").eq("id", id).single();
         if (prod) {
           setProduct(prod);
+          setSelectedCategoryId(prod.category_id || "");
+          setStatus(prod.status || "draft");
         } else if (error) {
           setErrorMsg("Could not load product details.");
         }
@@ -48,6 +58,8 @@ export default function EditProductPage() {
     setErrorMsg("");
     
     const formData = new FormData(event.currentTarget);
+    formData.set("status", status); // Explicitly ensure status is captured
+    
     const result = await updateProduct(id, formData);
     
     if (result?.error) {
@@ -203,7 +215,12 @@ export default function EditProductPage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold text-slate-300 mb-2">Status</label>
-                  <select name="status" defaultValue={product.status || "draft"} className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base cursor-pointer shadow-sm">
+                  <select 
+                    name="status" 
+                    value={status} 
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base cursor-pointer shadow-sm"
+                  >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
                     <option value="archived">Archived</option>
@@ -211,29 +228,17 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-bold text-slate-300">Category</label>
+                    <Link href="/admin/products/categories" className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+                      + New Category
+                    </Link>
+                  </div>
                   <select 
                     name="category_id" 
-                    defaultValue={product.category_id || ""}
+                    value={selectedCategoryId}
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base cursor-pointer shadow-sm"
-                    onChange={(e) => {
-                      const selectedCat = categories.find(c => c.id === e.target.value);
-                      if (selectedCat) {
-                        const subSelect = document.getElementById("subcategory_select") as HTMLSelectElement;
-                        if (subSelect) {
-                          subSelect.value = "";
-                          Array.from(subSelect.options).forEach((opt) => {
-                            if (opt.value === "") return;
-                            const group = opt.parentElement as HTMLOptGroupElement;
-                            if (group) {
-                              group.style.display = group.label.toLowerCase().includes(selectedCat.name.toLowerCase().split(' ')[0]) || 
-                                                    selectedCat.name.toLowerCase().includes(group.label.toLowerCase().split(' ')[0]) 
-                                                    ? "block" : "none";
-                            }
-                          });
-                        }
-                      }
-                    }}
                   >
                     <option value="">Select a category</option>
                     {categories.map(c => (
@@ -243,43 +248,28 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Subcategory</label>
-                  <select id="subcategory_select" name="subcategory" defaultValue={product.subcategory || ""} className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base cursor-pointer shadow-sm">
-                    <option value="">Select a subcategory</option>
-                    <optgroup label="Handlooms">
-                      <option value="sarees">Sarees</option>
-                      <option value="kurtis">Easy Cotton Kurtis</option>
-                      <option value="dupattas">Dupattas</option>
-                      <option value="stoles">Stoles</option>
-                      <option value="fabric-yardages">Fabric Yardages</option>
-                      <option value="kosa-jackets">Men Kosa Jackets</option>
-                    </optgroup>
-                    <optgroup label="Jewellery">
-                      <option value="earrings">Handcrafted Earrings</option>
-                    </optgroup>
-                    <optgroup label="Home">
-                      <option value="baskets">Baskets</option>
-                      <option value="wall-plates">Wall Plates</option>
-                      <option value="diyas">Cow Dung Diyas</option>
-                      <option value="fridge-magnets">Hand Painted Fridge Magnets</option>
-                      <option value="incense-holders">Hand Painted Incense Stick Holders</option>
-                      <option value="toran">Eco Seed Paper Toran</option>
-                    </optgroup>
-                    <optgroup label="Conscious">
-                      <option value="gift-hampers">Gift Hampers</option>
-                      <option value="rakhi">Rakhi Collection</option>
-                      <option value="sunglass-pouch">Sunglass Pouch</option>
-                      <option value="brass-plates">Brass Plates</option>
-                    </optgroup>
-                    <optgroup label="Tribal">
-                      <option value="gond-art">Gond Art</option>
-                      <option value="dhokra-craft">Dhokra Craft</option>
-                    </optgroup>
-                    <optgroup label="Upcycled">
-                      <option value="textile-toys">Textile Toys</option>
-                      <option value="faabr">Faabr</option>
-                    </optgroup>
-                  </select>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-bold text-slate-300">Subcategory</label>
+                    <button type="button" onClick={() => setIsCustomSubcategory(!isCustomSubcategory)} className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+                      {isCustomSubcategory ? "Select existing" : "+ Custom Subcategory"}
+                    </button>
+                  </div>
+                  {isCustomSubcategory || (subcategories.filter(sc => !selectedCategoryId || sc.category_id === selectedCategoryId).length === 0) ? (
+                    <input 
+                      type="text" 
+                      name="subcategory"
+                      defaultValue={product.subcategory || ""}
+                      placeholder="Type a custom subcategory..."
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base shadow-sm"
+                    />
+                  ) : (
+                    <select id="subcategory_select" name="subcategory" defaultValue={product.subcategory || ""} className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base cursor-pointer shadow-sm">
+                      <option value="">Select a subcategory</option>
+                      {subcategories.filter(sc => !selectedCategoryId || sc.category_id === selectedCategoryId).map((sc: any) => (
+                        <option key={sc.id} value={sc.name}>{sc.name}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 <div className="pt-6 border-t border-slate-800">

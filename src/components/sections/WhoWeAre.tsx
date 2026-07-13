@@ -142,10 +142,10 @@ export default function WhoWeAre() {
 
             {/* Stats row */}
             <motion.div variants={fadeUp} custom={2}
-              className="grid grid-cols-3 gap-3 md:gap-6 pb-10 mb-10 border-b border-[#FF6B00]/15">
+              className="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-6 pb-10 mb-10 border-b border-[#FF6B00]/15">
               {WHO_WE_ARE_STATS.map((s) => (
-                <div key={s.label}>
-                  <p className="font-display text-3xl text-[#FF6B00] mb-1">
+                <div key={s.label} className="text-center md:text-left">
+                  <p className="font-display text-3xl md:text-4xl text-[#FF6B00] mb-1">
                     <CountUp value={s.value} suffix={s.suffix} duration={2} className="inline-block" />
                   </p>
                   <p className="font-body text-[11px] font-medium tracking-[0.15em] text-[#111111]/80 uppercase leading-snug">{s.label}</p>

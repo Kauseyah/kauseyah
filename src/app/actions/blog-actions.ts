@@ -2,9 +2,17 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+
+async function getAdminClient() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+  return createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+}
 
 export async function createBlog(formData: FormData) {
-  const supabase = await createClient();
+  const adminClient = await getAdminClient();
   
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
@@ -21,7 +29,7 @@ export async function createBlog(formData: FormData) {
   if (imageFile && imageFile.size > 0) {
     const fileExt = imageFile.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await adminClient.storage
       .from('blogs')
       .upload(`covers/${fileName}`, imageFile);
 
@@ -29,14 +37,14 @@ export async function createBlog(formData: FormData) {
       return { error: `Image upload failed: ${uploadError.message}` };
     }
     
-    const { data: publicUrlData } = supabase.storage
+    const { data: publicUrlData } = adminClient.storage
       .from('blogs')
       .getPublicUrl(`covers/${fileName}`);
       
     cover_image = publicUrlData.publicUrl;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await adminClient
     .from("blogs")
     .insert([{
       title, slug, excerpt, content, meta_title, meta_description, author, published, cover_image
@@ -51,7 +59,7 @@ export async function createBlog(formData: FormData) {
 }
 
 export async function updateBlog(id: string, formData: FormData) {
-  const supabase = await createClient();
+  const adminClient = await getAdminClient();
   
   const title = formData.get("title") as string;
   const slug = formData.get("slug") as string;
@@ -68,7 +76,7 @@ export async function updateBlog(id: string, formData: FormData) {
   if (imageFile && imageFile.size > 0) {
     const fileExt = imageFile.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await adminClient.storage
       .from('blogs')
       .upload(`covers/${fileName}`, imageFile);
 
@@ -76,14 +84,14 @@ export async function updateBlog(id: string, formData: FormData) {
       return { error: `Image upload failed: ${uploadError.message}` };
     }
     
-    const { data: publicUrlData } = supabase.storage
+    const { data: publicUrlData } = adminClient.storage
       .from('blogs')
       .getPublicUrl(`covers/${fileName}`);
       
     cover_image = publicUrlData.publicUrl;
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await adminClient
     .from("blogs")
     .update({
       title, slug, excerpt, content, meta_title, meta_description, author, published, cover_image
@@ -100,8 +108,8 @@ export async function updateBlog(id: string, formData: FormData) {
 }
 
 export async function deleteBlog(id: string) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("blogs").delete().eq("id", id);
+  const adminClient = await getAdminClient();
+  const { error } = await adminClient.from("blogs").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/blogs");
   revalidatePath("/blog");
@@ -109,8 +117,8 @@ export async function deleteBlog(id: string) {
 }
 
 export async function toggleBlogStatus(id: string, published: boolean) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("blogs").update({ published }).eq("id", id);
+  const adminClient = await getAdminClient();
+  const { error } = await adminClient.from("blogs").update({ published }).eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/blogs");
   revalidatePath("/blog");

@@ -83,20 +83,64 @@ export async function register(formData: FormData) {
     return { error: "All fields are required" };
   }
 
-  const supabase = await createClient();
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseAdmin.auth.admin.generateLink({
+    type: 'signup',
     email,
     password,
-    options: {
-      data: {
-        full_name: name,
-      },
+    data: {
+      full_name: name,
     },
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  // Extract token_hash from the generated link
+  const actionLink = data.properties.action_link;
+  const url = new URL(actionLink);
+  const tokenHash = url.searchParams.get('token_hash');
+  
+  if (!tokenHash) {
+    return { error: "Failed to generate secure verification token" };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const confirmLink = `${siteUrl}/auth/confirm?token_hash=${tokenHash}&type=signup`;
+
+  // Send email via Resend
+  const { Resend } = await import('resend');
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'admin@kauseyah.com';
+
+  const { error: emailError } = await resend.emails.send({
+    from: `Kauseyah <${fromEmail}>`,
+    to: email,
+    subject: 'Confirm your Kauseyah account',
+    html: `
+      <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #111;">
+        <h2 style="color: #FF6B00;">Welcome to Kauseyah!</h2>
+        <p>Hi ${name},</p>
+        <p>Thank you for creating an account with us. Please verify your email address to activate your account and start shopping.</p>
+        <div style="margin: 32px 0;">
+          <a href="${confirmLink}" style="background-color: #FF6B00; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+        </div>
+        <p style="color: #666; font-size: 14px;">If you didn't request this, you can safely ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;" />
+        <p style="color: #888; font-size: 12px;">Best regards,<br>The Kauseyah Team</p>
+      </div>
+    `
+  });
+
+  if (emailError) {
+    console.error("Failed to send verification email:", emailError);
+    // User is created but email failed. We still return error so UI handles it.
+    return { error: "Failed to send verification email. Please contact support." };
   }
 
   return { success: true };

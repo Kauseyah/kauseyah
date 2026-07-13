@@ -1,0 +1,8 @@
+.next
+node_modules
+.env.local
+.git
+.vercel
+
+public/images/artesian/inshort.mp4
+public/videos/hvideo.mp4
