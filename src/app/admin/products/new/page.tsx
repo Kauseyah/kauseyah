@@ -8,59 +8,7 @@ import { createProduct } from "@/app/actions/product-actions";
 import { createClient } from "@/utils/supabase/client";
 import toast from "react-hot-toast";
 
-const SUBCATEGORY_GROUPS = [
-  {
-    label: "Handlooms",
-    options: [
-      { value: "sarees", label: "Sarees" },
-      { value: "kurtis", label: "Easy Cotton Kurtis" },
-      { value: "dupattas", label: "Dupattas" },
-      { value: "stoles", label: "Stoles" },
-      { value: "fabric-yardages", label: "Fabric Yardages" },
-      { value: "kosa-jackets", label: "Men Kosa Jackets" },
-    ]
-  },
-  {
-    label: "Jewellery",
-    options: [
-      { value: "earrings", label: "Handcrafted Earrings" }
-    ]
-  },
-  {
-    label: "Home",
-    options: [
-      { value: "baskets", label: "Baskets" },
-      { value: "wall-plates", label: "Wall Plates" },
-      { value: "diyas", label: "Cow Dung Diyas" },
-      { value: "fridge-magnets", label: "Hand Painted Fridge Magnets" },
-      { value: "incense-holders", label: "Hand Painted Incense Stick Holders" },
-      { value: "toran", label: "Eco Seed Paper Toran" }
-    ]
-  },
-  {
-    label: "Conscious",
-    options: [
-      { value: "gift-hampers", label: "Gift Hampers" },
-      { value: "rakhi", label: "Rakhi Collection" },
-      { value: "sunglass-pouch", label: "Sunglass Pouch" },
-      { value: "brass-plates", label: "Brass Plates" }
-    ]
-  },
-  {
-    label: "Tribal",
-    options: [
-      { value: "gond-art", label: "Gond Art" },
-      { value: "dhokra-craft", label: "Dhokra Craft" }
-    ]
-  },
-  {
-    label: "Upcycled",
-    options: [
-      { value: "textile-toys", label: "Textile Toys" },
-      { value: "faabr", label: "Faabr" }
-    ]
-  }
-];
+
 
 const CustomSelect = ({ value, onChange, placeholder, options, groups }: any) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +50,7 @@ const CustomSelect = ({ value, onChange, placeholder, options, groups }: any) =>
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto top-full left-0 origin-top animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto top-full left-0 origin-top animate-in fade-in zoom-in-95 duration-100 py-1">
           {options && options.map((opt: any) => (
             <div
               key={opt.value}
@@ -127,6 +75,12 @@ const CustomSelect = ({ value, onChange, placeholder, options, groups }: any) =>
               ))}
             </div>
           ))}
+
+          {(!options || options.length === 0) && (!groups || groups.length === 0) && (
+            <div className="px-4 py-3 text-sm text-slate-500 italic text-center">
+              No options available
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -139,19 +93,35 @@ export default function AddProductPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [fileName, setFileName] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<any[]>([]);
 
   // Form State
   const [status, setStatus] = useState("draft");
   const [categoryId, setCategoryId] = useState("");
   const [subcategory, setSubcategory] = useState("");
+  const [isCustomSubcategory, setIsCustomSubcategory] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       const supabase = createClient();
-      const { data } = await supabase.from("categories").select("*");
-      if (data) setCategories(data);
+      const [catsRes, subcatsRes] = await Promise.all([
+        supabase.from("categories").select("*"),
+        supabase.from("subcategories").select("*")
+      ]);
+      
+      if (catsRes.error) {
+        console.error("Error fetching categories:", catsRes.error);
+      } else if (catsRes.data) {
+        setCategories(catsRes.data);
+      }
+
+      if (subcatsRes.error) {
+        console.error("Error fetching subcategories:", subcatsRes.error);
+      } else if (subcatsRes.data) {
+        setSubcategories(subcatsRes.data);
+      }
     };
-    fetchCategories();
+    fetchData();
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -160,6 +130,8 @@ export default function AddProductPage() {
     setErrorMsg("");
     
     const formData = new FormData(event.currentTarget);
+    formData.set("status", status); // Explicitly ensure status is captured
+
     const result = await createProduct(formData);
     
     if (result?.error) {
@@ -174,11 +146,17 @@ export default function AddProductPage() {
   }
 
   const selectedCat = categories.find(c => c.id === categoryId);
-  const filteredSubGroups = SUBCATEGORY_GROUPS.filter(group => {
-    if (!selectedCat) return true;
-    return group.label.toLowerCase().includes(selectedCat.name.toLowerCase().split(' ')[0]) || 
-           selectedCat.name.toLowerCase().includes(group.label.toLowerCase().split(' ')[0]);
-  });
+  const filteredSubcategories = subcategories.filter(sc => 
+    !categoryId || sc.category_id === categoryId
+  );
+  
+  // Format into a single group for CustomSelect or just options
+  const filteredSubGroups = filteredSubcategories.length > 0 ? [
+    {
+      label: selectedCat?.name || "Subcategories",
+      options: filteredSubcategories.map(sc => ({ value: sc.name, label: sc.name }))
+    }
+  ] : [];
 
   return (
     <div className="flex-1 overflow-auto bg-slate-950">
@@ -323,7 +301,12 @@ export default function AddProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-bold text-slate-300">Category</label>
+                    <Link href="/admin/products/categories" className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+                      + New Category
+                    </Link>
+                  </div>
                   <CustomSelect 
                     value={categoryId}
                     onChange={(val: string) => {
@@ -336,13 +319,30 @@ export default function AddProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Subcategory</label>
-                  <CustomSelect 
-                    value={subcategory}
-                    onChange={setSubcategory}
-                    placeholder="Select a subcategory"
-                    groups={filteredSubGroups}
-                  />
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-bold text-slate-300">Subcategory</label>
+                    {filteredSubGroups.length > 0 && (
+                      <button type="button" onClick={() => setIsCustomSubcategory(!isCustomSubcategory)} className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+                        {isCustomSubcategory ? "Select existing" : "+ Custom Subcategory"}
+                      </button>
+                    )}
+                  </div>
+                  {isCustomSubcategory || filteredSubGroups.length === 0 ? (
+                    <input 
+                      type="text" 
+                      value={subcategory}
+                      onChange={(e) => setSubcategory(e.target.value)}
+                      placeholder="Type a subcategory..."
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all text-base shadow-sm"
+                    />
+                  ) : (
+                    <CustomSelect 
+                      value={subcategory}
+                      onChange={setSubcategory}
+                      placeholder="Select a subcategory"
+                      groups={filteredSubGroups}
+                    />
+                  )}
                 </div>
 
                 <div className="pt-6 border-t border-slate-800">

@@ -13,8 +13,12 @@ export default function DeleteProductButton({ productId }: { productId: string }
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        await deleteProduct(productId);
-        toast.success("Product deleted successfully");
+        const result = await deleteProduct(productId);
+        if (result?.error) {
+          toast.error(result.error);
+        } else {
+          toast.success("Product deleted successfully");
+        }
         setIsOpen(false);
       } catch (error) {
         toast.error("Failed to delete product");

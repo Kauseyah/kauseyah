@@ -29,6 +29,12 @@ export default async function AdminProducts() {
             Categories
           </Link>
           <Link 
+            href="/admin/products/subcategories"
+            className="flex items-center gap-2 bg-slate-900 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-800 hover:text-white transition-colors shadow-sm"
+          >
+            Subcategories
+          </Link>
+          <Link 
             href="/admin/products/new"
             className="flex items-center gap-2 bg-orange-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-orange-500 transition-colors shadow-sm"
           >

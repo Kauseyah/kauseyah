@@ -15,7 +15,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
-export default function Navbar() {
+interface DynamicCategoryGroup {
+  id: string;
+  label: string;
+  href: string;
+  icon?: string;
+  description?: string;
+  items: { label: string; href: string; }[];
+}
+
+export default function Navbar({ dynamicCategories }: { dynamicCategories?: DynamicCategoryGroup[] }) {
   const pathname = usePathname();
   const router = useRouter();
   const scrollY = useScrollY();
@@ -38,6 +47,8 @@ export default function Navbar() {
     };
     checkAuth();
   }, []);
+
+  const groupsToUse = dynamicCategories && dynamicCategories.length > 0 ? dynamicCategories : SHOP_CATEGORY_GROUPS;
 
 
 
@@ -134,7 +145,7 @@ export default function Navbar() {
         className={cn(
           "fixed z-50 transition-all duration-700",
           isScrolled || forceScrolledStyle
-            ? "top-2 left-3 right-3 md:top-3 md:left-[7%] md:right-[7%] rounded-full bg-[#111111] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-white/10"
+            ? "top-0 left-0 right-0 bg-[#111111] border-b border-white/5"
             : isAuthPage
               ? "top-0 left-0 right-0 bg-[#111111]"
               : isSolidHeaderPage
@@ -146,7 +157,7 @@ export default function Navbar() {
           className={cn(
             "w-full transition-all duration-700",
             isScrolled || forceScrolledStyle
-              ? "px-4 sm:px-6 md:px-8 lg:px-12 py-3"
+              ? "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-3"
               : isSolidHeaderPage
                 ? "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-2.5 lg:py-3"
                 : "max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-1"
@@ -450,7 +461,7 @@ export default function Navbar() {
           >
             <div className="px-8 lg:px-12 py-8">
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-6 xl:gap-x-8">
-                {SHOP_CATEGORY_GROUPS.map((group) => (
+                {groupsToUse.map((group) => (
                   <div key={group.id} className="flex flex-col gap-3.5 min-w-0">
                     <Link
                       href={group.href}
@@ -540,7 +551,7 @@ export default function Navbar() {
                             className="overflow-hidden"
                           >
                             <div className="grid grid-cols-1 gap-6 py-6 px-2">
-                              {SHOP_CATEGORY_GROUPS.map((group) => (
+                              {groupsToUse.map((group) => (
                                 <div key={group.id}>
                                   <Link
                                     href={group.href}

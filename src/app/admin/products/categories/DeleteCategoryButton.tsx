@@ -13,8 +13,12 @@ export default function DeleteCategoryButton({ categoryId }: { categoryId: strin
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        await deleteCategory(categoryId);
-        toast.success("Category deleted successfully");
+        const result = await deleteCategory(categoryId);
+        if (result?.error) {
+          toast.error(result.error);
+        } else {
+          toast.success("Category deleted successfully");
+        }
         setIsOpen(false);
       } catch (error) {
         toast.error("Failed to delete category");

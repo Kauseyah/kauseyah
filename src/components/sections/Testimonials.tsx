@@ -81,7 +81,7 @@ export default function Testimonials() {
             </p>
 
             {/* Navigation Controls below header for layout balance */}
-            <div className="flex items-center gap-8 mt-6 md:mt-20">
+            <div className="hidden lg:flex items-center gap-8 mt-6 md:mt-20">
               <button 
                 onClick={prev}
                 className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
@@ -143,6 +143,29 @@ export default function Testimonials() {
                 </div>
               </motion.div>
             </AnimatePresence>
+
+            {/* Mobile Navigation Controls */}
+            <div className="flex lg:hidden items-center gap-8 mt-12 pt-8 border-t border-[#FF6B00]/10">
+              <button 
+                onClick={prev}
+                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="transition-transform group-hover:-translate-x-1">
+                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Prev
+              </button>
+              <div className="w-12 h-px bg-[#FF6B00]/20" />
+              <button 
+                onClick={next}
+                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
+              >
+                Next
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="rotate-180 transition-transform group-hover:translate-x-1">
+                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
         </div>
