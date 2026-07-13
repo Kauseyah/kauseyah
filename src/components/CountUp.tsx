@@ -12,7 +12,7 @@ type CountUpProps = {
 
 export function CountUp({ value, suffix = "", duration = 2, className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "0px" });
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {

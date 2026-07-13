@@ -1,8 +1,20 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
+// Helper to ensure user is admin and return the admin client
+async function getAdminClient() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -21,7 +33,7 @@ const productSchema = z.object({
 });
 
 export async function createProduct(formData: FormData) {
-  const supabase = await createClient();
+  const adminClient = await getAdminClient();
   
   try {
     const data = {
@@ -50,7 +62,7 @@ export async function createProduct(formData: FormData) {
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError, data: uploadData } = await adminClient.storage
         .from("product-images")
         .upload(fileName, imageFile);
 
@@ -58,7 +70,7 @@ export async function createProduct(formData: FormData) {
         throw new Error(`Failed to upload image: ${uploadError.message}`);
       }
 
-      const { data: publicUrlData } = supabase.storage
+      const { data: publicUrlData } = adminClient.storage
         .from("product-images")
         .getPublicUrl(fileName);
         
@@ -71,7 +83,7 @@ export async function createProduct(formData: FormData) {
       images: imageUrl ? [imageUrl] : [],
     };
 
-    const { error: insertError } = await supabase
+    const { error: insertError } = await adminClient
       .from("products")
       .insert([productInsert]);
 
@@ -88,7 +100,7 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  const supabase = await createClient();
+  const adminClient = await getAdminClient();
   
   try {
     const data = {
@@ -106,6 +118,8 @@ export async function updateProduct(id: string, formData: FormData) {
       status: formData.get("status") || "draft",
       featured: formData.get("featured") === "true",
     };
+    
+    console.log("updateProduct payload:", data);
 
     const validatedData = productSchema.parse(data);
 
@@ -117,7 +131,7 @@ export async function updateProduct(id: string, formData: FormData) {
       const fileExt = imageFile.name.split(".").pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError, data: uploadData } = await adminClient.storage
         .from("product-images")
         .upload(fileName, imageFile);
 
@@ -125,7 +139,7 @@ export async function updateProduct(id: string, formData: FormData) {
         throw new Error(`Failed to upload image: ${uploadError.message}`);
       }
 
-      const { data: publicUrlData } = supabase.storage
+      const { data: publicUrlData } = adminClient.storage
         .from("product-images")
         .getPublicUrl(fileName);
         
@@ -139,7 +153,7 @@ export async function updateProduct(id: string, formData: FormData) {
       productUpdate.images = [imageUrl];
     }
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await adminClient
       .from("products")
       .update(productUpdate)
       .eq("id", id);

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/store/CartContext";
+import { createClient } from "@/utils/supabase/server";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/constants";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -54,11 +55,27 @@ export const metadata: Metadata = {
 // ─── Root Layout ──────────────────────────────────────────────────────────────
 export const dynamic = 'force-dynamic';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: categories } = await supabase.from("categories").select("*").order("created_at", { ascending: true });
+  const { data: subcategories } = await supabase.from("subcategories").select("*").order("created_at", { ascending: true });
+
+  const dynamicCategoryGroups = categories?.map(cat => ({
+    id: cat.id,
+    label: cat.name,
+    href: `/collections/${cat.slug}`,
+    icon: "✨",
+    description: cat.description || "",
+    items: subcategories?.filter(sub => sub.category_id === cat.id).map(sub => ({
+      label: sub.name,
+      href: `/collections/${sub.slug}`
+    })) || []
+  })) || [];
+
   return (
     <html
       lang="en"
@@ -69,7 +86,7 @@ export default function RootLayout({
           <div className="relative w-full max-w-[100vw] overflow-x-hidden flex flex-col min-h-screen">
             <Toaster position="top-center" />
             <Loader />
-            <Navbar />
+            <Navbar dynamicCategories={dynamicCategoryGroups} />
             <main className="flex-1 w-full">{children}</main>
             <Footer />
             <WhatsAppFloat />

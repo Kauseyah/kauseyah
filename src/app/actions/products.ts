@@ -12,7 +12,8 @@ export async function deleteProduct(id: string) {
     .eq("id", id);
 
   if (error) {
-    return { error: error.message };
+    console.error("Delete product error:", error);
+    return { error: error.message || "Failed to delete from database" };
   }
 
   revalidatePath("/admin/products");
