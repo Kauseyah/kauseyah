@@ -103,12 +103,14 @@ export async function register(formData: FormData) {
     return { error: error.message };
   }
 
-  // Extract token_hash from the generated link
-  const actionLink = data.properties.action_link;
-  const url = new URL(actionLink);
-  const tokenHash = url.searchParams.get('token_hash');
+  // Get the newly created user's ID so we can roll back if something fails
+  const userId = data?.user?.id;
+
+  // Extract token_hash directly from the response properties
+  const tokenHash = data.properties?.hashed_token;
   
   if (!tokenHash) {
+    if (userId) await supabaseAdmin.auth.admin.deleteUser(userId);
     return { error: "Failed to generate secure verification token" };
   }
 
@@ -118,34 +120,35 @@ export async function register(formData: FormData) {
   // Send email via Resend
   const { Resend } = await import('resend');
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'admin@kauseyah.com';
 
-  const { error: emailError } = await resend.emails.send({
-    from: `Kauseyah <${fromEmail}>`,
-    to: email,
-    subject: 'Confirm your Kauseyah account',
-    html: `
-      <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #111;">
-        <h2 style="color: #FF6B00;">Welcome to Kauseyah!</h2>
-        <p>Hi ${name},</p>
-        <p>Thank you for creating an account with us. Please verify your email address to activate your account and start shopping.</p>
-        <div style="margin: 32px 0;">
-          <a href="${confirmLink}" style="background-color: #FF6B00; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+  try {
+    const { error: emailError } = await resend.emails.send({
+      from: 'Kauseyah <orders@kauseyah.com>',
+      to: email,
+      subject: 'Verify your Kauseyah account',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 10px;">
+          <h2 style="color: #b75d29; text-align: center;">Welcome to Kauseyah!</h2>
+          <p style="color: #333; font-size: 16px;">Hi ${name},</p>
+          <p style="color: #333; font-size: 16px;">Thank you for joining Kauseyah. Please verify your email address by clicking the button below:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${confirmLink}" style="background-color: #b75d29; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">Verify Email</a>
+          </div>
+          <p style="color: #777; font-size: 14px; text-align: center;">If you didn't create an account, you can safely ignore this email.</p>
         </div>
-        <p style="color: #666; font-size: 14px;">If you didn't request this, you can safely ignore this email.</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;" />
-        <p style="color: #888; font-size: 12px;">Best regards,<br>The Kauseyah Team</p>
-      </div>
-    `
-  });
+      `,
+    });
 
-  if (emailError) {
-    console.error("Failed to send verification email:", emailError);
-    // User is created but email failed. We still return error so UI handles it.
-    return { error: "Failed to send verification email. Please contact support." };
+    if (emailError) {
+      if (userId) await supabaseAdmin.auth.admin.deleteUser(userId);
+      return { error: `Failed to send email: ${emailError.message}` };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    if (userId) await supabaseAdmin.auth.admin.deleteUser(userId);
+    return { error: err.message || "Failed to send verification email" };
   }
-
-  return { success: true };
 }
 
 export async function verifyOTP(email: string, token: string) {

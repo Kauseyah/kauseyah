@@ -24,12 +24,22 @@ export async function PUT(
       .eq('is_default', true);
   }
 
+  // Map frontend schema to DB schema
+  const { full_name, phone_number, address_line_1, address_line_2, postal_code, type, ...rest } = body;
+  const dbPayload = {
+    ...rest,
+    full_name: full_name,
+    phone: phone_number,
+    line1: address_line_1,
+    line2: address_line_2 || null,
+    pincode: postal_code,
+    type: type, // We will add the type column to DB
+    updated_at: new Date().toISOString()
+  };
+
   const { data, error } = await supabase
     .from('user_addresses')
-    .update({
-      ...body,
-      updated_at: new Date().toISOString()
-    })
+    .update(dbPayload)
     .eq('id', id)
     .eq('user_id', user.id) // Ensure they only update their own
     .select()
@@ -39,7 +49,17 @@ export async function PUT(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // Map back to frontend just in case
+  const responseData = {
+    ...data,
+    full_name: data.full_name,
+    phone_number: data.phone,
+    address_line_1: data.line1,
+    address_line_2: data.line2,
+    postal_code: data.pincode
+  };
+
+  return NextResponse.json(responseData);
 }
 
 export async function DELETE(

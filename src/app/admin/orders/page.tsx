@@ -88,8 +88,8 @@ export default async function AdminOrders({
                       {new Date(order.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-bold text-white">{order.shipping_name}</div>
-                      <div className="text-xs text-slate-500">{order.shipping_phone}</div>
+                      <div className="font-bold text-white">{order.shipping_address?.name || 'Guest'}</div>
+                      <div className="text-xs text-slate-500">{order.shipping_address?.phone || ''}</div>
                     </td>
                     <td className="px-6 py-4 font-bold text-white">
                       ₹{order.total_amount}

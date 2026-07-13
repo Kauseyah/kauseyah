@@ -89,6 +89,25 @@ export async function createProduct(formData: FormData) {
       imageUrl = publicUrlData.publicUrl;
     }
 
+    // Automatically register custom subcategory in the global database
+    if (validatedData.subcategory && validatedData.category_id) {
+      const { data: existingSub } = await adminClient
+        .from("subcategories")
+        .select("id")
+        .eq("category_id", validatedData.category_id)
+        .ilike("name", validatedData.subcategory)
+        .maybeSingle();
+        
+      if (!existingSub) {
+        const newSlug = validatedData.subcategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        await adminClient.from("subcategories").insert({
+          name: validatedData.subcategory,
+          slug: newSlug,
+          category_id: validatedData.category_id
+        });
+      }
+    }
+
     // Insert Product
     const productInsert = {
       ...validatedData,
@@ -156,6 +175,25 @@ export async function updateProduct(id: string, formData: FormData) {
         .getPublicUrl(fileName);
         
       imageUrl = publicUrlData.publicUrl;
+    }
+
+    // Automatically register custom subcategory in the global database
+    if (validatedData.subcategory && validatedData.category_id) {
+      const { data: existingSub } = await adminClient
+        .from("subcategories")
+        .select("id")
+        .eq("category_id", validatedData.category_id)
+        .ilike("name", validatedData.subcategory)
+        .maybeSingle();
+        
+      if (!existingSub) {
+        const newSlug = validatedData.subcategory.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        await adminClient.from("subcategories").insert({
+          name: validatedData.subcategory,
+          slug: newSlug,
+          category_id: validatedData.category_id
+        });
+      }
     }
 
     // Update Product

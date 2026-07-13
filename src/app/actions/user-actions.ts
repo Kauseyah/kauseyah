@@ -29,16 +29,38 @@ export async function updateProfile(formData: { full_name: string, phone: string
 
     const { full_name, phone } = formData;
 
-    // Update profiles table
-    const { error } = await supabase
+    // Check if profile exists
+    const { data: existingProfile } = await supabase
       .from('profiles')
-      .upsert({ 
-        id: user.id, 
-        full_name, 
-        phone,
-        email: user.email,
-        updated_at: new Date().toISOString()
-      });
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    let error;
+
+    if (existingProfile) {
+      // Update existing
+      const result = await supabase
+        .from('profiles')
+        .update({ 
+          full_name, 
+          phone,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingProfile.id);
+      error = result.error;
+    } else {
+      // Insert new
+      const result = await supabase
+        .from('profiles')
+        .insert({ 
+          user_id: user.id,
+          full_name, 
+          phone,
+          updated_at: new Date().toISOString()
+        });
+      error = result.error;
+    }
 
     if (error) {
       return { error: `UPSERT_ERROR: ${error.message}` };

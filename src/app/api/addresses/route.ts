@@ -20,7 +20,17 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(addresses || []);
+  // Map DB schema to frontend schema
+  const mappedAddresses = (addresses || []).map(addr => ({
+    ...addr,
+    full_name: addr.name || addr.full_name,
+    phone_number: addr.phone || addr.phone_number,
+    address_line_1: addr.line1 || addr.address || addr.address_line_1,
+    address_line_2: addr.line2 || addr.address_line_2 || '',
+    postal_code: addr.pincode || addr.postal_code,
+  }));
+
+  return NextResponse.json(mappedAddresses);
 }
 
 export async function POST(request: Request) {
@@ -33,8 +43,6 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   
-  // If this is the first address or set as default, we might need to unset others later, 
-  // but for simplicity we'll just insert. The client can handle default logic or we can do it here.
   if (body.is_default) {
     // Unset other defaults
     await supabase
@@ -44,12 +52,22 @@ export async function POST(request: Request) {
       .eq('is_default', true);
   }
 
+  // Map frontend schema to DB schema
+  const { full_name, phone_number, address_line_1, address_line_2, postal_code, type, ...rest } = body;
+  const dbPayload = {
+    ...rest,
+    user_id: user.id,
+    full_name: full_name, // DB uses full_name
+    phone: phone_number, // DB uses phone
+    line1: address_line_1, // DB uses line1
+    line2: address_line_2 || null, // DB uses line2
+    pincode: postal_code, // DB uses pincode
+    type: type // We will add the type column to DB
+  };
+
   const { data, error } = await supabase
     .from('user_addresses')
-    .insert({
-      user_id: user.id,
-      ...body
-    })
+    .insert(dbPayload)
     .select()
     .single();
 
@@ -57,5 +75,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // Map back to frontend just in case
+  const responseData = {
+    ...data,
+    full_name: data.full_name,
+    phone_number: data.phone,
+    address_line_1: data.line1,
+    address_line_2: data.line2,
+    postal_code: data.pincode
+  };
+
+  return NextResponse.json(responseData);
 }

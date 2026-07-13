@@ -8,10 +8,10 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
   const { id } = resolvedParams;
   const supabase = await createClient();
 
-  // Fetch payment details with associated order and customer
+  // Fetch payment details from orders table
   const { data: payment, error } = await supabase
-    .from("payments")
-    .select("*, orders(*, profiles:customer_id(full_name, email))")
+    .from("orders")
+    .select("*, profiles:user_id(full_name, email)")
     .eq("id", id)
     .single();
 
@@ -19,8 +19,8 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
     notFound();
   }
 
-  const order = payment.orders;
-  const customer = order?.profiles;
+  const order = payment;
+  const customer = payment.profiles;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 max-w-4xl">
@@ -37,15 +37,15 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
         </div>
         <div>
           <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider
-            ${payment.status === 'completed' || payment.status === 'paid' ? 'bg-green-50 text-green-700' : ''}
-            ${payment.status === 'pending' ? 'bg-yellow-50 text-yellow-700' : ''}
-            ${payment.status === 'failed' ? 'bg-red-50 text-red-700' : ''}
-            ${payment.status === 'refunded' ? 'bg-gray-100 text-gray-700' : ''}
+            ${payment.payment_status === 'completed' || payment.payment_status === 'paid' ? 'bg-green-50 text-green-700' : ''}
+            ${payment.payment_status === 'pending' ? 'bg-yellow-50 text-yellow-700' : ''}
+            ${payment.payment_status === 'failed' ? 'bg-red-50 text-red-700' : ''}
+            ${payment.payment_status === 'refunded' ? 'bg-gray-100 text-gray-700' : ''}
           `}>
-            {payment.status === 'completed' || payment.status === 'paid' ? <CheckCircle2 size={14} /> : ''}
-            {payment.status === 'pending' ? <Clock size={14} /> : ''}
-            {payment.status === 'failed' ? <XCircle size={14} /> : ''}
-            {payment.status}
+            {payment.payment_status === 'completed' || payment.payment_status === 'paid' ? <CheckCircle2 size={14} /> : ''}
+            {payment.payment_status === 'pending' ? <Clock size={14} /> : ''}
+            {payment.payment_status === 'failed' ? <XCircle size={14} /> : ''}
+            {payment.payment_status}
           </span>
         </div>
       </div>
@@ -61,18 +61,12 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
             <div>
               <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Razorpay Payment ID</p>
               <p className="font-mono font-medium text-gray-900 bg-gray-50 p-2 rounded border border-gray-100 break-all">
-                {payment.razorpay_payment_id || 'Not available'}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Razorpay Order ID</p>
-              <p className="font-mono text-sm text-gray-700">
-                {payment.razorpay_order_id || 'Not available'}
+                {payment.payment_id || 'Not available'}
               </p>
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Amount Paid</p>
-              <p className="text-2xl font-bold text-gray-900">₹{payment.amount}</p>
+              <p className="text-2xl font-bold text-gray-900">₹{payment.total_amount}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Date & Time</p>
@@ -80,19 +74,6 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
                 {new Date(payment.created_at).toLocaleString()}
               </p>
             </div>
-            {payment.receipt_url && (
-              <div className="pt-2">
-                <a 
-                  href={payment.receipt_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  <Receipt size={16} />
-                  View Receipt
-                </a>
-              </div>
-            )}
           </div>
         </div>
 
@@ -116,7 +97,7 @@ export default async function PaymentDetails({ params }: { params: Promise<{ id:
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Customer / Shipping Name</p>
-                <p className="font-medium text-gray-900">{order.shipping_name}</p>
+                <p className="font-medium text-gray-900">{order.shipping_address?.name}</p>
                 {customer?.email && (
                   <p className="text-sm text-gray-500">{customer.email}</p>
                 )}

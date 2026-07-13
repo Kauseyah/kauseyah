@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -9,11 +10,12 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Use admin to bypass any RLS on GET as well if needed, but standard client is fine.
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
-    .single();
+    .eq('user_id', user.id) // Also fix this from id to user_id just in case
+    .maybeSingle();
 
   if (profileError && profileError.code !== 'PGRST116') {
     return NextResponse.json({ error: profileError.message }, { status: 500 });
@@ -22,8 +24,9 @@ export async function GET() {
   // If profile exists but is missing some fields, fallback to auth user details
   const result = profile ? {
     ...profile,
-    email: profile.email || user.email, // Fallback to auth email if profile email is null
+    email: user.email, // Use auth email directly
     full_name: profile.full_name || user.user_metadata?.full_name || '',
+    phone: profile.phone || user.phone || ''
   } : { 
     id: user.id, 
     email: user.email, 
@@ -52,18 +55,44 @@ export async function PUT(request: Request) {
   const body = await request.json();
   const { full_name, phone } = body;
 
-  // Update profiles table
-  const { data, error } = await supabase
+  // Check if profile exists
+  const { data: existingProfile } = await supabase
     .from('profiles')
-    .upsert({ 
-      id: user.id, 
-      full_name, 
-      phone,
-      email: user.email, // Ensure email is synced
-      updated_at: new Date().toISOString()
-    })
-    .select()
-    .single();
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  let data, error;
+
+  if (existingProfile) {
+    // Update existing profile
+    const result = await supabase
+      .from('profiles')
+      .update({ 
+        full_name, 
+        phone,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', existingProfile.id)
+      .select()
+      .single();
+    data = result.data;
+    error = result.error;
+  } else {
+    // Insert new profile
+    const result = await supabase
+      .from('profiles')
+      .insert({ 
+        user_id: user.id,
+        full_name, 
+        phone,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+    data = result.data;
+    error = result.error;
+  }
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

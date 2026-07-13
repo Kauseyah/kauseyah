@@ -17,8 +17,11 @@ export async function GET(request: NextRequest) {
     })
     
     if (!error) {
-      // Redirect user to specified redirect URL or account page
-      return NextResponse.redirect(new URL(next, request.url))
+      // Force sign out so the user has to log in manually as requested
+      await supabase.auth.signOut();
+      
+      // Redirect user to the login page with a success message flag
+      return NextResponse.redirect(new URL('/login?verified=true', request.url))
     } else {
       console.error("Auth confirm error:", error.message);
     }
