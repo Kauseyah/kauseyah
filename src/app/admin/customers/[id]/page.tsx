@@ -28,7 +28,7 @@ export default async function CustomerDetails({ params }: { params: Promise<{ id
   const { data: orders } = await supabase
     .from("orders")
     .select("*")
-    .eq("customer_id", id)
+    .eq("user_id", id)
     .order("created_at", { ascending: false });
 
   // Dynamically calculate real total spent from orders

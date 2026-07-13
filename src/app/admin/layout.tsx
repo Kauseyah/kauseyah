@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
 import AdminSidebar from "./AdminSidebar";
+import AdminLayoutWrapper from "./AdminLayoutWrapper";
 import { createClient as createServerClient } from "@/utils/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
@@ -70,25 +71,19 @@ export default async function AdminLayout({
     .or('role.neq.admin,role.is.null');
 
   return (
-    <div className={`flex flex-col md:flex-row h-screen bg-slate-50 ${inter.className}`}>
-      {/* Sidebar Component */}
-      <AdminSidebar 
-        totalOrders={totalOrdersCount || 0}
-        totalPayments={totalPaymentsCount || 0}
-        totalCustomers={totalCustomersCount || 0}
-        handleLogout={handleLogout}
-      />
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-slate-950">
-        
-        {/* Page Content */}
-        <div className="flex-1 overflow-auto p-6 md:p-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <div className="max-w-[1200px] mx-auto">
-            {children}
-          </div>
-        </div>
-      </main>
+    <div className={inter.className}>
+      <AdminLayoutWrapper 
+        sidebar={
+          <AdminSidebar 
+            totalOrders={totalOrdersCount || 0}
+            totalPayments={totalPaymentsCount || 0}
+            totalCustomers={totalCustomersCount || 0}
+            handleLogout={handleLogout}
+          />
+        }
+      >
+        {children}
+      </AdminLayoutWrapper>
     </div>
   );
 }

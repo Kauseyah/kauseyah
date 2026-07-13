@@ -62,6 +62,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // 2b. Fetch subcategory from Supabase if not a category
+  const { data: subcategory } = await supabase
+    .from("subcategories")
+    .select("name")
+    .eq("slug", slug)
+    .single();
+
+  if (subcategory) {
+    return {
+      title: subcategory.name,
+    };
+  }
+
   // 3. Fallback to mock generic collections if DB fails
   const mockCollection = COLLECTIONS.find((c) => c.slug === slug);
   if (mockCollection) {
@@ -117,32 +130,69 @@ export default async function CollectionDetailPage({ params, searchParams }: Pro
     .eq("slug", slug)
     .single();
 
-  if (!category) {
-    notFound();
+  if (category) {
+    // ─── 3. Fetch Products for this Category ───
+    let query = supabase
+      .from("products")
+      .select("*, category:categories(name)")
+      .eq("status", "published")
+      .eq("category_id", category.id);
+
+    // If a subcategory query parameter is present in the URL, filter by it
+    if (subcategoryQuery) {
+      query = query.ilike("subcategory", subcategoryQuery);
+    }
+
+    const { data: sbProducts } = await query;
+    const products = (sbProducts || []).map(mapSupabaseProductToFrontend);
+
+    const displayTitle = subcategoryQuery || category.name;
+
+    return (
+      <CollectionDetailPageClient
+        title={displayTitle}
+        description={category.description || ""}
+        products={products}
+      />
+    );
   }
 
-  // ─── 3. Fetch Products for this Category ───
-  let query = supabase
-    .from("products")
-    .select("*, category:categories(name)")
-    .eq("status", "published")
-    .eq("category_id", category.id);
+  // ─── 4. If not a category, try Subcategory ───
+  const { data: subcategory } = await supabase
+    .from("subcategories")
+    .select("id, name, category_id")
+    .eq("slug", slug)
+    .single();
 
-  // If a subcategory query parameter is present in the URL, filter by it
-  if (subcategoryQuery) {
-    query = query.ilike("subcategory", subcategoryQuery);
+  if (subcategory) {
+    let description = "";
+    if (subcategory.category_id) {
+      const { data: catData } = await supabase
+        .from("categories")
+        .select("description")
+        .eq("id", subcategory.category_id)
+        .single();
+      if (catData?.description) description = catData.description;
+    }
+
+    let query = supabase
+      .from("products")
+      .select("*, category:categories(name)")
+      .eq("status", "published")
+      .ilike("subcategory", subcategory.name);
+
+    const { data: sbProducts } = await query;
+    const products = (sbProducts || []).map(mapSupabaseProductToFrontend);
+
+    return (
+      <CollectionDetailPageClient
+        title={subcategory.name}
+        description={description}
+        products={products}
+      />
+    );
   }
 
-  const { data: sbProducts } = await query;
-  const products = (sbProducts || []).map(mapSupabaseProductToFrontend);
-
-  const displayTitle = subcategoryQuery || category.name;
-
-  return (
-    <CollectionDetailPageClient
-      title={displayTitle}
-      description={category.description || ""}
-      products={products}
-    />
-  );
+  // If neither category nor subcategory was found, show 404
+  notFound();
 }

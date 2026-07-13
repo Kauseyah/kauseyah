@@ -4,7 +4,7 @@ import { User as UserIcon, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-re
 import Link from "next/link";
 import { BRAND_TAGLINE } from "@/constants";
 
-import { useTransition, Suspense, useState } from "react";
+import { useTransition, Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { login } from "@/app/actions/auth-actions";
 import toast from "react-hot-toast";
@@ -14,8 +14,16 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/account";
+  const verified = searchParams.get("verified");
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+
+  // Show a success message if the user just verified their email
+  useEffect(() => {
+    if (verified === "true") {
+      toast.success("Email verified successfully! Please log in.");
+    }
+  }, [verified]);
 
   const handleLogin = (formData: FormData) => {
     startTransition(async () => {

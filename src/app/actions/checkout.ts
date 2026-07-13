@@ -22,20 +22,21 @@ export async function createOrder(orderData: any, cartItems: any[]) {
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
-      customer_id: user.id,
+      user_id: user.id,
       order_status: "processing",
-      shipping_name: orderData.shipping_name,
-      shipping_address: orderData.shipping_address,
-      city: orderData.city,
-      state: "Not Specified", // Default state if missing
-      pincode: orderData.pincode,
-      shipping_phone: orderData.shipping_phone,
       subtotal: orderData.subtotal,
       shipping_charge: orderData.shipping_charge,
+      shipping_address: {
+        name: orderData.shipping_name,
+        phone: orderData.shipping_phone,
+        address: orderData.shipping_address,
+        city: orderData.city,
+        state: orderData.state || "Not Specified",
+        pincode: orderData.pincode
+      },
       payment_status: orderData.payment_status,
       total_amount: orderData.total_amount,
-      razorpay_order_id: orderData.razorpay_order_id || null,
-      razorpay_payment_id: orderData.razorpay_payment_id || null,
+      payment_id: orderData.razorpay_payment_id || null,
     })
     .select()
     .single();

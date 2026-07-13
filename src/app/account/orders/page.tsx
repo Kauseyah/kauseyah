@@ -25,7 +25,7 @@ export default async function OrdersPage() {
   const { data: orders } = await supabaseAdmin
     .from("orders")
     .select("*")
-    .eq("customer_id", user.id)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   return (
