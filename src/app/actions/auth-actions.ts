@@ -92,8 +92,10 @@ export async function register(formData: FormData) {
     type: 'signup',
     email,
     password,
-    data: {
-      full_name: name,
+    options: {
+      data: {
+        full_name: name,
+      },
     },
   });
 
