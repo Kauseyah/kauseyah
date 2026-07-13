@@ -17,11 +17,11 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
     .eq("id", id)
     .single();
 
-  if (order && order.customer_id) {
+  if (order && order.user_id) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name, email")
-      .eq("id", order.customer_id)
+      .select("full_name, phone")
+      .eq("user_id", order.user_id)
       .single();
     order.customer = profile || null;
   }
@@ -129,7 +129,7 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
               <div className="text-sm text-slate-400">
                 <p className="font-medium text-white">{order.customer?.full_name || 'Guest Checkout'}</p>
                 <p>{order.customer?.email || 'No email'}</p>
-                <p className="mt-2 text-slate-500 text-xs">ID: {order.customer_id || 'N/A'}</p>
+                <p className="mt-2 text-slate-500 text-xs">ID: {order.user_id || 'N/A'}</p>
               </div>
             </div>
 
@@ -139,11 +139,11 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
                 Shipping Info
               </h2>
               <div className="text-sm text-slate-400 space-y-1">
-                <p className="font-medium text-white">{order.shipping_name}</p>
-                <p>{order.shipping_address}</p>
-                <p>{order.city}, {order.state} {order.pincode}</p>
+                <p className="font-medium text-white">{order.shipping_address?.name}</p>
+                <p>{order.shipping_address?.address}</p>
+                <p>{order.shipping_address?.city}, {order.shipping_address?.state} {order.shipping_address?.pincode}</p>
                 <p className="pt-2 flex items-center gap-2">
-                  <span className="text-slate-500">Phone:</span> {order.shipping_phone}
+                  <span className="text-slate-500">Phone:</span> {order.shipping_address?.phone}
                 </p>
               </div>
             </div>

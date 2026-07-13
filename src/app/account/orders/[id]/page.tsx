@@ -23,7 +23,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
     .from("orders")
     .select("*")
     .eq("id", id)
-    .eq("customer_id", user.id)
+    .eq("user_id", user.id)
     .single();
 
   if (!order) {
@@ -115,11 +115,11 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
               Shipping Information
             </h2>
             <div className="text-[14px] text-muted space-y-2">
-              <p className="font-semibold text-ink text-[15px] mb-3">{order.shipping_name}</p>
-              <p>{order.shipping_address}</p>
-              <p>{order.city}, {order.state} {order.pincode}</p>
+              <p className="font-semibold text-ink text-[15px] mb-3">{order.shipping_address?.name}</p>
+              <p>{order.shipping_address?.address}</p>
+              <p>{order.shipping_address?.city}, {order.shipping_address?.state} {order.shipping_address?.pincode}</p>
               <p className="pt-4 flex items-center gap-2 border-t border-brand/10 mt-4">
-                <span className="text-muted font-medium">Phone:</span> <span className="text-ink font-semibold">{order.shipping_phone}</span>
+                <span className="text-muted font-medium">Phone:</span> <span className="text-ink font-semibold">{order.shipping_address?.phone}</span>
               </p>
             </div>
           </div>

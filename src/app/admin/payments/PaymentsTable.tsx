@@ -17,12 +17,12 @@ export default function PaymentsTable({ payments }: { payments: any[] }) {
     }
     
     // Filter by search query (Order ID, Razorpay ID, or Customer Name)
-    if (searchQuery) {
+            if (searchQuery) {
       const q = searchQuery.toLowerCase().replace(/#/g, ''); // Ignore # if they copy-paste the formatted ID
       if (
         !p.id?.toLowerCase().includes(q) &&
-        !p.razorpay_payment_id?.toLowerCase().includes(q) &&
-        !p.shipping_name?.toLowerCase().includes(q)
+        !p.payment_id?.toLowerCase().includes(q) &&
+        !p.shipping_address?.name?.toLowerCase().includes(q)
       ) {
         return false;
       }
@@ -79,7 +79,7 @@ export default function PaymentsTable({ payments }: { payments: any[] }) {
                   <tr key={payment.id} className="hover:bg-slate-800/50 transition-colors group">
                     <td className="hidden md:table-cell px-6 py-4">
                       <div className="font-mono text-xs text-white mb-1">
-                        {payment.razorpay_payment_id || 'N/A'}
+                        {payment.payment_id || 'N/A'}
                       </div>
                       <div className="text-[10px] text-slate-500 font-mono">
                         {payment.id}
@@ -91,7 +91,7 @@ export default function PaymentsTable({ payments }: { payments: any[] }) {
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-white">
-                        {payment.shipping_name || 'Unknown Customer'}
+                        {payment.shipping_address?.name || 'Unknown Customer'}
                       </div>
                       <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                         <Link href={`/admin/orders/${payment.id}`} className="hover:text-orange-400 hover:underline transition-colors">

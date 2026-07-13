@@ -29,7 +29,6 @@ export default function AdminSidebar({
   handleLogout: () => void;
 }) {
   const pathname = usePathname();
-  
   const [seenOrders, setSeenOrders] = useState(totalOrders);
   const [seenPayments, setSeenPayments] = useState(totalPayments);
   const [seenCustomers, setSeenCustomers] = useState(totalCustomers);
@@ -37,12 +36,10 @@ export default function AdminSidebar({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Load from local storage
     const storedOrders = localStorage.getItem('seenOrders');
     const storedPayments = localStorage.getItem('seenPayments');
     const storedCustomers = localStorage.getItem('seenCustomers');
     
-    // Initialize if exists, otherwise use current total
     if (storedOrders) setSeenOrders(parseInt(storedOrders));
     else localStorage.setItem('seenOrders', totalOrders.toString());
 
@@ -57,11 +54,8 @@ export default function AdminSidebar({
 
   useEffect(() => {
     if (!isMounted) return;
-
-    // Close mobile sidebar on navigation
     setIsOpen(false);
 
-    // Update seen counts based on current route
     if (pathname.includes('/admin/orders')) {
       setSeenOrders(totalOrders);
       localStorage.setItem('seenOrders', totalOrders.toString());
@@ -78,7 +72,7 @@ export default function AdminSidebar({
 
   const newOrdersCount = isMounted ? Math.max(0, totalOrders - seenOrders) : 0;
   const newPaymentsCount = isMounted ? Math.max(0, totalPayments - seenPayments) : 0;
-  const newCustomersCount = isMounted ? Math.max(0, totalCustomers - seenCustomers) : 0;
+  const newCustomersCount = 0;
 
   return (
     <>

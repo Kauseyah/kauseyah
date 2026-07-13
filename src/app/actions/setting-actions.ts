@@ -30,23 +30,9 @@ export async function updateSettings(formData: FormData) {
   const id = formData.get("id") as string;
   const store_name = formData.get("store_name") as string;
   const contact_email = formData.get("contact_email") as string;
-  const phone = formData.get("phone") as string;
-  const shipping_base_charge = formData.get("shipping_base_charge") ? parseFloat(formData.get("shipping_base_charge") as string) : 0;
-  
-  const facebook = formData.get("facebook") as string;
-  const instagram = formData.get("instagram") as string;
-  const youtube = formData.get("youtube") as string;
-  const linkedin = formData.get("linkedin") as string;
-
   const updateData = {
     store_name,
-    contact_email,
-    phone,
-    shipping_base_charge,
-    facebook,
-    instagram,
-    youtube,
-    linkedin
+    contact_email
   };
 
   let result;
