@@ -1,12 +1,16 @@
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import BlogListClient from "./BlogListClient";
 
 export default async function AdminBlogs() {
-  const supabase = await createClient();
+  const adminClient = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   
-  const { data: blogs } = await supabase
+  const { data: blogs } = await adminClient
     .from('blogs')
     .select('*')
     .order('created_at', { ascending: false });

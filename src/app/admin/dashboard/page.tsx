@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import Link from "next/link";
 import { TrendingUp, ArrowRight, ShoppingBag, UserPlus, Clock, Calendar } from "lucide-react";
+import DashboardDate from "@/components/admin/DashboardDate";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -56,14 +57,7 @@ export default async function AdminDashboard() {
           </p>
         </div>
         
-        <div className="inline-flex w-fit items-center gap-2.5 px-4 py-2.5 bg-gradient-to-b from-slate-900 to-slate-950/50 rounded-xl border border-slate-800 shadow-sm ring-1 ring-white/5">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-950 border border-slate-800 shadow-sm text-slate-400">
-            <Calendar size={14} className="text-orange-500" />
-          </div>
-          <span className="text-sm font-semibold text-slate-300 tracking-wide">
-            {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </span>
-        </div>
+        <DashboardDate />
       </div>
       
       {/* Metric Cards */}
