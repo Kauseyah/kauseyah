@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Heart, Leaf, Shield, Target, Eye } from "lucide-react";
+import Achievements from "@/components/sections/Achievements";
 import { FOUNDER, ABOUT_KAUSEYAH, BRAND_TAGLINE } from "@/constants";
 
 const BRAND_PILLARS = BRAND_TAGLINE.split("|").map((item) => item.trim());
@@ -454,6 +455,9 @@ export default function AboutPageContent() {
           </div>
         </div>
       </section>
+
+      {/* ── Heritage Archive (Achievements) ── */}
+      <Achievements />
     </main>
   );
 }

@@ -7,7 +7,6 @@ import FeaturedProducts from "@/components/sections/FeaturedProducts";
 import FeaturedIn from "@/components/sections/FeaturedIn";
 import CuratedGiftHampers from "@/components/sections/CuratedGiftHampers";
 import Testimonials from "@/components/sections/Testimonials";
-import Achievements from "@/components/sections/Achievements";
 import InstagramReels from "@/components/sections/InstagramReels";
 
 export const metadata: Metadata = {
@@ -29,21 +28,18 @@ export default function HomePage() {
       {/* Hand Embroidered Toys */}
       <HandEmbroideredToys />
 
+      {/* Gift Hampers */}
+      <CuratedGiftHampers />
+
       {/* 4. Featured Products */}
       <FeaturedProducts />
 
       {/* 4. Featured In */}
       <FeaturedIn />
 
-      {/* Gift Hampers */}
-      <CuratedGiftHampers />
-
 
       {/* 5. Testimonials */}
       <Testimonials />
-
-      {/* 6. Our Achievements */}
-      <Achievements />
 
       {/* 7. Instagram Reels */}
       <InstagramReels />
