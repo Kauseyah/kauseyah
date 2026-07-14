@@ -262,14 +262,7 @@ export default function ContactPageContent() {
             </motion.div>
 
             {/* Contact Info */}
-            <motion.div
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              custom={1}
-              variants={fadeUp}
-              className="lg:pt-20 xl:pt-24"
-            >
+            <div className="lg:pt-20 xl:pt-24">
               <div className="lg:pl-10 xl:pl-12 lg:border-l lg:border-[#FF6B00]/40 space-y-8">
                 <div className="space-y-4">
                   <a
@@ -301,13 +294,6 @@ export default function ContactPageContent() {
                       Instagram
                     </Link>
                     <Link
-                      href={SOCIAL_LINKS.facebook}
-                      className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/20 bg-[#F1F3E0] px-4 py-2.5 font-body text-[12px] text-[#111111]/80 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] transition-all duration-200"
-                    >
-                      {SOCIAL_ICONS.facebook}
-                      Facebook
-                    </Link>
-                    <Link
                       href={SOCIAL_LINKS.linkedin}
                       className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/20 bg-[#F1F3E0] px-4 py-2.5 font-body text-[12px] text-[#111111]/80 hover:border-[#FF6B00]/60 hover:text-[#FF6B00] transition-all duration-200"
                     >
@@ -331,7 +317,7 @@ export default function ContactPageContent() {
                   </a>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
