@@ -78,14 +78,14 @@ export default function Achievements() {
         </div>
 
         {/* ── Clean Typography Filter ── */}
-        <div className="flex items-center justify-center gap-10 lg:gap-14 mb-10 lg:mb-12">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 lg:gap-14 mb-10 lg:mb-12">
           {CATEGORIES.map((cat, i) => (
             <React.Fragment key={cat.id}>
               <button
                 onClick={() => setActiveTab(cat.id)}
                 className="group relative py-2 transition-all duration-300"
               >
-                <span className={`font-body text-[12px] lg:text-[13px] font-black uppercase tracking-[0.4em] transition-colors duration-500 ${
+                <span className={`font-body text-[10px] sm:text-[11px] lg:text-[13px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] lg:tracking-[0.4em] transition-colors duration-500 ${
                   activeTab === cat.id ? "text-[#111111]" : "text-[#111111]/40 hover:text-[#111111]"
                 }`}>
                   {cat.label}
