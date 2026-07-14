@@ -363,9 +363,7 @@ export const SORT_OPTIONS = [
 
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/kauseyah_com/?hl=en",
-  facebook: "https://facebook.com/kauseyah",
   pinterest: "https://pinterest.com/kauseyah",
-  youtube: "https://youtube.com/@kauseyah",
   linkedin: "https://www.linkedin.com/in/shwetarao-p/",
 };
 
