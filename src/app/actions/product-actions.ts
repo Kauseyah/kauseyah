@@ -45,9 +45,8 @@ const productSchema = z.object({
 });
 
 export async function createProduct(formData: FormData) {
-  const adminClient = await getAdminClient();
-  
   try {
+    const adminClient = await getAdminClient();
     const data = {
       name: formData.get("name"),
       slug: formData.get("slug"),
@@ -131,9 +130,8 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(id: string, formData: FormData) {
-  const adminClient = await getAdminClient();
-  
   try {
+    const adminClient = await getAdminClient();
     const data = {
       name: formData.get("name"),
       slug: formData.get("slug"),
@@ -150,7 +148,7 @@ export async function updateProduct(id: string, formData: FormData) {
       featured: formData.get("featured") === "true",
     };
     
-    console.log("updateProduct payload:", data);
+
 
     const validatedData = productSchema.parse(data);
 

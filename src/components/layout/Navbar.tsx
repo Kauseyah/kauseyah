@@ -107,9 +107,9 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
   const isAuthPage = ["/login", "/register", "/forgot-password", "/reset-password", "/account"].some((p) => pathname === p || pathname?.startsWith(p + "/"));
 
   // Only these pages have a DARK hero image behind the navbar (need white text before scroll)
-  const hasDarkHero = ["/", "/blog", "/contact", "/about"].some(
+  const hasDarkHero = ["/", "/contact", "/about"].some(
     (p) => pathname === p || (p !== "/" && pathname?.startsWith(p))
-  );
+  ) || pathname === "/blog";
 
   // On all other pages (cart, account, checkout, collections, products etc.) force dark pill nav
   // Except for auth pages which use a full-width solid black nav

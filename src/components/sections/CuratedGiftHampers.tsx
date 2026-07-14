@@ -38,12 +38,10 @@ export default async function CuratedGiftHampers() {
     p.category?.toLowerCase() === "conscious gifting"
   );
   
-  // If we can't find any, fallback to any products just so the section isn't empty, 
-  // or return null to hide it? The user said "only that product should be list which we add as gift hampers".
-  // So if hampers is empty, we should hide it.
-
+  // If we can't find any, fallback to showing an empty state rather than disappearing
   if (hampers.length === 0) {
-    return null; // hide section if no gift hampers found
+    // We will just pass an empty array, and handle it in the Client component
+    return <CuratedGiftHampersClient hampers={[]} />;
   }
 
   return <CuratedGiftHampersClient hampers={hampers} />;
