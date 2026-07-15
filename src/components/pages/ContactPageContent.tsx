@@ -262,7 +262,13 @@ export default function ContactPageContent() {
             </motion.div>
 
             {/* Contact Info */}
-            <div className="lg:pt-20 xl:pt-24">
+            <motion.div 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="relative z-10 lg:pt-20 xl:pt-24"
+            >
               <div className="lg:pl-10 xl:pl-12 lg:border-l lg:border-[#FF6B00]/40 space-y-8">
                 <div className="space-y-4">
                   <a
@@ -317,7 +323,7 @@ export default function ContactPageContent() {
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>

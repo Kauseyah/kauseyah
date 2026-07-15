@@ -16,7 +16,14 @@ export function mapSupabaseProductToFrontend(sbProduct: any): Product {
     images: sbProduct.images && sbProduct.images.length > 0 
       ? sbProduct.images.map((url: string, i: number) => ({ url, alt: sbProduct.name, isPrimary: i === 0 }))
       : [{ url: "/images/placeholder.png", alt: "Placeholder", isPrimary: true }],
-    variants: [{ id: sbProduct.id, stock: sbProduct.stock, price: sbProduct.price }], // Fallback for stock
+    variants: (sbProduct.variants && sbProduct.variants.length > 0)
+      ? sbProduct.variants.map((v: any, idx: number) => ({
+          ...v,
+          id: v.id || `${sbProduct.id}-var-${idx}`,
+          price: v.price || sbProduct.price,
+          stock: v.stock !== undefined ? v.stock : sbProduct.stock
+        }))
+      : [{ id: sbProduct.id, stock: sbProduct.stock, price: sbProduct.price }], // Fallback for stock
     tags: sbProduct.featured ? (["featured"] as any) : [],
     isAvailable: sbProduct.status === "published" && sbProduct.stock > 0,
     isFeatured: sbProduct.featured,

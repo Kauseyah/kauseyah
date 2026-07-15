@@ -65,27 +65,38 @@ export async function createProduct(formData: FormData) {
 
     const validatedData = productSchema.parse(data);
 
-    // Handle Image Upload
-    const imageFile = formData.get("image") as File;
-    let imageUrl = null;
+    // Parse variants if provided
+    const rawVariants = formData.get("variants") as string;
+    let variants = null;
+    if (rawVariants) {
+      try {
+        variants = JSON.parse(rawVariants);
+      } catch (e) {}
+    }
 
-    if (imageFile && imageFile.size > 0) {
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError, data: uploadData } = await adminClient.storage
-        .from("product-images")
-        .upload(fileName, imageFile);
+    // Handle Multiple Image Upload
+    const imageFiles = formData.getAll("images") as File[];
+    const imageUrls: string[] = [];
 
-      if (uploadError) {
-        throw new Error(`Failed to upload image: ${uploadError.message}`);
-      }
-
-      const { data: publicUrlData } = adminClient.storage
-        .from("product-images")
-        .getPublicUrl(fileName);
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
         
-      imageUrl = publicUrlData.publicUrl;
+        const { error: uploadError } = await adminClient.storage
+          .from("product-images")
+          .upload(fileName, imageFile);
+
+        if (uploadError) {
+          throw new Error(`Failed to upload image: ${uploadError.message}`);
+        }
+
+        const { data: publicUrlData } = adminClient.storage
+          .from("product-images")
+          .getPublicUrl(fileName);
+          
+        imageUrls.push(publicUrlData.publicUrl);
+      }
     }
 
     // Automatically register custom subcategory in the global database
@@ -108,10 +119,14 @@ export async function createProduct(formData: FormData) {
     }
 
     // Insert Product
-    const productInsert = {
+    const productInsert: any = {
       ...validatedData,
-      images: imageUrl ? [imageUrl] : [],
+      images: imageUrls.length > 0 ? imageUrls : [],
     };
+    
+    if (variants && variants.length > 0) {
+      productInsert.variants = variants;
+    }
 
     const { error: insertError } = await adminClient
       .from("products")
@@ -152,27 +167,39 @@ export async function updateProduct(id: string, formData: FormData) {
 
     const validatedData = productSchema.parse(data);
 
-    // Handle Image Upload (only update if a new image is provided)
-    const imageFile = formData.get("image") as File;
-    let imageUrl = null;
+    // Parse variants if provided
+    const rawVariants = formData.get("variants") as string;
+    let variants = null;
+    if (rawVariants) {
+      try {
+        variants = JSON.parse(rawVariants);
+      } catch (e) {}
+    }
 
-    if (imageFile && imageFile.size > 0) {
-      const fileExt = imageFile.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError, data: uploadData } = await adminClient.storage
-        .from("product-images")
-        .upload(fileName, imageFile);
+    // Handle Image Upload (new images + existing)
+    const existingImages = formData.getAll("existing_images") as string[];
+    const imageFiles = formData.getAll("images") as File[];
+    let imageUrls: string[] = [...existingImages];
 
-      if (uploadError) {
-        throw new Error(`Failed to upload image: ${uploadError.message}`);
-      }
-
-      const { data: publicUrlData } = adminClient.storage
-        .from("product-images")
-        .getPublicUrl(fileName);
+    for (const imageFile of imageFiles) {
+      if (imageFile && imageFile.size > 0) {
+        const fileExt = imageFile.name.split(".").pop();
+        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
         
-      imageUrl = publicUrlData.publicUrl;
+        const { error: uploadError } = await adminClient.storage
+          .from("product-images")
+          .upload(fileName, imageFile);
+
+        if (uploadError) {
+          throw new Error(`Failed to upload image: ${uploadError.message}`);
+        }
+
+        const { data: publicUrlData } = adminClient.storage
+          .from("product-images")
+          .getPublicUrl(fileName);
+          
+        imageUrls.push(publicUrlData.publicUrl);
+      }
     }
 
     // Automatically register custom subcategory in the global database
@@ -196,9 +223,16 @@ export async function updateProduct(id: string, formData: FormData) {
 
     // Update Product
     const productUpdate: any = { ...validatedData };
-    if (imageUrl) {
-      // For simplicity, replacing images array with new image
-      productUpdate.images = [imageUrl];
+    if (imageUrls.length > 0) {
+      productUpdate.images = imageUrls;
+    } else if (existingImages.length === 0 && imageFiles.some(f => f.size === 0) === false) {
+      // If we literally have no images, keep it as empty array or existing?
+      // Since it's update, user might have deleted all images.
+      productUpdate.images = [];
+    }
+    
+    if (variants) {
+      productUpdate.variants = variants;
     }
 
     const { error: updateError } = await adminClient

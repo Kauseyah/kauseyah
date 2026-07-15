@@ -39,7 +39,8 @@ const PREDEFINED_COLLECTIONS: Record<
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
 
   // 1. Check predefined collections
   const predefined = PREDEFINED_COLLECTIONS[slug];
@@ -85,7 +86,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CollectionDetailPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const sp = await searchParams;
   const subcategoryQuery = typeof sp.subcategory === "string" ? sp.subcategory : undefined;
 

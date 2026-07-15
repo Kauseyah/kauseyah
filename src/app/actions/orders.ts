@@ -14,6 +14,17 @@ export async function updateOrderStatus(orderId: string, formData: FormData) {
     return { error: "Unauthorized" };
   }
 
+  // 1. Check if the user is an admin
+  const { data: roleData } = await supabaseAuth
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+    
+  if (roleData?.role !== 'admin') {
+    return { error: "Unauthorized. Admin privileges required." };
+  }
+
   // Use service role key to bypass missing RLS policies
   const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
   const supabaseAdmin = createSupabaseClient(
