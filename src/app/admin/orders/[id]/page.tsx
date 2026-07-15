@@ -93,6 +93,23 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
                         <h3>{item.product?.name || 'Unknown Product'}</h3>
                         <p className="ml-4 text-[#FF6B00]">₹{item.price_at_time}</p>
                       </div>
+                      {item.variant_details && (
+                        <div className="mt-1 flex items-center gap-2 text-sm font-medium text-slate-400">
+                          {item.variant_details.color && (
+                            <span className="flex items-center gap-1.5">
+                              Color: {item.variant_details.color}
+                              {item.variant_details.colorHex && (
+                                <span 
+                                  className="w-3 h-3 rounded-full border border-slate-600 inline-block" 
+                                  style={{ backgroundColor: item.variant_details.colorHex }}
+                                />
+                              )}
+                            </span>
+                          )}
+                          {item.variant_details.color && item.variant_details.size && <span>|</span>}
+                          {item.variant_details.size && <span>Size: {item.variant_details.size}</span>}
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-between text-[18px] mt-1">
                       <p className="text-slate-400 font-medium">Qty: {item.quantity}</p>

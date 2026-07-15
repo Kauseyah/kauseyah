@@ -6,7 +6,8 @@ import { createClient } from "@/utils/supabase/server";
 import sanitizeHtml from "sanitize-html";
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = decodeURIComponent(rawSlug);
   const supabase = await createClient();
 
   const { data: blog } = await supabase

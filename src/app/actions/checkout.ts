@@ -3,6 +3,7 @@
 import { createClient as createServerClient } from "@/utils/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendOrderReceipt } from "@/lib/email";
+import { calculateSecureOrderTotals } from "@/utils/order-utils";
 
 export async function createOrder(orderData: any, cartItems: any[]) {
   const supabaseAuth = await createServerClient();
@@ -18,14 +19,26 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // 1. Insert Order
+  // 1. Calculate totals securely on the server
+  let calculatedSubtotal, calculatedShipping, calculatedTotal, verifiedCartItems;
+  try {
+    const totals = await calculateSecureOrderTotals(cartItems);
+    calculatedSubtotal = totals.calculatedSubtotal;
+    calculatedShipping = totals.calculatedShipping;
+    calculatedTotal = totals.calculatedTotal;
+    verifiedCartItems = totals.verifiedCartItems;
+  } catch (error: any) {
+    return { error: error.message };
+  }
+
+  // 2. Insert Order
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
       user_id: user.id,
       order_status: "processing",
-      subtotal: orderData.subtotal,
-      shipping_charge: orderData.shipping_charge,
+      subtotal: calculatedSubtotal,
+      shipping_charge: calculatedShipping,
       shipping_address: {
         name: orderData.shipping_name,
         phone: orderData.shipping_phone,
@@ -35,7 +48,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
         pincode: orderData.pincode
       },
       payment_status: orderData.payment_status,
-      total_amount: orderData.total_amount,
+      total_amount: calculatedTotal,
       payment_id: orderData.razorpay_payment_id || null,
     })
     .select()
@@ -46,12 +59,13 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     return { error: `Failed to create order: ${orderError.message}` };
   }
 
-  // 2. Insert Order Items
-  const orderItemsData = cartItems.map((item) => ({
+  // 3. Insert Order Items
+  const orderItemsData = verifiedCartItems.map((item) => ({
     order_id: order.id,
     product_id: item.product.id,
     quantity: item.quantity,
-    price_at_time: item.variant.price,
+    price_at_time: item.verifiedPrice,
+    variant_details: { size: item.variant.size, color: item.variant.color, colorHex: item.variant.colorHex }
   }));
 
   const { error: itemsError } = await supabaseAdmin
@@ -63,8 +77,8 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     return { error: `Order created but failed to add items: ${itemsError.message}` };
   }
 
-  // 3. Update Product Stock
-  for (const item of cartItems) {
+  // 4. Update Product Stock
+  for (const item of verifiedCartItems) {
     try {
       // Fetch current stock to avoid setting to negative if something goes wrong
       const { data: product } = await supabaseAdmin
@@ -85,10 +99,17 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     }
   }
 
-  // 4. Send HTML Email Receipt
+  // 5. Send HTML Email Receipt
   // Fire and forget so it doesn't block the checkout response
   if (user.email) {
-    sendOrderReceipt(user.email, order.id, orderData, cartItems).catch(() => {});
+    // Override orderData with verified totals for the email receipt
+    const verifiedOrderData = {
+      ...orderData,
+      subtotal: calculatedSubtotal,
+      shipping_charge: calculatedShipping,
+      total_amount: calculatedTotal,
+    };
+    sendOrderReceipt(user.email, order.id, verifiedOrderData, verifiedCartItems).catch(() => {});
   }
 
   return { success: true, orderId: order.id };

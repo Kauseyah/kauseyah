@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Loader2, ImagePlus } from "lucide-react";
+import { ArrowLeft, Loader2, ImagePlus, Plus, Trash2, X } from "lucide-react";
 import { updateProduct } from "@/app/actions/product-actions";
 import { createClient } from "@/utils/supabase/client";
 import toast from "react-hot-toast";
@@ -16,13 +16,14 @@ export default function EditProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [fileNames, setFileNames] = useState<string[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [product, setProduct] = useState<any>(null);
   const [isCustomSubcategory, setIsCustomSubcategory] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [status, setStatus] = useState("draft");
+  const [variants, setVariants] = useState<{color: string, colorHex: string}[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +44,9 @@ export default function EditProductPage() {
           setProduct(prod);
           setSelectedCategoryId(prod.category_id || "");
           setStatus(prod.status || "draft");
+          if (prod.variants) {
+            setVariants(prod.variants);
+          }
         } else if (error) {
           setErrorMsg("Could not load product details.");
         }
@@ -112,6 +116,13 @@ export default function EditProductPage() {
           </div>
         )}
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Hidden inputs */}
+          <input type="hidden" name="variants" value={JSON.stringify(variants)} />
+          {product.images?.map((img: string, idx: number) => (
+            <input key={`exist_img_${idx}`} type="hidden" name="existing_images" value={img} />
+          ))}
+
           {/* Left Column - Main Details */}
           <div className="lg:col-span-2 space-y-8">
             
@@ -204,6 +215,82 @@ export default function EditProductPage() {
               </div>
             </div>
 
+            <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-sm p-6 sm:p-8 transition-shadow hover:shadow-md duration-300">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+                <h2 className="text-lg font-bold text-white">Color Variants</h2>
+                <button 
+                  type="button" 
+                  onClick={() => setVariants([...variants, { color: "", colorHex: "#ffffff" }])}
+                  className="flex items-center gap-1 text-sm font-bold text-orange-500 hover:text-orange-400 transition-colors"
+                >
+                  <Plus size={16} /> Add Color
+                </button>
+              </div>
+              
+              {variants.length === 0 ? (
+                <p className="text-sm text-slate-500 italic">No color variants added. Will use default variant.</p>
+              ) : (
+                <div className="space-y-4">
+                  {variants.map((variant, idx) => (
+                    <div key={idx} className="flex items-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                      <div className="flex-1">
+                        <label className="block text-xs font-bold text-slate-400 mb-1">Color Name</label>
+                        <input 
+                          type="text" 
+                          value={variant.color}
+                          onChange={(e) => {
+                            const newVariants = [...variants];
+                            newVariants[idx].color = e.target.value;
+                            setVariants(newVariants);
+                          }}
+                          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors"
+                          placeholder="e.g. Crimson Red"
+                        />
+                      </div>
+                      <div className="w-32">
+                        <label className="block text-xs font-bold text-slate-400 mb-1">Hex Code</label>
+                        <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
+                          <input 
+                            type="color" 
+                            value={variant.colorHex}
+                            onChange={(e) => {
+                              const newVariants = [...variants];
+                              newVariants[idx].colorHex = e.target.value;
+                              setVariants(newVariants);
+                            }}
+                            className="w-8 h-8 cursor-pointer border-0 p-0 shrink-0 bg-transparent"
+                            title="Choose color"
+                          />
+                          <input
+                            type="text"
+                            value={variant.colorHex}
+                            onChange={(e) => {
+                              const newVariants = [...variants];
+                              newVariants[idx].colorHex = e.target.value;
+                              setVariants(newVariants);
+                            }}
+                            className="w-full bg-transparent text-white text-xs focus:outline-none p-2"
+                            placeholder="#ffffff"
+                          />
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newVariants = [...variants];
+                          newVariants.splice(idx, 1);
+                          setVariants(newVariants);
+                        }}
+                        className="mt-5 p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* Right Column - Organization & Media */}
@@ -292,34 +379,62 @@ export default function EditProductPage() {
             <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-sm p-6 sm:p-8 transition-shadow hover:shadow-md duration-300">
               <h2 className="text-lg font-bold text-white mb-6 pb-4 border-b border-slate-800">Media</h2>
               
-              <div className="border-2 border-dashed border-slate-700 hover:border-orange-500 bg-slate-950 hover:bg-orange-500/10 transition-colors rounded-xl p-10 flex flex-col items-center justify-center text-center cursor-pointer relative group">
-                <div className="p-4 bg-slate-900 rounded-full shadow-sm mb-4 group-hover:scale-105 transition-transform border border-slate-800 overflow-hidden relative w-16 h-16 flex items-center justify-center">
-                  {product.images && product.images[0] && !fileName ? (
-                     <img src={product.images[0]} alt="Current product image" className="absolute inset-0 w-full h-full object-cover" />
-                  ) : (
-                     <ImagePlus strokeWidth={2} className="text-orange-500 z-10" size={28} />
-                  )}
+              {product.images && product.images.length > 0 && (
+                <div className="mb-6 space-y-2">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Images:</p>
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {product.images.map((img: string, idx: number) => (
+                      <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-700 shrink-0">
+                        <img src={img} alt={`Product ${idx}`} className="w-full h-full object-cover" />
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const newImages = [...product.images];
+                            newImages.splice(idx, 1);
+                            setProduct({ ...product, images: newImages });
+                          }}
+                          className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded transition-colors"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {fileName ? (
-                  <p className="text-base font-bold text-white mb-1">{fileName}</p>
-                ) : (
-                  <p className="text-base font-bold text-slate-300 mb-1">{product.images && product.images[0] ? "Click to replace image" : "Click to upload an image"}</p>
-                )}
-                <p className="text-sm text-slate-500 mb-4">PNG, JPG up to 5MB</p>
+              )}
+
+              <div className="border-2 border-dashed border-slate-700 hover:border-orange-500 bg-slate-950 hover:bg-orange-500/10 transition-colors rounded-xl p-10 flex flex-col items-center justify-center text-center cursor-pointer relative group">
+                <div className="p-4 bg-slate-900 rounded-full shadow-sm mb-4 group-hover:scale-105 transition-transform border border-slate-800">
+                  <ImagePlus strokeWidth={2} className="text-orange-500 z-10" size={28} />
+                </div>
+                <p className="text-base font-bold text-slate-300 mb-1">Add More Images</p>
+                <p className="text-sm text-slate-500 mb-4">PNG, JPG up to 5MB (Select multiple)</p>
                 <input 
                   type="file" 
-                  name="image" 
+                  name="images" 
+                  multiple
                   accept="image/*" 
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
-                      setFileName(e.target.files[0].name);
+                      setFileNames(Array.from(e.target.files).map(f => f.name));
                     } else {
-                      setFileName("");
+                      setFileNames([]);
                     }
                   }}
                 />
               </div>
+
+              {fileNames.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{fileNames.length} new file(s) selected:</p>
+                  {fileNames.map((name, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-slate-300 bg-slate-950 p-2 rounded border border-slate-800">
+                      <ImagePlus size={14} className="text-orange-500" /> {name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
           </div>

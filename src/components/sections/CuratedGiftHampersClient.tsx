@@ -108,7 +108,7 @@ export default function CuratedGiftHampersClient({ hampers }: { hampers: any[] }
                 )}
 
                 {/* Title */}
-                <Link href={`/products/${product.slug}`} className="block font-display text-3xl text-[#111111] group-hover:text-[#FF6B00] transition-colors mb-4 leading-tight">
+                <Link href={`/products/${encodeURIComponent(product.slug)}`} className="block font-display text-3xl text-[#111111] group-hover:text-[#FF6B00] transition-colors mb-4 leading-tight">
                   {product.name}
                 </Link>
 
@@ -131,7 +131,7 @@ export default function CuratedGiftHampersClient({ hampers }: { hampers: any[] }
                   </div>
 
                   <Link 
-                    href={`/products/${product.slug}`}
+                    href={`/products/${encodeURIComponent(product.slug)}`}
                     className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-[#111111] border-b border-[#111111] pb-0.5 group-hover:text-[#FF6B00] group-hover:border-[#FF6B00] transition-colors"
                   >
                     View Details
