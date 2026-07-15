@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { createClient } from "@/utils/supabase/server";
+import { calculateSecureOrderTotals } from "@/utils/order-utils";
 
 export async function POST(req: Request) {
   try {
@@ -11,10 +12,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { amount } = await req.json();
+    const { cartItems } = await req.json();
 
-    if (!amount || typeof amount !== "number") {
-      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      return NextResponse.json({ error: "Invalid cart items" }, { status: 400 });
+    }
+
+    let calculatedTotal = 0;
+    try {
+      const totals = await calculateSecureOrderTotals(cartItems);
+      calculatedTotal = totals.calculatedTotal;
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     // Check environment variables
@@ -33,7 +42,7 @@ export async function POST(req: Request) {
     });
 
     const options = {
-      amount: Math.round(amount * 100), // amount in the smallest currency unit (paise)
+      amount: Math.round(calculatedTotal * 100), // amount in the smallest currency unit (paise)
       currency: "INR",
       receipt: `rcpt_${Math.floor(Math.random() * 10000)}`,
     };
