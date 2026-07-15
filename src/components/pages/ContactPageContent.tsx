@@ -216,13 +216,13 @@ export default function ContactPageContent() {
                   toast.success("Message sent successfully! We'll be in touch soon.");
                   (document.getElementById('contact-form') as HTMLFormElement)?.reset();
                 }
-              }} id="contact-form">
+              }} id="contact-form" autoComplete="off">
                 <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
                   <FormField id="name" label="Name" icon={User}>
-                    <input id="name" name="name" type="text" className={inputClass} placeholder="Your name" required />
+                    <input id="name" name="name" type="text" className={inputClass} placeholder="Your name" required autoComplete="off" autoCorrect="off" spellCheck="false" />
                   </FormField>
                   <FormField id="email" label="Email" icon={Mail}>
-                    <input id="email" name="email" type="email" className={inputClass} placeholder="you@email.com" required />
+                    <input id="email" name="email" type="email" className={inputClass} placeholder="you@email.com" required autoComplete="off" autoCorrect="off" spellCheck="false" />
                   </FormField>
                 </div>
 
@@ -241,6 +241,7 @@ export default function ContactPageContent() {
                       placeholder="Tell us about your order, custom request, or partnership idea..." 
                       required 
                       minLength={10}
+                      autoComplete="off"
                     />
                   </div>
                 </div>
