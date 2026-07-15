@@ -53,12 +53,11 @@ export default function Footer() {
   return (
     <footer className="relative bg-[#111111] text-white font-body overflow-hidden">
       <div className="absolute top-0 left-0 right-0 z-20" style={{ height: "2px", background: "#FF6B00" }} />
-      {/* Subtle weave pattern background */}
+      {/* Subtle weave pattern background (using SVG to prevent Android GPU crash) */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none opacity-[0.4]" 
         style={{
-          backgroundImage: `linear-gradient(rgba(255, 107, 0, 0.15) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255, 107, 0, 0.15) 1px, transparent 1px)`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0,0 h40 M0,0 v40' stroke='%23FF6B00' stroke-opacity='0.15' stroke-width='1' /%3E%3C/svg%3E")`,
           backgroundSize: "40px 40px"
         }}
       />
