@@ -184,13 +184,7 @@ export default function ContactPageContent() {
 
           <div className="grid lg:grid-cols-[1.2fr_1fr] gap-12 xl:gap-20 items-start">
             {/* Contact Form */}
-            <motion.div
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              className="rounded-2xl border border-[#111111]/10 bg-white p-6 lg:p-8 shadow-sm"
-            >
+            <div className="rounded-2xl border border-[#111111]/10 bg-white p-6 lg:p-8 shadow-sm">
               <div className="flex items-start gap-4 mb-6 pb-6 border-b border-[#111111]/15">
                 <div className="w-11 h-11 rounded-full bg-[#F1F3E0] border border-[#FF6B00]/15 flex items-center justify-center text-[#FF6B00] flex-shrink-0">
                   <Mail size={18} strokeWidth={1.5} />
@@ -260,7 +254,7 @@ export default function ContactPageContent() {
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </div>
 
             {/* Contact Info */}
             <div className="relative z-10 lg:pt-20 xl:pt-24">
