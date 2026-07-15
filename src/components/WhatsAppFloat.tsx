@@ -48,7 +48,7 @@ export default function WhatsAppFloat() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 10 }}
             transition={{ duration: 0.4 }}
-            className="mr-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-xl border border-[#FF6B00]/20 select-none block"
+            className="mr-3 bg-white/95 px-4 py-2 rounded-full shadow-xl border border-[#FF6B00]/20 select-none block"
           >
             <span className="font-body text-[12px] font-bold tracking-tight text-[#111111]">
               Join the kauseyah community?
