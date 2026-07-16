@@ -24,6 +24,25 @@ export default function EditProductPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [status, setStatus] = useState("draft");
   const [variants, setVariants] = useState<{color: string, colorHex: string}[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  
+  const generateVariantsJson = () => {
+    let finalVariants: any[] = [];
+    if (variants.length === 0 && selectedSizes.length === 0) return "[]";
+    
+    const colorsToMap = variants.length > 0 ? variants : [{color: "", colorHex: ""}];
+    const sizesToMap = selectedSizes.length > 0 ? selectedSizes : [""];
+    
+    for (const c of colorsToMap) {
+      for (const s of sizesToMap) {
+        const v: any = {};
+        if (c.color) { v.color = c.color; v.colorHex = c.colorHex; }
+        if (s) v.size = s;
+        if (Object.keys(v).length > 0) finalVariants.push(v);
+      }
+    }
+    return JSON.stringify(finalVariants);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +64,14 @@ export default function EditProductPage() {
           setSelectedCategoryId(prod.category_id || "");
           setStatus(prod.status || "draft");
           if (prod.variants) {
-            setVariants(prod.variants);
+            const uniqueColorsMap = new Map();
+            const uniqueSizesSet = new Set<string>();
+            prod.variants.forEach((v: any) => {
+              if (v.color) uniqueColorsMap.set(v.color, { color: v.color, colorHex: v.colorHex || "#ffffff" });
+              if (v.size) uniqueSizesSet.add(v.size);
+            });
+            setVariants(Array.from(uniqueColorsMap.values()));
+            setSelectedSizes(Array.from(uniqueSizesSet));
           }
         } else if (error) {
           setErrorMsg("Could not load product details.");
@@ -64,16 +90,22 @@ export default function EditProductPage() {
     const formData = new FormData(event.currentTarget);
     formData.set("status", status); // Explicitly ensure status is captured
     
-    const result = await updateProduct(id, formData);
-    
-    if (result?.error) {
-      setErrorMsg(result.error);
+    try {
+      const result = await updateProduct(id, formData);
+      
+      if (result?.error) {
+        setErrorMsg(result.error);
+        setIsSubmitting(false);
+      } else {
+        toast.success("Product updated successfully!");
+        setTimeout(() => {
+          router.push("/admin/products");
+        }, 1500);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg("Failed to update: Files might be too large, or network error occurred.");
       setIsSubmitting(false);
-    } else {
-      toast.success("Product updated successfully!");
-      setTimeout(() => {
-        router.push("/admin/products");
-      }, 1500);
     }
   }
 
@@ -118,7 +150,7 @@ export default function EditProductPage() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Hidden inputs */}
-          <input type="hidden" name="variants" value={JSON.stringify(variants)} />
+          <input type="hidden" name="variants" value={generateVariantsJson()} />
           {product.images?.map((img: string, idx: number) => (
             <input key={`exist_img_${idx}`} type="hidden" name="existing_images" value={img} />
           ))}
@@ -289,6 +321,39 @@ export default function EditProductPage() {
                   ))}
                 </div>
               )}
+            </div>
+
+            <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-sm p-6 sm:p-8 transition-shadow hover:shadow-md duration-300 mt-8">
+              <div className="mb-6 pb-4 border-b border-slate-800">
+                <h2 className="text-lg font-bold text-white">Size Variations</h2>
+                <p className="text-sm text-slate-500 mt-1">Select available sizes for this product.</p>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                {["S", "M", "L", "XL", "XXL"].map(size => {
+                  const isSelected = selectedSizes.includes(size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedSizes(selectedSizes.filter(s => s !== size));
+                        } else {
+                          setSelectedSizes([...selectedSizes, size]);
+                        }
+                      }}
+                      className={`w-12 h-12 rounded-xl font-bold text-sm flex items-center justify-center transition-all cursor-pointer ${
+                        isSelected 
+                          ? "bg-orange-500 text-white border-2 border-orange-500 shadow-md shadow-orange-500/20" 
+                          : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-orange-500 hover:text-orange-500"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
           </div>
