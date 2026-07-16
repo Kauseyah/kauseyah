@@ -32,7 +32,7 @@ const FEATURED_IN: FeaturedItem[] = [
   },
   {
     id: "f2",
-    name: "Forbes",
+    name: "200 Million Artisans",
     logo: "/images/featured/f2.jpeg",
     url: "#",
     description: "Recognized for empowering tribal artisans",

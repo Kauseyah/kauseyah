@@ -30,13 +30,24 @@ export default async function CuratedGiftHampers() {
 
   let products = (sbProducts || []).map(mapSupabaseProductToFrontend);
   
-  // Filter for gift hampers (checking slug or name)
-  let hampers = products.filter(p => 
-    p.category?.toLowerCase().includes("hamper") || 
-    p.category?.toLowerCase().includes("gift") ||
-    p.category?.toLowerCase() === "conscious-gifting" ||
-    p.category?.toLowerCase() === "conscious gifting"
-  );
+  // Filter to STRICTLY show ONLY products with the "Gift Hampers" subcategory
+  let hampers = products.filter(p => {
+    const isGiftingCategory = p.category?.toLowerCase().includes("hamper") || 
+                              p.category?.toLowerCase().includes("gift") ||
+                              p.category?.toLowerCase() === "conscious-gifting" ||
+                              p.category?.toLowerCase() === "conscious gifting";
+                              
+    const subcategory = p.subcategory?.toLowerCase() || "";
+    
+    // If a subcategory is selected (like Rakhi Collection, Sunglass Pouch, etc.), 
+    // it MUST contain "hamper" to be shown in this section.
+    if (subcategory) {
+      return isGiftingCategory && subcategory.includes("hamper");
+    }
+    
+    // Fallback: If they forgot to select a subcategory, only show it if the product name contains "hamper"
+    return isGiftingCategory && (p.name.toLowerCase().includes("hamper") || p.category?.toLowerCase().includes("hamper"));
+  });
   
   // If we can't find any, fallback to showing an empty state rather than disappearing
   if (hampers.length === 0) {

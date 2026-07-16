@@ -101,6 +101,25 @@ export default function AddProductPage() {
   const [subcategory, setSubcategory] = useState("");
   const [isCustomSubcategory, setIsCustomSubcategory] = useState(false);
   const [variants, setVariants] = useState<{color: string, colorHex: string}[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  
+  const generateVariantsJson = () => {
+    let finalVariants: any[] = [];
+    if (variants.length === 0 && selectedSizes.length === 0) return "[]";
+    
+    const colorsToMap = variants.length > 0 ? variants : [{color: "", colorHex: ""}];
+    const sizesToMap = selectedSizes.length > 0 ? selectedSizes : [""];
+    
+    for (const c of colorsToMap) {
+      for (const s of sizesToMap) {
+        const v: any = {};
+        if (c.color) { v.color = c.color; v.colorHex = c.colorHex; }
+        if (s) v.size = s;
+        if (Object.keys(v).length > 0) finalVariants.push(v);
+      }
+    }
+    return JSON.stringify(finalVariants);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,16 +152,22 @@ export default function AddProductPage() {
     const formData = new FormData(event.currentTarget);
     formData.set("status", status); // Explicitly ensure status is captured
 
-    const result = await createProduct(formData);
-    
-    if (result?.error) {
-      setErrorMsg(result.error);
+    try {
+      const result = await createProduct(formData);
+      
+      if (result?.error) {
+        setErrorMsg(result.error);
+        setIsSubmitting(false);
+      } else {
+        toast.success("Product published successfully!");
+        setTimeout(() => {
+          router.push("/admin/products");
+        }, 1500);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg("Failed to upload: Files might be too large, or network error occurred.");
       setIsSubmitting(false);
-    } else {
-      toast.success("Product published successfully!");
-      setTimeout(() => {
-        router.push("/admin/products");
-      }, 1500);
     }
   }
 
@@ -185,7 +210,7 @@ export default function AddProductPage() {
           <input type="hidden" name="status" value={status} />
           <input type="hidden" name="category_id" value={categoryId} />
           <input type="hidden" name="subcategory" value={subcategory} />
-          <input type="hidden" name="variants" value={JSON.stringify(variants)} />
+          <input type="hidden" name="variants" value={generateVariantsJson()} />
 
           {/* Left Column - Main Details */}
           <div className="lg:col-span-2 space-y-8">
@@ -353,6 +378,39 @@ export default function AddProductPage() {
                   ))}
                 </div>
               )}
+            </div>
+
+            <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-sm p-6 sm:p-8 mt-8">
+              <div className="mb-6">
+                <h2 className="text-lg font-bold text-white">Size Variations</h2>
+                <p className="text-sm text-slate-500 mt-1">Select available sizes for this product.</p>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                {["S", "M", "L", "XL", "XXL"].map(size => {
+                  const isSelected = selectedSizes.includes(size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedSizes(selectedSizes.filter(s => s !== size));
+                        } else {
+                          setSelectedSizes([...selectedSizes, size]);
+                        }
+                      }}
+                      className={`w-12 h-12 rounded-xl font-bold text-sm flex items-center justify-center transition-all cursor-pointer ${
+                        isSelected 
+                          ? "bg-orange-500 text-white border-2 border-orange-500 shadow-md shadow-orange-500/20" 
+                          : "bg-slate-950 text-slate-400 border border-slate-700 hover:border-orange-500 hover:text-orange-500"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
           </div>
