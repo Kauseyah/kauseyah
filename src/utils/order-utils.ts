@@ -10,7 +10,7 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
   const productIds = cartItems.map((item: any) => item.product.id);
   const { data: dbProducts, error: dbProductsError } = await supabaseAdmin
     .from("products")
-    .select("id, price, variants")
+    .select("id, name, price, variants")
     .in("id", productIds);
 
   if (dbProductsError || !dbProducts) {
