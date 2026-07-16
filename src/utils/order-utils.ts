@@ -27,21 +27,41 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
     }
 
     let itemPrice = dbProduct.price;
+    let verifiedVariant: any = {}; // We will only populate this with SAFE, database-verified data
 
-    // Check if the specific variant has a custom price
-    if (dbProduct.variants && Array.isArray(dbProduct.variants)) {
-      const dbVariant = dbProduct.variants.find((v: any) => 
-        (item.variant?.color ? v.color === item.variant.color : true) && 
-        (item.variant?.size ? v.size === item.variant.size : true)
-      );
-      if (dbVariant && dbVariant.price !== undefined) {
-        itemPrice = dbVariant.price;
+    // Check if the specific variant exists in the database
+    if (dbProduct.variants && Array.isArray(dbProduct.variants) && dbProduct.variants.length > 0) {
+      const dbVariant = dbProduct.variants.find((v: any) => {
+        const matchColor = item.variant?.color ? v.color === item.variant.color : true;
+        const matchSize = item.variant?.size ? v.size === item.variant.size : true;
+        return matchColor && matchSize;
+      });
+      
+      if (dbVariant) {
+        if (dbVariant.price !== undefined) {
+          itemPrice = dbVariant.price;
+        }
+        // ONLY copy fields that actually exist on the database variant
+        verifiedVariant = {
+          color: dbVariant.color,
+          colorHex: dbVariant.colorHex,
+          size: dbVariant.size
+        };
+      } else if (item.variant?.color || item.variant?.size) {
+        // The user tried to send a color or size that does not exist in the database!
+        throw new Error(`Invalid variant selected for product ${dbProduct.name}. Please remove it from your cart and try again.`);
       }
+    } else if (item.variant?.color || item.variant?.size) {
+       // The product has no variants in the DB, but the user tried to send fake ones
+       throw new Error(`Variants are not available for product ${dbProduct.name}.`);
     }
 
     calculatedSubtotal += itemPrice * item.quantity;
+    
+    // Completely overwrite the user's potentially untrusted variant object with our verified one
     verifiedCartItems.push({
       ...item,
+      variant: verifiedVariant,
       verifiedPrice: itemPrice
     });
   }
