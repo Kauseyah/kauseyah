@@ -10,7 +10,11 @@ import Testimonials from "@/components/sections/Testimonials";
 import InstagramReels from "@/components/sections/InstagramReels";
 
 export const metadata: Metadata = {
-  title: "Kauseyah - Grassroot | Local | Indigenous",
+  title: "Authentic Handlooms & Sarees | Delivering to Mumbai, Delhi, Bangalore & Across India",
+  description: "Explore Kauseyah's authentic handloom sarees and tribal crafts from Chhattisgarh. We offer fast shipping to Mumbai, Delhi, Bangalore, Hyderabad, Pune, and all major cities in India.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function HomePage() {

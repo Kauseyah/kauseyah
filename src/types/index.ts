@@ -1,7 +1,7 @@
 // ─── Product Types ───────────────────────────────────────────────────────────
 
 export type ProductCategory =
-  | "handlooms"
+  | "apparels"
   | "jewellery"
   | "home-living"
   | "conscious-gifting"

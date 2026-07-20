@@ -6,28 +6,28 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const TESTIMONIALS = [
   {
-    name: "Verified Patron",
-    location: "Chhattisgarh",
+    name: "Snigdha Goswami",
+    location: "Raipur",
     text: "You are doing great work Shweta.. our Chhattisgarh is still hidden from many people. I am very glad you are globalizing our local textile to international platform. Keep doing the good work. All the very best.",
   },
   {
-    name: "International Patron",
-    location: "London, UK",
+    name: "Apeksha Sethi",
+    location: "London",
     text: "Hey Shweta! Trust all is well! I want to confirm — I'll go with the kosa silk saree, orange Banarasi and the toys. Will select and update you shortly! Also, I'm totally okay with paying the courier charges. Let me know the total please? Address you already have — the London one.",
   },
   {
-    name: "Saree Lover",
-    location: "India",
+    name: "Ritika Reddy",
+    location: "Bangalore",
     text: "The drape, the feel, the comfort.. Have never experienced such with any other saree I've owned. You are creating absolute fabulous pieces and the art is simply outstanding. Received compliments for its uniqueness. Thank you very much for these masterpieces! Wishing your business expands across an even broader spectrum and reaches every woman who loves draping sarees.",
   },
   {
-    name: "Returning Customer",
-    location: "India",
+    name: "Rahul Shukla",
+    location: "Lucknow",
     text: "Received the package. As usual it was all perfectly made. Loved all of them. Thank you so much for the special note and the gift. Your items will never go out of trend.",
   },
   {
-    name: "Gift Buyer",
-    location: "India",
+    name: "Priyanka Tadipatri",
+    location: "Bangalore",
     text: "Hi Shweta! Received the saree. It's lovely! Thanks so much for the great work :) Bought this one as a gift, I'm sure they'll love it too!",
   },
 ];

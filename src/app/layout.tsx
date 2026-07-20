@@ -33,6 +33,12 @@ export const metadata: Metadata = {
     template: `${SITE_NAME} - %s`,
   },
   description: SITE_DESCRIPTION,
+  keywords: [
+    "Handlooms", "Sarees", "Tribal Crafts", "Kauseyah", 
+    "Chhattisgarh", "Delhi", "Mumbai", "Hyderabad", 
+    "Pune", "Bangalore", "Kolkata", "Chennai", "Ahmedabad",
+    "Handcrafted apparels", "Eco-friendly clothing", "Indian Artisans"
+  ],
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: "website",

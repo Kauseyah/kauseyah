@@ -1,17 +1,9 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
-import { createClient } from "@/utils/supabase/server";
 import { calculateSecureOrderTotals } from "@/utils/order-utils";
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { cartItems } = await req.json();
 
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {

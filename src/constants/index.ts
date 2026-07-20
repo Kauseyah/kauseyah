@@ -210,7 +210,7 @@ export const NAV_LINKS: NavLink[] = [
       { label: "Dhokra Craft", href: "/collections/dhokra-craft" },
       // ── Upcycled & Zero Waste ──
       { label: "Textile Toys", href: "/collections/textile-toys" },
-      { label: "Faabr", href: "/collections/faabr" },
+      { label: "Fabric key Chains", href: "/collections/fabric-key-chains" },
     ],
   },
   { label: "Our Story", href: "/about" },
@@ -222,9 +222,9 @@ export const NAV_LINKS: NavLink[] = [
 
 export const SHOP_CATEGORY_GROUPS = [
   {
-    id: "handlooms",
-    label: "Handlooms",
-    href: "/collections/handlooms",
+    id: "apparels",
+    label: "Apparels",
+    href: "/collections/apparels",
     icon: "🧵",
     description: "Authentic hand-woven textiles from master weavers",
     items: [
@@ -293,7 +293,7 @@ export const SHOP_CATEGORY_GROUPS = [
     description: "Conscious creativity — waste reimagined beautifully",
     items: [
       { label: "Textile Toys", href: "/collections/textile-toys" },
-      { label: "Faabr", href: "/collections/faabr" },
+      { label: "Fabric key Chains", href: "/collections/fabric-key-chains" },
     ],
   },
 ];
@@ -302,9 +302,9 @@ export const SHOP_CATEGORY_GROUPS = [
 
 export const CATEGORIES = [
   {
-    id: "handlooms",
-    label: "Handlooms",
-    slug: "handlooms",
+    id: "apparels",
+    label: "Apparels",
+    slug: "apparels",
     description: "Authentic hand-woven textiles from master weavers",
     icon: "🧵",
   },
