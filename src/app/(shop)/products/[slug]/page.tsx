@@ -22,8 +22,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return {};
   
   return {
-    title: product.name,
-    description: product.description?.substring(0, 160),
+    title: `${product.name} - Authentic Handlooms`,
+    description: `Buy ${product.name} online. ${product.description?.substring(0, 120)}... Delivering across India including Delhi, Mumbai, Bangalore, Pune, and Hyderabad.`,
+    keywords: [
+      product.name,
+      product.category || "",
+      product.subcategory || "",
+      "Handlooms",
+      "Buy online in Mumbai",
+      "Delhi",
+      "Bangalore",
+      "Pune",
+      "Hyderabad",
+      "Chhattisgarh",
+      "India"
+    ],
+    alternates: { canonical: `/products/${slug}` },
     openGraph: {
       images: product.images ? product.images.map((url: string) => ({ url })) : [],
     },

@@ -12,8 +12,6 @@ import { PRODUCTS } from "@/data";
 import { cn } from "@/utils";
 import { Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { createClient } from "@/utils/supabase/client";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface DynamicCategoryGroup {
   id: string;
@@ -37,16 +35,6 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    checkAuth();
-  }, []);
 
   const groupsToUse = dynamicCategories && dynamicCategories.length > 0 ? dynamicCategories : SHOP_CATEGORY_GROUPS;
 
@@ -416,12 +404,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                   <Search strokeWidth={1.5} size={19} />
                 </button>
               )}
-              <Link href={user ? "/account" : "/login"} className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
-                <User strokeWidth={1.5} size={19} />
-              </Link>
-              <Link href="/wishlist" className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
-                <Heart strokeWidth={1.5} size={19} />
-              </Link>
+              
               <Link href="/cart" className={cn("relative transition-all duration-300 hover:-translate-y-0.5 flex items-center", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
                 <ShoppingBag strokeWidth={1.5} size={19} />
                 {itemCount > 0 && (
@@ -602,22 +585,6 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                   </motion.li>
                 );
               })}
-              
-              {/* Manual Mobile Account Link */}
-              <motion.li
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: NAV_LINKS.length * 0.08 }}
-                className="border-b border-white/5"
-              >
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="block font-display text-3xl text-[#F1F3E0] hover:text-[#FF6B00] transition-colors py-4 flex items-center justify-between"
-                >
-                  Account <User size={24} className="text-[#FF6B00]" />
-                </Link>
-              </motion.li>
             </ul>
           </motion.div>
         )}

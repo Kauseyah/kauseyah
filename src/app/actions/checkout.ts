@@ -6,13 +6,6 @@ import { sendOrderReceipt } from "@/lib/email";
 import { calculateSecureOrderTotals } from "@/utils/order-utils";
 
 export async function createOrder(orderData: any, cartItems: any[]) {
-  const supabaseAuth = await createServerClient();
-  const { data: { user } } = await supabaseAuth.auth.getUser();
-
-  if (!user) {
-    return { error: "You must be logged in to place an order" };
-  }
-
   // Create an admin client to bypass RLS for inserting the order
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,7 +28,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
-      user_id: user.id,
+      user_id: null,
       order_status: "processing",
       subtotal: calculatedSubtotal,
       shipping_charge: calculatedShipping,
@@ -101,7 +94,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
 
   // 5. Send HTML Email Receipt
   // Fire and forget so it doesn't block the checkout response
-  if (user.email) {
+  if (orderData.email) {
     // Override orderData with verified totals for the email receipt
     const verifiedOrderData = {
       ...orderData,
@@ -109,7 +102,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
       shipping_charge: calculatedShipping,
       total_amount: calculatedTotal,
     };
-    sendOrderReceipt(user.email, order.id, verifiedOrderData, verifiedCartItems).catch(() => {});
+    sendOrderReceipt(orderData.email, order.id, verifiedOrderData, verifiedCartItems).catch(() => {});
   }
 
   return { success: true, orderId: order.id };

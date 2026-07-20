@@ -242,7 +242,7 @@ export default function AboutPageContent() {
       <section className="w-full min-h-[50svh] lg:min-h-[100svh] pt-20 pb-10 lg:pb-0 flex flex-col justify-center overflow-hidden relative border-b border-[#FF6B00]/10">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image src="/images/about-hero.webp" alt="About Kauseyah" fill className="object-cover object-center" priority />
+          <Image src="/images/storyNew.jpeg" alt="About Kauseyah" fill className="object-cover object-center" priority />
           <div className="absolute inset-0 bg-[#0D0400]/60" />
         </div>
 
@@ -331,7 +331,7 @@ export default function AboutPageContent() {
               className="relative w-full aspect-[4/3] md:aspect-[16/11] lg:aspect-[4/3] xl:aspect-[16/11] overflow-hidden rounded-2xl border border-[#FF6B00]/10 shadow-[0_15px_50px_rgba(0,0,0,0.05)] bg-white/50"
             >
               <Image
-                src="/images/artisan_workshop_portrait_1782640198563.png"
+                src="/images/aboutN.jpeg"
                 alt="Artisan weaving at the handloom in Chhattisgarh workshop"
                 fill
                 className="object-cover"
@@ -350,7 +350,7 @@ export default function AboutPageContent() {
               className="relative h-[360px] md:h-[480px] overflow-hidden rounded-2xl order-2 lg:order-1"
             >
               <Image
-                src="/images/about/about.jpeg"
+                src="/images/founder.jpeg"
                 alt="Founder journey among master artisans at the loom"
                 fill
                 className="object-cover"

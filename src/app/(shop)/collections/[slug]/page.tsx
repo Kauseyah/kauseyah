@@ -29,7 +29,7 @@ const PREDEFINED_COLLECTIONS: Record<
   "river-songs": {
     title: "River Songs Collection",
     description: "Woven along the banks of the Mahanadi, this handloom collection narrates stories through the rhythm of the loom.",
-    filter: (p) => p.category === "handlooms",
+    filter: (p) => p.category === "apparels",
   },
   "festive-earth": {
     title: "Festive Earth Collection",
@@ -45,7 +45,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // 1. Check predefined collections
   const predefined = PREDEFINED_COLLECTIONS[slug];
   if (predefined) {
-    return { title: predefined.title, description: predefined.description };
+    return { 
+      title: `${predefined.title} - Kauseyah Handlooms`, 
+      description: predefined.description,
+      keywords: [predefined.title, "Handlooms", "Sarees", "Mumbai", "Delhi", "Bangalore", "Pune", "Hyderabad", "Chhattisgarh"],
+      alternates: { canonical: `/collections/${slug}` }
+    };
   }
 
   // 2. Fetch category from Supabase
@@ -58,8 +63,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (category) {
     return {
-      title: category.name,
-      description: category.description || undefined,
+      title: `${category.name} - Kauseyah Handlooms`,
+      description: category.description ? `${category.description} Delivering authentic handlooms across India including Mumbai, Delhi, and Bangalore.` : undefined,
+      keywords: [category.name, "Handlooms", "Sarees", "Mumbai", "Delhi", "Bangalore", "Pune", "Hyderabad", "Chhattisgarh"],
+      alternates: { canonical: `/collections/${slug}` }
     };
   }
 
@@ -72,14 +79,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (subcategory) {
     return {
-      title: subcategory.name,
+      title: `${subcategory.name} - Kauseyah Handlooms`,
+      description: `Buy ${subcategory.name} online. Handcrafted and delivered to Delhi, Mumbai, Pune, Bangalore and across India.`,
+      keywords: [subcategory.name, "Handlooms", "Sarees", "Mumbai", "Delhi", "Bangalore", "Pune", "Hyderabad", "Chhattisgarh"],
+      alternates: { canonical: `/collections/${slug}` }
     };
   }
 
   // 3. Fallback to mock generic collections if DB fails
   const mockCollection = COLLECTIONS.find((c) => c.slug === slug);
   if (mockCollection) {
-    return { title: mockCollection.name, description: mockCollection.description };
+    return { 
+      title: `${mockCollection.name} - Kauseyah`, 
+      description: mockCollection.description,
+      keywords: [mockCollection.name, "Handlooms", "Mumbai", "Delhi", "Bangalore"],
+      alternates: { canonical: `/collections/${slug}` }
+    };
   }
 
   return {};
