@@ -43,7 +43,7 @@ export default function BlogClient({ initialBlogs }: { initialBlogs: BlogPost[] 
       <section className="w-full min-h-[50svh] lg:min-h-[100svh] pt-20 pb-10 lg:pb-0 flex flex-col justify-center overflow-hidden relative border-b border-[#FF6B00]/10">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image src="/images/blog-hero.webp" alt="Blog & Insights" fill className="object-cover object-center" priority />
+          <Image src="/images/blogsnew.jpeg" alt="Blog & Insights" fill className="object-cover object-center" priority />
           <div className="absolute inset-0 bg-[#0D0400]/60" />
         </div>
 

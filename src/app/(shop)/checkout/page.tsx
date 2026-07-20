@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useCart } from "@/store/CartContext";
 import { formatPrice } from "@/utils";
 import { Check, ArrowRight, ShoppingBag, MapPin, CreditCard, ShieldCheck, Loader2 } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import toast from "react-hot-toast";
@@ -17,10 +16,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
-  const [isFetchingAddresses, setIsFetchingAddresses] = useState(true);
 
   // Form fields
   const [name, setName] = useState("");
@@ -31,63 +27,10 @@ export default function CheckoutPage() {
   const [pincode, setPincode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("online");
   useEffect(() => {
-    const checkAuth = async () => {
-      const supabase = createClient();
-      let user = null;
-      try {
-        const { data } = await supabase.auth.getUser();
-        user = data.user;
-      } catch (e) {
-        // console.error("Auth fetch failed:", e);
-      }
-      
-      if (!user) {
-        router.push("/login?redirectTo=/checkout");
-      } else {
-        setEmail(user.email || ""); // Auto-fill email
-        
-        // Fetch saved addresses
-        try {
-          const res = await fetch("/api/addresses");
-          if (res.ok) {
-            const data = await res.json();
-            setSavedAddresses(data);
-            
-            // Auto-select default if exists
-            const defaultAddress = data.find((a: any) => a.is_default) || data[0];
-            if (defaultAddress) {
-              setName(defaultAddress.full_name || "");
-              setPhone(defaultAddress.phone_number || "");
-              setAddress(`${defaultAddress.address_line_1}${defaultAddress.address_line_2 ? ", " + defaultAddress.address_line_2 : ""}`);
-              setCity(defaultAddress.city || "");
-              setPincode(defaultAddress.postal_code || "");
-            }
-          }
-        } catch (e) {
-          // // console.error("Failed to fetch addresses:", e);
-        } finally {
-          setIsFetchingAddresses(false);
-          setIsLoadingAuth(false);
-        }
-      }
-    };
-    checkAuth();
-  }, [router]);
-
-  useEffect(() => {
     if (orderPlaced) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [orderPlaced]);
-  
-  const handleSelectAddress = (addr: any) => {
-    setName(addr.full_name || "");
-    setPhone(addr.phone_number || "");
-    setAddress(`${addr.address_line_1}${addr.address_line_2 ? ", " + addr.address_line_2 : ""}`);
-    setCity(addr.city || "");
-    setPincode(addr.postal_code || "");
-  };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +44,7 @@ export default function CheckoutPage() {
         
         const orderData = {
           id: randomId,
+          email,
           shipping_name: name,
           shipping_address: address,
           city,
@@ -143,6 +87,7 @@ export default function CheckoutPage() {
 
               const orderData = {
                 id: randomId,
+                email,
                 shipping_name: name,
                 shipping_address: address,
                 city,
@@ -205,6 +150,7 @@ export default function CheckoutPage() {
               const orderId = response.razorpay_order_id || "KAS-" + Math.floor(100000 + Math.random() * 900000);
               const orderData = {
                 id: orderId,
+                email,
                 shipping_name: name,
                 shipping_address: address,
                 city,
@@ -279,13 +225,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (isLoadingAuth) {
-    return (
-      <main className="bg-[#FFF8F3] min-h-screen pt-36 pb-20 flex items-center justify-center">
-        <Loader2 size={32} className="animate-spin text-[#FF6B00]" />
-      </main>
-    );
-  }
+
 
   if (orderPlaced) {
     return (
@@ -360,31 +300,7 @@ export default function CheckoutPage() {
                 <span>1. Shipping Information</span>
               </div>
               
-              {!isFetchingAddresses && savedAddresses.length > 0 && (
-                <div className="space-y-3 mb-2">
-                  <label className="block font-bold uppercase tracking-wider text-[10px] text-stone-500">Quick Select Saved Address</label>
-                  <div className="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2 snap-x scrollbar-thin scrollbar-thumb-gray-200">
-                    {savedAddresses.map((addr: any) => (
-                      <button
-                        key={addr.id}
-                        type="button"
-                        onClick={() => handleSelectAddress(addr)}
-                        className="snap-start shrink-0 w-[260px] text-left p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF6B00]/20"
-                      >
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-bold text-xs text-[#FF6B00] uppercase tracking-wider">{addr.type}</span>
-                          {addr.is_default && <span className="text-[9px] font-bold uppercase bg-stone-200 px-1.5 py-0.5 rounded text-stone-600">Default</span>}
-                        </div>
-                        <p className="text-sm font-semibold text-stone-900 line-clamp-1 mb-1">{addr.full_name}</p>
-                        <p className="text-xs text-stone-500 line-clamp-2 leading-relaxed">
-                          {addr.address_line_1}, {addr.city} - {addr.postal_code}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="h-px bg-stone-100 my-4" />
-                </div>
-              )}
+
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-body text-xs text-stone-800">

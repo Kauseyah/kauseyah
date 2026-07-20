@@ -7,6 +7,7 @@ import Link from "next/link";
 import { formatPrice } from "@/utils";
 import { useCart } from "@/store/CartContext";
 import { PRODUCTS } from "@/data";
+import { CONTACT_EMAIL, CONTACT_PHONE } from "@/constants";
 import { Star, ShoppingBag, Heart, ArrowRight, ShieldCheck, Truck, RotateCcw, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -621,6 +622,22 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
             </div>
           </div>
         )}
+
+        {/* ── Bulk Order Note ── */}
+        <div className="bg-white border border-[#FF6B00]/10 rounded-3xl p-6 md:p-8 lg:p-10 text-center shadow-[0_12px_45px_rgba(181,84,26,0.03)] mt-8 mb-8 max-w-4xl mx-auto">
+          <h3 className="font-display text-2xl lg:text-3xl text-[#111111] mb-4">Bulk Orders & Custom Products</h3>
+          <p className="font-body text-stone-600 mb-6 leading-relaxed md:text-lg">
+            Planning to order in bulk or looking for custom-made products? Contact us for personalized gifting solutions and bulk pricing. We'd love to craft something special for you.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 font-body">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 font-semibold text-[#111111] hover:text-[#FF6B00] transition-colors">
+              <span className="text-xl">✉️</span> {CONTACT_EMAIL}
+            </a>
+            <a href={`tel:${CONTACT_PHONE.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-2 font-semibold text-[#111111] hover:text-[#FF6B00] transition-colors">
+              <span className="text-xl">📞</span> {CONTACT_PHONE}
+            </a>
+          </div>
+        </div>
 
       </div>
     </div>

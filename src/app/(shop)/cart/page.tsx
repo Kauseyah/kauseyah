@@ -6,8 +6,6 @@ import { useCart } from "@/store/CartContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
-
 export default function CartPage() {
   const { cart, itemCount, removeItem, updateQty } = useCart();
   const router = useRouter();
@@ -15,17 +13,7 @@ export default function CartPage() {
 
   const handleProceedToCheckout = async () => {
     setIsCheckingOut(true);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    setIsCheckingOut(false);
-    
-    if (!user) {
-      router.push("/login?redirectTo=/checkout");
-    } else {
-      // Assuming a /checkout page exists or will exist
-      router.push("/checkout"); 
-    }
+    router.push("/checkout");
   };
 
   return (
