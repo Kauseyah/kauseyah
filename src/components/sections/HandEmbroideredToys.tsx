@@ -20,27 +20,13 @@ const FALLBACK_TOYS = [
     src: "/images/toy_elephant.png",
     subtitle: "Animal Kingdom",
     href: "/collections/upcycled-waste?subcategory=Textile+Toys"
-  },
-  {
-    title: "Fabric Rattle",
-    src: "/images/toy_rattle.png",
-    subtitle: "Infant Joy",
-    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
-  },
-  {
-    title: "Woven Bird",
-    src: "/images/toy_bird.png",
-    subtitle: "Nostalgic Sky",
-    href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   }
 ];
 
 const LAYOUT = [
-  { span: "md:col-span-7", height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]" },
-  { span: "md:col-span-5", height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]" },
-  { span: "md:col-span-4", height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]" },
-  { span: "md:col-span-4", height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]" },
-  { span: "md:col-span-4", height: "h-[220px] sm:h-[280px] lg:h-[350px] xl:h-[450px]" }
+  { span: "md:col-span-4", height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]" },
+  { span: "md:col-span-4", height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]" },
+  { span: "md:col-span-4", height: "h-[260px] sm:h-[320px] lg:h-[400px] xl:h-[550px]" }
 ];
 
 export default async function HandEmbroideredToys() {
@@ -60,9 +46,9 @@ export default async function HandEmbroideredToys() {
   let dbToys = products.filter(p => 
     p.category?.toLowerCase().includes("toy") || 
     p.subcategory?.toLowerCase().includes("toy")
-  ).slice(0, 5); // Take top 5
+  ).slice(0, 3); // Take top 3
 
-  // Map to the layout structure, using fallbacks if we don't have 5 toys in DB
+  // Map to the layout structure, using fallbacks if we don't have 3 toys in DB
   const mappedToys = LAYOUT.map((layout, i) => {
     if (i < dbToys.length) {
       const p = dbToys[i];
