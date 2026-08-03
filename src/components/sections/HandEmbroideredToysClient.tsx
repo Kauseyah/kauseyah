@@ -34,7 +34,7 @@ export default function HandEmbroideredToysClient({ toys }: { toys: any[] }) {
           </p>
         </div>
 
-        {/* ── 5-Card Bento Grid Layout ── */}
+        {/* ── 3-Card Grid Layout ── */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8">
           {toys.map((toy, i) => (
             <Link

@@ -8,7 +8,6 @@ import { SITE_NAME, SITE_TAGLINE, SOCIAL_LINKS, CONTACT_EMAIL, CONTACT_PHONE } f
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
-  { label: "Shipping Policy", href: "/shipping" },
 ];
 
 const SOCIAL_ICONS: Record<string, ReactElement> = {
@@ -96,7 +95,6 @@ export default function Footer() {
               {[
                 { label: "About Us", href: "/about" },
                 { label: "Collections", href: "/collections" },
-                { label: "Portfolio" },
                 { label: "Contact", href: "/contact" },
                 { label: "FAQ" },
                 { label: "Blog", href: "/blog" },
