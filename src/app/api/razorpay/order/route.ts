@@ -18,13 +18,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Check environment variables
-    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    // Check environment variables — use private keys only (no NEXT_PUBLIC_)
+    const key_id = process.env.RAZORPAY_KEY_ID;
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!key_id || !key_secret) {
       return NextResponse.json({ 
-        error: "Razorpay credentials not configured" 
+        error: "Razorpay credentials not configured. Please contact support." 
       }, { status: 500 });
     }
 
@@ -40,8 +40,10 @@ export async function POST(req: Request) {
     };
 
     const order = await instance.orders.create(options);
-    
-    return NextResponse.json(order);
+
+    // Return key_id alongside the order so the client never needs to hold it
+    // as a NEXT_PUBLIC_ env var (which would expose it in the JS bundle)
+    return NextResponse.json({ ...order, key_id });
   } catch (error: any) {
     // console.error("Razorpay error full object:", JSON.stringify(error, null, 2));
     
