@@ -127,3 +127,85 @@ export async function sendOrderReceipt(
     return { success: false, error };
   }
 }
+
+/**
+ * Sends an alert to the admin when payment is confirmed by Razorpay
+ * but the order failed to save to the database.
+ * This allows manual reconciliation so the customer is not left stranded.
+ */
+export async function sendAdminPaymentAlert(details: {
+  customerEmail: string;
+  customerName: string;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  amount: number;
+  errorMessage: string;
+}) {
+  try {
+    if (!process.env.RESEND_API_KEY) return { success: false };
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const adminEmail = process.env.ADMIN_EMAIL;
+
+    if (!adminEmail) return { success: false, reason: "No ADMIN_EMAIL configured" };
+
+    const html = `
+      <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; background: #fff; border: 2px solid #FF6B00; border-radius: 12px; overflow: hidden;">
+        <div style="background: #FF6B00; padding: 20px 30px;">
+          <h1 style="color: #fff; margin: 0; font-size: 20px;">⚠️ ACTION REQUIRED — Payment Without Order</h1>
+        </div>
+        <div style="padding: 30px;">
+          <p style="color: #111; font-size: 15px; margin-top: 0;">
+            A customer's payment was <strong>successfully verified by Razorpay</strong> but the order
+            <strong>failed to save in the database</strong>. You must manually create this order or issue a refund.
+          </p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">Customer Name</td>
+              <td style="padding: 10px 0; color: #111; font-weight: 700;">${details.customerName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">Customer Email</td>
+              <td style="padding: 10px 0; color: #111; font-weight: 700;">${details.customerEmail}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">Amount Paid</td>
+              <td style="padding: 10px 0; color: #FF6B00; font-weight: 800; font-size: 16px;">₹${details.amount.toFixed(2)}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">Razorpay Order ID</td>
+              <td style="padding: 10px 0; color: #111; font-family: monospace;">${details.razorpay_order_id}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">Razorpay Payment ID</td>
+              <td style="padding: 10px 0; color: #111; font-family: monospace;">${details.razorpay_payment_id}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #666; font-weight: 600;">DB Error</td>
+              <td style="padding: 10px 0; color: #c0392b; font-weight: 700;">${details.errorMessage}</td>
+            </tr>
+          </table>
+          <div style="margin-top: 24px; background: #fff8f3; border-left: 4px solid #FF6B00; padding: 16px; border-radius: 4px;">
+            <p style="margin: 0; color: #555; font-size: 13px;">
+              <strong>Next steps:</strong> Log into the Razorpay dashboard to confirm the payment, then manually create 
+              the order in the admin panel or contact the customer at <a href="mailto:${details.customerEmail}">${details.customerEmail}</a>.
+            </p>
+          </div>
+          <p style="margin-top: 20px; color: #999; font-size: 12px;">Timestamp: ${new Date().toISOString()}</p>
+        </div>
+      </div>
+    `;
+
+    const { error } = await resend.emails.send({
+      from: 'Kauseyah Alerts <orders@kauseyah.com>',
+      to: [adminEmail],
+      subject: `⚠️ URGENT: Payment received but order not saved — ${details.razorpay_payment_id}`,
+      html,
+    });
+
+    if (error) return { success: false, error };
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+}

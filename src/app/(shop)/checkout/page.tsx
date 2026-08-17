@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import toast from "react-hot-toast";
 import { createOrder } from "@/app/actions/checkout";
+import { logFailedPayment } from "@/app/actions/payment-log";
 
 export default function CheckoutPage() {
   const { cart, clearCart, itemCount } = useCart();
@@ -67,7 +68,8 @@ export default function CheckoutPage() {
         clearCart();
         setIsProcessing(false);
       } else if (paymentMethod === "online") {
-        // 1. Create order on our backend
+        // 1. Create Razorpay order on backend — key_id is returned from server,
+        //    never stored as a NEXT_PUBLIC_ env var in the client bundle
         const res = await fetch("/api/razorpay/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -75,62 +77,28 @@ export default function CheckoutPage() {
         });
 
         const order = await res.json();
-        
+
         if (!res.ok) {
-          // If the error is about missing credentials, fallback to a mock testing flow
-          if (order.error === "Razorpay credentials not configured") {
-            toast.success("MOCK PAYMENT: Simulating successful online payment...", { duration: 3000 });
-            
-            setTimeout(async () => {
-              const randomId = "KAS-" + Math.floor(100000 + Math.random() * 900000);
-              // // console.log("Mock Payment Success");
+          throw new Error(order.error || "Failed to initiate payment. Please try again.");
+        }
 
-              const orderData = {
-                id: randomId,
-                email,
-                shipping_name: name,
-                shipping_address: address,
-                city,
-                pincode,
-                shipping_phone: phone,
-                subtotal: cart.subtotal,
-                shipping_charge: cart.total - cart.subtotal,
-                payment_status: "paid",
-                total_amount: cart.total,
-                razorpay_order_id: "mock_order_id",
-                razorpay_payment_id: "mock_payment_id",
-              };
-
-              const dbRes = await createOrder(orderData, cart.items);
-              if (dbRes.error) {
-                toast.error(dbRes.error);
-                setIsProcessing(false);
-                return;
-              }
-              
-              setOrderId(dbRes.orderId as string);
-              setOrderPlaced(true);
-              clearCart();
-              setIsProcessing(false);
-            }, 2000);
-            return;
-          }
-          
-          throw new Error(order.error || "Failed to initiate payment");
+        if (!order.key_id) {
+          throw new Error("Payment gateway configuration error. Please contact support.");
         }
 
         // 2. Open Razorpay checkout
+        //    key_id comes from the server response — never hardcoded or exposed on client
         const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Use NEXT_PUBLIC for frontend
+          key: order.key_id,
           amount: order.amount,
           currency: order.currency,
           name: "Kauseyah",
           description: "Purchase from Kauseyah",
           order_id: order.id,
           handler: async function (response: any) {
-            // Payment successful
+            // This handler fires ONLY after Razorpay confirms payment on their side
             try {
-              // 1. Verify Payment
+              // 3. Verify payment signature on server — prevents forged callbacks
               const verifyRes = await fetch("/api/razorpay/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -140,16 +108,15 @@ export default function CheckoutPage() {
                   razorpay_signature: response.razorpay_signature,
                 }),
               });
-              
+
               const verifyData = await verifyRes.json();
               if (!verifyRes.ok || !verifyData.success) {
-                throw new Error("Payment verification failed");
+                // Verification failed — do NOT create an order
+                throw new Error("Payment verification failed. No order was placed. Please contact support.");
               }
 
-              // 2. Save Order to Database
-              const orderId = response.razorpay_order_id || "KAS-" + Math.floor(100000 + Math.random() * 900000);
+              // 4. Only AFTER signature verification, save order to database
               const orderData = {
-                id: orderId,
                 email,
                 shipping_name: name,
                 shipping_address: address,
@@ -166,7 +133,23 @@ export default function CheckoutPage() {
 
               const dbRes = await createOrder(orderData, cart.items);
               if (dbRes.error) {
-                throw new Error(dbRes.error);
+                // Payment was real and verified — but DB save failed.
+                // Log it for reconciliation and alert the admin immediately.
+                logFailedPayment({
+                  customerEmail: email,
+                  customerName: name,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  amount: cart.total,
+                  errorMessage: dbRes.error,
+                  cartItems: cart.items,
+                  shippingAddress: { name, address, city, pincode, phone: phone },
+                }).catch(() => {}); // fire-and-forget, never block the UI
+
+                throw new Error(
+                  `Your payment was received (ID: ${response.razorpay_payment_id}) but we encountered a technical error saving your order. ` +
+                  `Please contact support with this Payment ID and we will resolve it immediately.`
+                );
               }
 
               toast.success("Payment Successful!");
@@ -174,7 +157,6 @@ export default function CheckoutPage() {
               setOrderPlaced(true);
               clearCart();
             } catch (error: any) {
-              // // console.error("Verification error:", error);
               toast.error(error.message || "Payment verification failed");
             } finally {
               setIsProcessing(false);
@@ -219,7 +201,6 @@ export default function CheckoutPage() {
         razorpay.open();
       }
     } catch (err: any) {
-      // // console.error(err);
       toast.error(err.message || "An error occurred");
       setIsProcessing(false);
     }
