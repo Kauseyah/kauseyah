@@ -74,7 +74,7 @@ export async function sendOrderReceipt(
                 </tr>
                 <tr>
                   <td style="padding: 8px 12px; text-align: right; color: #666666; font-size: 15px; font-weight: 600;">Shipping</td>
-                  <td style="padding: 8px 12px; text-align: right; color: #2D2825; font-size: 16px; font-weight: 700;">₹${orderData.shipping_charge}</td>
+                  <td style="padding: 8px 12px; text-align: right; color: #2D2825; font-size: 16px; font-weight: 700;">${orderData.shipping_charge === 0 ? "FREE" : `₹${orderData.shipping_charge}`}</td>
                 </tr>
                 <tr>
                   <td style="padding: 20px 12px; text-align: right; font-weight: 800; font-size: 18px; color: #2D2825; border-top: 2px solid #E5DFD5;">Total</td>

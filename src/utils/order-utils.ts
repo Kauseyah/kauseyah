@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from "@/constants";
+import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE, calculateShipping } from "@/constants";
 
 export async function calculateSecureOrderTotals(cartItems: any[]) {
   const supabaseAdmin = createClient(
@@ -66,7 +66,7 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
     });
   }
 
-  const calculatedShipping = calculatedSubtotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
+  const calculatedShipping = calculateShipping(calculatedSubtotal, cartItems.length);
   const calculatedTotal = calculatedSubtotal + calculatedShipping;
 
   return {

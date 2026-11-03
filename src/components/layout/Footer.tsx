@@ -8,6 +8,7 @@ import { SITE_NAME, SITE_TAGLINE, SOCIAL_LINKS, CONTACT_EMAIL, CONTACT_PHONE } f
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
+  { label: "Return & Refund Policy", href: "/return-refund-policy" },
 ];
 
 const SOCIAL_ICONS: Record<string, ReactElement> = {

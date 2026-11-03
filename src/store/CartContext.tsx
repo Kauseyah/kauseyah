@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
 import type { Cart, CartItem, Product, ProductVariant } from "@/types";
-import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from "@/constants";
+import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE, calculateShipping } from "@/constants";
 
 // ─── State & Actions ──────────────────────────────────────────────────────────
 
@@ -18,7 +18,7 @@ function calcCart(items: CartItem[]): Cart {
     (sum, item) => sum + item.variant.price * item.quantity,
     0
   );
-  const shipping = items.length > 0 ? 200 : 0;
+  const shipping = calculateShipping(subtotal, items.length);
   return { items, subtotal, discount: 0, total: subtotal + shipping };
 }
 

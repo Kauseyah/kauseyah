@@ -369,5 +369,18 @@ export const SOCIAL_LINKS = {
 
 // ─── Shipping ─────────────────────────────────────────────────────────────────
 
-export const FREE_SHIPPING_THRESHOLD = 999; // INR
-export const STANDARD_SHIPPING_FEE = 99;
+export const FREE_SHIPPING_THRESHOLD = 6000; // INR: strictly above ₹6,000 qualifies for free shipping
+export const STANDARD_SHIPPING_FEE = 200; // INR flat shipping fee for ₹6,000 or below
+
+/**
+ * Centralized shipping calculation:
+ * - Empty cart / subtotal <= 0: ₹0
+ * - Subtotal > ₹6,000: FREE (₹0)
+ * - Subtotal <= ₹6,000: Flat ₹200
+ */
+export function calculateShipping(subtotal: number, itemCount: number = 1): number {
+  if (itemCount <= 0 || subtotal <= 0) {
+    return 0;
+  }
+  return subtotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
+}

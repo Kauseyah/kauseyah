@@ -13,7 +13,7 @@ const HARDCODED_CATEGORIES = [
   },
   {
     title: "Contemporary Menswear",
-    src: "/images/menswear.png",
+    src: "/images/menswear2.jpeg",
     subtitle: "Modern Heritage",
     gridClass: "lg:col-span-4 lg:row-span-1",
     position: "center 10%",
@@ -21,7 +21,7 @@ const HARDCODED_CATEGORIES = [
   },
   {
     title: "Get your custom outfit done",
-    src: "/images/custom_outfit.png",
+    src: "/images/custom_outfit.jpeg",
     subtitle: "Artisan Bespoke",
     gridClass: "lg:col-span-4 lg:row-span-1",
     position: "center 20%",

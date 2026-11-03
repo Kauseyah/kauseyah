@@ -5,7 +5,7 @@ import HandEmbroideredToysClient from "./HandEmbroideredToysClient";
 const FALLBACK_TOYS = [
   {
     title: "Handmade Doll",
-    src: "/images/toy_doll.png",
+    src: "/images/toy_doll2.jpeg",
     subtitle: "Heritage Craft",
     href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   },
@@ -17,7 +17,7 @@ const FALLBACK_TOYS = [
   },
   {
     title: "Stitched Elephant",
-    src: "/images/toy_elephant.png",
+    src: "/images/toy_elephant2.jpeg",
     subtitle: "Animal Kingdom",
     href: "/collections/upcycled-waste?subcategory=Textile+Toys"
   }

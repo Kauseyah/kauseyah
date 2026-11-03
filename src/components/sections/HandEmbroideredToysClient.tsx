@@ -55,6 +55,7 @@ export default function HandEmbroideredToysClient({ toys }: { toys: any[] }) {
                   src={toy.src}
                   alt={toy.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
                   className="object-cover group-hover:scale-105 transition-transform duration-[1.5s] ease-out"
                 />
                 
