@@ -372,7 +372,7 @@ export default function ProductDetailDrawer({ product, onClose }: ProductDetailD
             </div>
             <div className="flex flex-col items-center gap-2 p-3 bg-stone-100 border border-stone-200/80 rounded-xl">
               <Truck size={16} className="text-[#FF6B00]" />
-              <span>₹200 Shipping</span>
+              <span>{product.price > 6000 ? "Free Shipping" : "Free Above ₹6k"}</span>
             </div>
             <div className="flex flex-col items-center gap-2 p-3 bg-stone-100 border border-stone-200/80 rounded-xl">
               <RotateCcw size={16} className="text-[#FF6B00]" />

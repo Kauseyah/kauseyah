@@ -12,6 +12,7 @@ import { PRODUCTS } from "@/data";
 import { cn } from "@/utils";
 import { Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import AnnouncementBar from "./AnnouncementBar";
 
 interface DynamicCategoryGroup {
   id: string;
@@ -141,6 +142,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                 : "top-0 left-0 right-0 bg-gradient-to-b from-black/75 via-black/40 to-transparent"
         )}
       >
+        <AnnouncementBar />
         <nav
           className={cn(
             "w-full transition-all duration-700",

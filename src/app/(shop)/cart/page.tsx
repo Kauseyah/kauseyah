@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, Loader2 } from "lucide-react";
+import { ShoppingBag, Loader2, Truck, Sparkles } from "lucide-react";
+import { FREE_SHIPPING_THRESHOLD } from "@/constants";
 import { useCart } from "@/store/CartContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -39,6 +40,40 @@ export default function CartPage() {
             <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 mb-10">
               <h1 className="font-display text-4xl md:text-5xl text-[#111111]">Shopping Cart</h1>
               <span className="text-[#6E6E6E] text-lg">{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
+            </div>
+
+            {/* Free Shipping Motivator Progress Bar */}
+            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#FF6B00]/20 shadow-[0_2px_15px_rgba(255,107,0,0.06)] mb-8">
+              <div className="flex items-center justify-between gap-4 mb-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${cart.subtotal > FREE_SHIPPING_THRESHOLD ? "bg-emerald-100 text-emerald-600" : "bg-[#FF6B00]/10 text-[#FF6B00]"}`}>
+                    <Truck size={16} />
+                  </div>
+                  <div className="text-xs sm:text-sm">
+                    {cart.subtotal > FREE_SHIPPING_THRESHOLD ? (
+                      <span className="text-emerald-700 font-bold flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-emerald-600 fill-emerald-600 shrink-0" />
+                        Congratulations! You have unlocked <strong>FREE SHIPPING</strong>!
+                      </span>
+                    ) : (
+                      <span className="text-[#111111] font-medium">
+                        Add <strong className="text-[#FF6B00]">₹{(FREE_SHIPPING_THRESHOLD - cart.subtotal).toLocaleString("en-IN")}</strong> more to qualify for <strong className="text-emerald-600">FREE SHIPPING</strong>!
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-[#6E6E6E] shrink-0">
+                  {Math.min(100, Math.round((cart.subtotal / FREE_SHIPPING_THRESHOLD) * 100))}%
+                </span>
+              </div>
+              <div className="w-full h-2.5 bg-stone-100 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-500 rounded-full ${
+                    cart.subtotal > FREE_SHIPPING_THRESHOLD ? "bg-emerald-500" : "bg-gradient-to-r from-[#FF8C1A] to-[#FF6B00]"
+                  }`}
+                  style={{ width: `${Math.min(100, Math.max(4, (cart.subtotal / FREE_SHIPPING_THRESHOLD) * 100))}%` }}
+                />
+              </div>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">

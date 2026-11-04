@@ -353,7 +353,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               </div>
               <div className="flex flex-col items-center gap-2 p-3 bg-stone-50/50 rounded-xl border border-stone-100">
                 <Truck size={18} className="text-[#FF6B00]" />
-                <span>₹200 Shipping</span>
+                <span>{product.price > 6000 ? "Free Shipping" : "Free Above ₹6k"}</span>
               </div>
               <div className="flex flex-col items-center gap-2 p-3 bg-stone-50/50 rounded-xl border border-stone-100">
                 <RotateCcw size={18} className="text-[#FF6B00]" />
