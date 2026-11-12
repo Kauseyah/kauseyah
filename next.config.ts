@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
         destination: '/products',
         permanent: true,
       },
+      {
+        source: '/collections/handlooms',
+        destination: '/collections/apparels',
+        permanent: false,
+      },
     ];
   },
 };
