@@ -384,3 +384,33 @@ export function calculateShipping(subtotal: number, itemCount: number = 1): numb
   }
   return subtotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
 }
+
+// ─── Gifting ──────────────────────────────────────────────────────────────────
+
+export const DEFAULT_GIFT_CHARGE = 100; // INR per gift-designated item or order
+export const DEFAULT_MAX_GIFT_MESSAGE_LENGTH = 250;
+
+/**
+ * Calculates aggregate gift charge based on items and mode:
+ * - 'per_item': ₹100 per gift item (charge * quantity of gift items)
+ * - 'per_order': ₹100 flat if any item is marked as gift
+ */
+export function calculateGiftCharge(
+  items: Array<{ quantity: number; giftDetails?: { isGift?: boolean; charge?: number } }>,
+  mode: "per_item" | "per_order" = "per_item",
+  baseCharge: number = DEFAULT_GIFT_CHARGE
+): number {
+  if (!items || items.length === 0) return 0;
+  
+  const giftItems = items.filter(i => Boolean(i.giftDetails?.isGift));
+  if (giftItems.length === 0) return 0;
+
+  if (mode === "per_order") {
+    return baseCharge;
+  }
+
+  return giftItems.reduce((sum, item) => {
+    const chargePerUnit = typeof item.giftDetails?.charge === "number" ? item.giftDetails.charge : baseCharge;
+    return sum + (chargePerUnit * item.quantity);
+  }, 0);
+}

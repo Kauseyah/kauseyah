@@ -3,7 +3,7 @@ import type { Product, BlogPost } from "@/types";
 export function mapSupabaseProductToFrontend(sbProduct: any): Product {
   return {
     id: sbProduct.id,
-    slug: sbProduct.slug,
+    slug: typeof sbProduct.slug === "string" ? sbProduct.slug.trim() : sbProduct.id,
     name: sbProduct.name,
     description: sbProduct.description || "",
     shortDescription: sbProduct.description?.substring(0, 60) || "",
@@ -34,7 +34,7 @@ export function mapSupabaseProductToFrontend(sbProduct: any): Product {
 export function mapSupabaseBlogToFrontend(sbBlog: any): BlogPost {
   return {
     id: sbBlog.id,
-    slug: sbBlog.slug,
+    slug: typeof sbBlog.slug === "string" ? sbBlog.slug.trim() : sbBlog.id,
     title: sbBlog.title,
     excerpt: sbBlog.excerpt || "",
     content: sbBlog.content || "",

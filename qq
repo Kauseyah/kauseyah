@@ -1,0 +1,258 @@
+warning: in the working copy of 'next.config.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/(shop)/cart/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/(shop)/checkout/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/(shop)/collections/[slug]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/(shop)/products/[slug]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/actions/checkout.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/actions/setting-actions.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/admin/AdminSidebar.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/admin/orders/[id]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/admin/settings/SettingsForm.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/app/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/layout/Navbar.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/pages/ProductDetailPageClient.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/CuratedGiftHampers.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/CuratedGiftHampersClient.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/FeaturedIn.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/FeaturedProducts.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/FeaturedProductsClient.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/HandEmbroideredToys.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/HandEmbroideredToysClient.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/Hero.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/LifestyleGallery.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/LifestyleGalleryClient.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/ProductDetailDrawer.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/ShopCategories.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/Testimonials.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/components/sections/WhoWeAre.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/constants/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/lib/email.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/store/CartContext.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/utils/order-utils.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/utils/supabase/mapper.ts', LF will be replaced by CRLF the next time Git touches it
+src/app/actions/setting-actions.ts:46: trailing whitespace.
+[32m+[m[41m  [m
+src/app/admin/AdminSidebar.tsx:185: trailing whitespace.
+[32m+[m[32m        <Link[m[41m [m
+src/app/admin/AdminSidebar.tsx:186: trailing whitespace.
+[32m+[m[32m          href="/admin/newsletter"[m[41m [m
+src/app/admin/orders/[id]/page.tsx:107: trailing whitespace.
+[32m+[m[32m                                  <span[m[41m [m
+src/app/admin/orders/[id]/page.tsx:108: trailing whitespace.
+[32m+[m[32m                                    className="w-3 h-3 rounded-full border border-slate-600 inline-block"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:4: trailing whitespace.
+[32m+[m[32mimport {[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:5: trailing whitespace.
+[32m+[m[32m  Loader2,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:6: trailing whitespace.
+[32m+[m[32m  Store,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:7: trailing whitespace.
+[32m+[m[32m  Phone,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:8: trailing whitespace.
+[32m+[m[32m  Mail,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:9: trailing whitespace.
+[32m+[m[32m  Link as LinkIcon,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:10: trailing whitespace.
+[32m+[m[32m  Share2,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:11: trailing whitespace.
+[32m+[m[32m  Camera,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:12: trailing whitespace.
+[32m+[m[32m  Video,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:13: trailing whitespace.
+[32m+[m[32m  Briefcase,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:14: trailing whitespace.
+[32m+[m[32m  Save,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:15: trailing whitespace.
+[32m+[m[32m  Gift,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:16: trailing whitespace.
+[32m+[m[32m  Bell,[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:113: trailing whitespace.
+[32m+[m[32m              <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:114: trailing whitespace.
+[32m+[m[32m                type="email"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:115: trailing whitespace.
+[32m+[m[32m                name="admin_order_notification_email"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:135: trailing whitespace.
+[32m+[m[32m                <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:136: trailing whitespace.
+[32m+[m[32m                  type="checkbox"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:151: trailing whitespace.
+[32m+[m[32m                <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:152: trailing whitespace.
+[32m+[m[32m                  type="text"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:161: trailing whitespace.
+[32m+[m[32m                <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:162: trailing whitespace.
+[32m+[m[32m                  type="text"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:185: trailing whitespace.
+[32m+[m[32m            <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:186: trailing whitespace.
+[32m+[m[32m              type="checkbox"[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:196: trailing whitespace.
+[32m+[m[32m              <input[m[41m [m
+src/app/admin/settings/SettingsForm.tsx:217: trailing whitespace.
+[32m+[m[32m            <input[m[41m [m
+src/components/layout/Footer.tsx:58: trailing whitespace.
+[32m+[m[32m        className="absolute inset-0 z-0 pointer-events-none opacity-[0.35]"[m[41m [m
+src/components/layout/Navbar.tsx:170: trailing whitespace.
+[32m+[m[41m    [m
+src/components/layout/Navbar.tsx:185: trailing whitespace.
+[32m+[m[41m      [m
+src/components/sections/CuratedGiftHampersClient.tsx:45: trailing whitespace.
+[32m+[m[32m    <section[m[41m [m
+src/components/sections/CuratedGiftHampersClient.tsx:50: trailing whitespace.
+[32m+[m[41m        [m
+src/components/sections/CuratedGiftHampersClient.tsx:60: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/CuratedGiftHampersClient.tsx:65: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/CuratedGiftHampersClient.tsx:104: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/CuratedGiftHampersClient.tsx:136: trailing whitespace.
+[32m+[m[41m              [m
+src/components/sections/CuratedGiftHampersClient.tsx:173: trailing whitespace.
+[32m+[m[41m                        [m
+src/components/sections/FeaturedIn.tsx:142: trailing whitespace.
+[32m+[m[41m      [m
+src/components/sections/FeaturedIn.tsx:146: trailing whitespace.
+[32m+[m[32m      <section[m[41m [m
+src/components/sections/FeaturedIn.tsx:151: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/FeaturedIn.tsx:158: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/FeaturedIn.tsx:162: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/FeaturedIn.tsx:166: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/FeaturedIn.tsx:172: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/FeaturedIn.tsx:185: trailing whitespace.
+[32m+[m[41m                [m
+src/components/sections/FeaturedIn.tsx:203: trailing whitespace.
+[32m+[m[41m                [m
+src/components/sections/FeaturedIn.tsx:207: trailing whitespace.
+[32m+[m[41m                [m
+src/components/sections/FeaturedIn.tsx:217: trailing whitespace.
+[32m+[m[41m                  [m
+src/components/sections/FeaturedIn.tsx:241: trailing whitespace.
+[32m+[m[32m      <section[m[41m [m
+src/components/sections/FeaturedIn.tsx:246: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/FeaturedIn.tsx:256: trailing whitespace.
+[32m+[m[41m              [m
+src/components/sections/FeaturedIn.tsx:261: trailing whitespace.
+[32m+[m[41m              [m
+src/components/sections/FeaturedIn.tsx:327: trailing whitespace.
+[32m+[m[32m      <section[m[41m [m
+src/components/sections/FeaturedIn.tsx:332: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/FeaturedIn.tsx:338: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/FeaturedProductsClient.tsx:51: trailing whitespace.
+[32m+[m[32m    <section[m[41m [m
+src/components/sections/FeaturedProductsClient.tsx:56: trailing whitespace.
+[32m+[m[41m        [m
+src/components/sections/FeaturedProductsClient.tsx:195: trailing whitespace.
+[32m+[m[41m                  [m
+src/components/sections/HandEmbroideredToysClient.tsx:52: trailing whitespace.
+[32m+[m[32m    <section[m[41m [m
+src/components/sections/HandEmbroideredToysClient.tsx:67: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/HandEmbroideredToysClient.tsx:72: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/HandEmbroideredToysClient.tsx:144: trailing whitespace.
+[32m+[m[41m                    [m
+src/components/sections/Hero.tsx:152: trailing whitespace.
+[32m+[m[32m    <section[m[41m [m
+src/components/sections/Hero.tsx:193: trailing whitespace.
+[32m+[m[32m              transition={{[m[41m [m
+src/components/sections/Hero.tsx:194: trailing whitespace.
+[32m+[m[32m                duration: prefersReducedMotion ? 0.2 : 0.9,[m[41m [m
+src/components/sections/Hero.tsx:195: trailing whitespace.
+[32m+[m[32m                ease: [0.16, 1, 0.3, 1][m[41m [m
+src/components/sections/Hero.tsx:247: trailing whitespace.
+[32m+[m[41m        [m
+src/components/sections/Hero.tsx:250: trailing whitespace.
+[32m+[m[41m        [m
+src/components/sections/Hero.tsx:258: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/Hero.tsx:317: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/Hero.tsx:319: trailing whitespace.
+[32m+[m[32m            <div[m[41m [m
+src/components/sections/Testimonials.tsx:76: trailing whitespace.
+[32m+[m[32m    <section[m[41m [m
+src/components/sections/Testimonials.tsx:84: trailing whitespace.
+[32m+[m[32m        <div[m[41m [m
+src/components/sections/Testimonials.tsx:85: trailing whitespace.
+[32m+[m[32m          aria-hidden="true"[m[41m [m
+src/components/sections/Testimonials.tsx:121: trailing whitespace.
+[32m+[m[32m                  <button[m[41m [m
+src/components/sections/Testimonials.tsx:128: trailing whitespace.
+[32m+[m[32m                  <button[m[41m [m
+src/components/sections/Testimonials.tsx:205: trailing whitespace.
+[32m+[m[32m                  <button[m[41m [m
+src/components/sections/Testimonials.tsx:212: trailing whitespace.
+[32m+[m[32m                  <button[m[41m [m
+src/components/sections/WhoWeAre.tsx:94: trailing whitespace.
+[32m+[m[41m        [m
+src/components/sections/WhoWeAre.tsx:97: trailing whitespace.
+[32m+[m[41m          [m
+src/components/sections/WhoWeAre.tsx:105: trailing whitespace.
+[32m+[m[41m            [m
+src/components/sections/WhoWeAre.tsx:149: trailing whitespace.
+[32m+[m[41m              [m
+src/components/sections/WhoWeAre.tsx:189: trailing whitespace.
+[32m+[m[41m            [m
+src/constants/index.ts:404: trailing whitespace.
+[32m+[m[41m  [m
+src/lib/email.ts:286: trailing whitespace.
+[32m+[m[41m          [m
+src/lib/email.ts:376: trailing whitespace.
+[32m+[m[41m          [m
+src/lib/email.ts:384: trailing whitespace.
+[32m+[m[41m            [m
+src/store/CartContext.tsx:5: trailing whitespace.
+[32m+[m[32mimport {[m[41m [m
+src/store/CartContext.tsx:6: trailing whitespace.
+[32m+[m[32m  FREE_SHIPPING_THRESHOLD,[m[41m [m
+src/store/CartContext.tsx:7: trailing whitespace.
+[32m+[m[32m  STANDARD_SHIPPING_FEE,[m[41m [m
+src/store/CartContext.tsx:8: trailing whitespace.
+[32m+[m[32m  calculateShipping,[m[41m [m
+src/store/CartContext.tsx:9: trailing whitespace.
+[32m+[m[32m  calculateGiftCharge,[m[41m [m
+src/store/CartContext.tsx:10: trailing whitespace.
+[32m+[m[32m  DEFAULT_GIFT_CHARGE[m[41m [m
+src/store/CartContext.tsx:30: trailing whitespace.
+[32m+[m[32m  return {[m[41m [m
+src/store/CartContext.tsx:31: trailing whitespace.
+[32m+[m[32m    items,[m[41m [m
+src/store/CartContext.tsx:32: trailing whitespace.
+[32m+[m[32m    subtotal,[m[41m [m
+src/store/CartContext.tsx:33: trailing whitespace.
+[32m+[m[32m    shipping,[m[41m [m
+src/store/CartContext.tsx:34: trailing whitespace.
+[32m+[m[32m    giftCharge,[m[41m [m
+src/store/CartContext.tsx:35: trailing whitespace.
+[32m+[m[32m    discount: 0,[m[41m [m
+src/store/CartContext.tsx:36: trailing whitespace.
+[32m+[m[32m    total: subtotal + shipping + giftCharge[m[41m [m
+src/utils/order-utils.ts:2: trailing whitespace.
+[32m+[m[32mimport {[m[41m [m
+src/utils/order-utils.ts:3: trailing whitespace.
+[32m+[m[32m  FREE_SHIPPING_THRESHOLD,[m[41m [m
+src/utils/order-utils.ts:4: trailing whitespace.
+[32m+[m[32m  STANDARD_SHIPPING_FEE,[m[41m [m
+src/utils/order-utils.ts:5: trailing whitespace.
+[32m+[m[32m  calculateShipping,[m[41m [m
+src/utils/order-utils.ts:6: trailing whitespace.
+[32m+[m[32m  calculateGiftCharge,[m[41m [m
+src/utils/order-utils.ts:7: trailing whitespace.
+[32m+[m[32m  DEFAULT_GIFT_CHARGE,[m[41m [m
+src/utils/order-utils.ts:8: trailing whitespace.
+[32m+[m[32m  DEFAULT_MAX_GIFT_MESSAGE_LENGTH[m[41m [m
+src/utils/order-utils.ts:122: trailing whitespace.
+[32m+[m[32m  const calculatedGiftCharge = giftEnabled[m[41m [m
+src/utils/order-utils.ts:123: trailing whitespace.
+[32m+[m[32m    ? calculateGiftCharge(verifiedCartItems, giftChargeMode, configuredGiftCharge)[m[41m [m

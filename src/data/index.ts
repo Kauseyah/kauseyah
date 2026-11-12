@@ -171,14 +171,14 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "p4",
-    slug: "men-kosa-jacket",
-    name: "Men Kosa Silk Jacket",
+    slug: "premium-handloom-kosa-silk-jacket-men",
+    name: "Handloom Kosa Silk Jacket for Men",
     shortDescription: "Heritage handloom Kosa silk jacket for semi-formal events",
     description:
       "Handcrafted from rare Kosa wild silk sourced directly from Chhattisgarhi weavers. Featuring a clean Nehru collar design and detailed brass buttons, this jacket offers structured refinement.",
     category: "apparels",
     subcategory: "Men Kosa Jackets",
-    price: 3899,
+    price: 4588,
     compareAtPrice: 5200,
     images: [
       { url: "/images/menswear.png", alt: "Men Kosa Silk Jacket Front", isPrimary: true },

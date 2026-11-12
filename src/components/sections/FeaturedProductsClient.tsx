@@ -1,165 +1,274 @@
 "use client";
 
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { motion } from "framer-motion";
-
-const slideUpBlur = {
-  hidden: { opacity: 0, y: 50, filter: "blur(8px)", scale: 0.98 },
-  show: (i = 0) => ({
-    opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 1.1, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
-  }),
-};
+import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag, Check } from "lucide-react";
+import { useCart } from "@/store/CartContext";
+import ProductDetailDrawer from "./ProductDetailDrawer";
 
 export default function FeaturedProductsClient({ featuredProducts }: { featuredProducts: any[] }) {
+  const { addItem } = useCart();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [addedId, setAddedId] = useState<string | null>(null);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const { current } = scrollContainerRef;
-      const scrollAmount = current.clientWidth > 768 ? 400 : 300;
-      current.scrollBy({
+      const scrollAmount = scrollContainerRef.current.clientWidth > 768 ? 440 : 320;
+      scrollContainerRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
 
+  const handleQuickAdd = (e: React.MouseEvent, product: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // If product has more than 1 variant, open the variant selector drawer
+    if (product.variants && product.variants.length > 1) {
+      setSelectedProduct(product);
+      return;
+    }
+
+    // Single variant or fallback
+    const variantToAdd = (product.variants && product.variants.length > 0)
+      ? product.variants[0]
+      : { id: `${product.id}-default`, stock: product.stock ?? 10, price: product.price };
+
+    addItem(product, variantToAdd);
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1800);
+  };
+
   if (!featuredProducts || featuredProducts.length === 0) {
-    return null; // hide section if no featured products
+    return null;
   }
 
   return (
-    <section className="w-full py-12 lg:py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF8F3 100%)' }}>
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-20">
+    <section 
+      aria-label="Featured Handloom Masterpieces"
+      className="w-full py-16 sm:py-20 lg:py-24 bg-white border-b border-[#1A1412]/8 overflow-hidden"
+    >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-16">
+        
+        {/* Section Heading with Controls */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6">
+          <div className="max-w-2xl">
+            <p className="font-body text-[11px] sm:text-xs font-bold tracking-[0.25em] text-[#D95D1E] uppercase mb-2 sm:mb-3">
+              Artisan Made · Living Traditions
+            </p>
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.05]">
+              Featured <span className="text-[#D95D1E] italic font-light">Handlooms</span>
+            </h2>
+            <div className="w-12 h-[1.5px] bg-[#D95D1E] mt-3 mb-3" />
+            <p className="font-body text-sm sm:text-base text-[#665D59] font-light leading-relaxed">
+              Meticulously hand-spun wild silks, block-printed drapes, and heritage motifs woven by master tribal artisans across Chhattisgarh and India.
+            </p>
+          </div>
 
-        {/* ── Standardized Header ── */}
-        <div className="flex flex-col items-center text-center mb-10 lg:mb-12 max-w-4xl mx-auto">
-          <motion.h2 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
-          >
-            Featured <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Masterpieces</span>
-          </motion.h2>
-          <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium">
-             Discover a meticulously curated selection of authentic Indian handlooms and tribal artistry.
-          </p>
+          {/* Carousel Arrows & View All */}
+          <div className="flex items-center gap-3 self-start md:self-end">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-[0.18em] text-[#1A1412] hover:text-[#D95D1E] transition-colors pr-2"
+            >
+              <span>View All</span>
+              <ArrowRight size={13} />
+            </Link>
+            <div className="h-4 w-[1px] bg-[#1A1412]/15 hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                aria-label="Scroll products left"
+                className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                aria-label="Scroll products right"
+                className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
+        {/* Product Carousel Rail */}
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto snap-x snap-mandatory gap-5 sm:gap-6 pb-6 pt-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {featuredProducts.map((product) => {
+            const primaryImg = product.images.find((i: any) => i.isPrimary)?.url || product.images[0]?.url;
+            const secondaryImg = product.images[1]?.url || primaryImg;
+            const isAdded = addedId === product.id;
+            const hasMultipleVariants = product.variants && product.variants.length > 1;
 
+            const discountPct = product.compareAtPrice && product.compareAtPrice > product.price
+              ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+              : null;
 
-        {/* ── Carousel Container ── */}
-        <div className="relative group/carousel">
-          {/* Left Arrow */}
-          <button 
-            onClick={() => scroll("left")}
-            className="absolute left-[-20px] lg:left-[-40px] top-[40%] -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full border border-[#E5E5E5] flex items-center justify-center hover:border-[#FF6B00] hover:text-[#FF6B00] hover:shadow-lg transition-all opacity-0 group-hover/carousel:opacity-100 disabled:opacity-0"
-            aria-label="Scroll left"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-
-          <div 
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
-          >
-            {featuredProducts.map((product, i) => (
-              <motion.div
+            return (
+              <div
                 key={product.id}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-100px" }}
-                custom={i}
-                variants={slideUpBlur}
-                className="group bg-white border border-[#E5E5E5] hover:shadow-[0_20px_40px_rgba(107,112,92,0.06)] hover:border-[#FF6B00]/30 transition-all duration-500 flex flex-col w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 snap-center sm:snap-start"
+                className="group w-[78vw] sm:w-[320px] lg:w-[328px] shrink-0 snap-start flex flex-col bg-[#FFF9F4] rounded-xl border border-[#1A1412]/8 hover:border-[#D95D1E]/40 hover:shadow-[0_16px_36px_rgba(26,20,18,0.08)] transition-all duration-300 overflow-hidden"
               >
-              {/* Image Header */}
-              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#FFF8F3]">
-                <Image
-                  src={product.images.find((img: any) => img.isPrimary)?.url || product.images[0].url}
-                  alt={product.images.find((img: any) => img.isPrimary)?.alt || product.name}
-                  fill
-                  className="object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                
-                {/* Floating Tags */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  {product.tags?.slice(0, 2).map((tag: string, idx: number) => (
-                    <span key={idx} className="bg-white/90 backdrop-blur-sm text-[#111111] px-3 py-1 font-body text-[9px] uppercase tracking-[0.2em] shadow-sm">
-                      {tag.replace("-", " ")}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Rich Text Body */}
-              <div className="p-8 flex flex-col flex-1">
-                {/* Artisan & Region Meta */}
-                {product.region && (
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#FF6B00]">
-                    {product.region}
-                  </span>
-                  {product.artisan && (
-                    <>
-                      <span className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
-                      <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#6E6E6E]/60">
-                        By {product.artisan.name}
-                      </span>
-                    </>
+                {/* 3:4 Portrait Image Container */}
+                <Link
+                  href={`/products/${product.slug}`}
+                  className="relative w-full aspect-[3/4] overflow-hidden bg-[#F7EFE8] block"
+                >
+                  <Image
+                    src={primaryImg}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 330px"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  {secondaryImg !== primaryImg && (
+                    <Image
+                      src={secondaryImg}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 330px"
+                      className="object-cover object-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out"
+                    />
                   )}
-                </div>
-                )}
 
-                {/* Title */}
-                <Link href={`/products/${product.slug}`} className="block font-display text-3xl text-[#111111] group-hover:text-[#FF6B00] transition-colors mb-4 leading-tight">
-                  {product.name}
-                </Link>
-
-                {/* Descriptive Text Added Here */}
-                <p className="font-body text-[14px] text-[#555555] leading-relaxed mb-8 line-clamp-3">
-                  {product.description}
-                </p>
-
-                {/* Footer / Price & Action */}
-                <div className="mt-auto pt-6 border-t border-[#E5E5E5] flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="font-body text-[16px] font-medium text-[#111111]">
-                      ₹{product.price.toLocaleString("en-IN")}
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start z-10 pointer-events-none">
+                    <span className="bg-white/95 backdrop-blur-md text-[#1A1412] px-2.5 py-1 rounded-sm font-body text-[9.5px] uppercase tracking-[0.16em] font-bold shadow-sm">
+                      {product.category || "Handloom"}
                     </span>
-                    {product.compareAtPrice && (
-                      <span className="font-body text-[12px] text-[#6E6E6E]/40 line-through mt-0.5">
-                        ₹{product.compareAtPrice.toLocaleString("en-IN")}
+                    {discountPct !== null && (
+                      <span className="bg-[#851A36] text-white px-2 py-0.5 rounded-sm font-body text-[9px] uppercase tracking-wider font-semibold shadow-sm">
+                        {discountPct}% Off
                       </span>
                     )}
                   </div>
 
-                  <Link 
+                  {/* Desktop Quick Add Button Overlay */}
+                  <div className="hidden sm:block absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10">
+                    <button
+                      type="button"
+                      onClick={(e) => handleQuickAdd(e, product)}
+                      className={`w-full py-2.5 px-4 rounded-lg font-body text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                        isAdded
+                          ? "bg-emerald-700 text-white"
+                          : "bg-[#1A1412]/90 hover:bg-[#D95D1E] text-white backdrop-blur-md"
+                      }`}
+                    >
+                      {isAdded ? (
+                        <>
+                          <Check size={14} className="text-white" />
+                          <span>Added to Bag</span>
+                        </>
+                      ) : hasMultipleVariants ? (
+                        <>
+                          <ShoppingBag size={14} />
+                          <span>Select Size</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag size={14} />
+                          <span>Quick Add</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </Link>
+
+                {/* Content Details */}
+                <div className="p-4 sm:p-5 flex flex-col flex-1">
+                  {product.subcategory && (
+                    <span className="font-body text-[10.5px] tracking-[0.15em] text-[#D95D1E] uppercase font-semibold mb-1">
+                      {product.subcategory}
+                    </span>
+                  )}
+                  
+                  <Link
                     href={`/products/${product.slug}`}
-                    className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-[#111111] border-b border-[#111111] pb-0.5 group-hover:text-[#FF6B00] group-hover:border-[#FF6B00] transition-colors"
+                    className="font-display text-xl sm:text-2xl text-[#1A1412] group-hover:text-[#D95D1E] transition-colors leading-snug line-clamp-1 mb-1.5"
                   >
-                    View Details
+                    {product.name}
                   </Link>
+
+                  <p className="font-body text-xs text-[#665D59] line-clamp-2 leading-relaxed mb-4">
+                    {product.shortDescription || product.description}
+                  </p>
+
+                  {/* Price & Action Row */}
+                  <div className="mt-auto pt-3 border-t border-[#1A1412]/8 flex items-center justify-between">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-body text-base sm:text-lg font-semibold text-[#1A1412]">
+                        ₹{product.price.toLocaleString("en-IN")}
+                      </span>
+                      {product.compareAtPrice && product.compareAtPrice > product.price && (
+                        <span className="font-body text-xs text-[#665D59]/60 line-through">
+                          ₹{product.compareAtPrice.toLocaleString("en-IN")}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Mobile touch-friendly Add to Cart button */}
+                    <div className="sm:hidden">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickAdd(e, product)}
+                        aria-label={`Add ${product.name} to cart`}
+                        className={`px-3 py-1.5 rounded-md font-body text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer ${
+                          isAdded
+                            ? "bg-emerald-700 text-white"
+                            : "bg-[#D95D1E] text-white hover:bg-[#BF4E15]"
+                        }`}
+                      >
+                        {isAdded ? (
+                          <>
+                            <Check size={12} />
+                            <span>Added</span>
+                          </>
+                        ) : hasMultipleVariants ? (
+                          <span>Select</span>
+                        ) : (
+                          <>
+                            <ShoppingBag size={12} />
+                            <span>Add</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Desktop Details link */}
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="hidden sm:inline-flex items-center gap-1 font-body text-[11px] font-bold uppercase tracking-[0.15em] text-[#1A1412] hover:text-[#D95D1E] transition-colors"
+                    >
+                      <span>Details</span>
+                      <ArrowRight size={11} />
+                    </Link>
+                  </div>
                 </div>
               </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Right Arrow */}
-          <button 
-            onClick={() => scroll("right")}
-            className="absolute right-[-20px] lg:right-[-40px] top-[40%] -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full border border-[#E5E5E5] flex items-center justify-center hover:border-[#FF6B00] hover:text-[#FF6B00] hover:shadow-lg transition-all opacity-0 group-hover/carousel:opacity-100 disabled:opacity-0"
-            aria-label="Scroll right"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          </button>
+            );
+          })}
         </div>
 
       </div>
+
+      {/* Quick View Drawer Modal for Variant Selection */}
+      {selectedProduct && (
+        <ProductDetailDrawer
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </section>
   );
 }

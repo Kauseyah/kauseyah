@@ -1,15 +1,22 @@
 "use client";
 
 import React, { createContext, useContext, useReducer, useEffect, useState } from "react";
-import type { Cart, CartItem, Product, ProductVariant } from "@/types";
-import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE, calculateShipping } from "@/constants";
+import type { Cart, CartItem, Product, ProductVariant, GiftDetails } from "@/types";
+import { 
+  FREE_SHIPPING_THRESHOLD, 
+  STANDARD_SHIPPING_FEE, 
+  calculateShipping, 
+  calculateGiftCharge, 
+  DEFAULT_GIFT_CHARGE 
+} from "@/constants";
 
 // ─── State & Actions ──────────────────────────────────────────────────────────
 
 type CartAction =
-  | { type: "ADD_ITEM"; product: Product; variant: ProductVariant }
+  | { type: "ADD_ITEM"; product: Product; variant: ProductVariant; giftDetails?: GiftDetails }
   | { type: "REMOVE_ITEM"; variantId: string }
   | { type: "UPDATE_QTY"; variantId: string; quantity: number }
+  | { type: "UPDATE_GIFT"; variantId: string; giftDetails?: GiftDetails }
   | { type: "CLEAR_CART" }
   | { type: "INIT_CART"; cart: Cart };
 
@@ -19,7 +26,15 @@ function calcCart(items: CartItem[]): Cart {
     0
   );
   const shipping = calculateShipping(subtotal, items.length);
-  return { items, subtotal, discount: 0, total: subtotal + shipping };
+  const giftCharge = calculateGiftCharge(items);
+  return { 
+    items, 
+    subtotal, 
+    shipping, 
+    giftCharge, 
+    discount: 0, 
+    total: subtotal + shipping + giftCharge 
+  };
 }
 
 function cartReducer(state: Cart, action: CartAction): Cart {
@@ -31,10 +46,10 @@ function cartReducer(state: Cart, action: CartAction): Cart {
       const items = existing
         ? state.items.map((i) =>
             i.variant.id === action.variant.id
-              ? { ...i, quantity: i.quantity + 1 }
+              ? { ...i, quantity: i.quantity + 1, giftDetails: action.giftDetails || i.giftDetails }
               : i
           )
-        : [...state.items, { product: action.product, variant: action.variant, quantity: 1 }];
+        : [...state.items, { product: action.product, variant: action.variant, quantity: 1, giftDetails: action.giftDetails }];
       return calcCart(items);
     }
     case "REMOVE_ITEM": {
@@ -47,10 +62,17 @@ function cartReducer(state: Cart, action: CartAction): Cart {
         )
       );
     }
+    case "UPDATE_GIFT": {
+      return calcCart(
+        state.items.map((i) =>
+          i.variant.id === action.variantId ? { ...i, giftDetails: action.giftDetails } : i
+        )
+      );
+    }
     case "CLEAR_CART":
       return calcCart([]);
     case "INIT_CART":
-      return action.cart;
+      return calcCart(action.cart?.items || []);
     default:
       return state;
   }
@@ -60,16 +82,17 @@ function cartReducer(state: Cart, action: CartAction): Cart {
 
 interface CartContextValue {
   cart: Cart;
-  addItem: (product: Product, variant: ProductVariant) => void;
+  addItem: (product: Product, variant: ProductVariant, giftDetails?: GiftDetails) => void;
   removeItem: (variantId: string) => void;
   updateQty: (variantId: string, quantity: number) => void;
+  updateGift: (variantId: string, giftDetails?: GiftDetails) => void;
   clearCart: () => void;
   itemCount: number;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const INITIAL_CART: Cart = { items: [], subtotal: 0, discount: 0, total: 0 };
+const INITIAL_CART: Cart = { items: [], subtotal: 0, shipping: 0, giftCharge: 0, discount: 0, total: 0 };
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, INITIAL_CART);
@@ -94,8 +117,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isInitialized]);
 
-  const addItem = (product: Product, variant: ProductVariant) =>
-    dispatch({ type: "ADD_ITEM", product, variant });
+  const addItem = (product: Product, variant: ProductVariant, giftDetails?: GiftDetails) =>
+    dispatch({ type: "ADD_ITEM", product, variant, giftDetails });
 
   const removeItem = (variantId: string) =>
     dispatch({ type: "REMOVE_ITEM", variantId });
@@ -103,12 +126,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const updateQty = (variantId: string, quantity: number) =>
     dispatch({ type: "UPDATE_QTY", variantId, quantity });
 
+  const updateGift = (variantId: string, giftDetails?: GiftDetails) =>
+    dispatch({ type: "UPDATE_GIFT", variantId, giftDetails });
+
   const clearCart = () => dispatch({ type: "CLEAR_CART" });
 
   const itemCount = cart.items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, addItem, removeItem, updateQty, clearCart, itemCount }}>
+    <CartContext.Provider value={{ cart, addItem, removeItem, updateQty, updateGift, clearCart, itemCount }}>
       {children}
     </CartContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { ArrowLeft, Package, User, CreditCard, Truck } from "lucide-react";
+import { ArrowLeft, Package, User, CreditCard, Truck, Gift } from "lucide-react";
 import Link from "next/link";
 import UpdateStatusForm from "./UpdateStatusForm";
 
@@ -78,46 +78,66 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
               Order Items
             </h2>
             <div className="divide-y divide-slate-800">
-              {items?.map((item) => (
-                <div key={item.id} className="py-6 flex gap-6">
-                  <div className="h-32 w-32 flex-shrink-0 overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
-                    {item.product?.images?.[0] ? (
-                      <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover object-center" />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center text-slate-500"><Package size={28} /></div>
-                    )}
-                  </div>
-                  <div className="flex flex-1 flex-col justify-center gap-2">
-                    <div>
-                      <div className="flex justify-between text-[20px] font-bold text-white tracking-wide">
-                        <h3>{item.product?.name || 'Unknown Product'}</h3>
-                        <p className="ml-4 text-[#FF6B00]">₹{item.price_at_time}</p>
-                      </div>
-                      {item.variant_details && (
-                        <div className="mt-1 flex items-center gap-2 text-sm font-medium text-slate-400">
-                          {item.variant_details.color && (
-                            <span className="flex items-center gap-1.5">
-                              Color: {item.variant_details.color}
-                              {item.variant_details.colorHex && (
-                                <span 
-                                  className="w-3 h-3 rounded-full border border-slate-600 inline-block" 
-                                  style={{ backgroundColor: item.variant_details.colorHex }}
-                                />
-                              )}
-                            </span>
-                          )}
-                          {item.variant_details.color && item.variant_details.size && <span>|</span>}
-                          {item.variant_details.size && <span>Size: {item.variant_details.size}</span>}
-                        </div>
+              {items?.map((item) => {
+                const isGift = item.variant_details?.is_gift || item.is_gift;
+                const giftMessage = item.variant_details?.gift_message || item.gift_message;
+                const giftPackaging = item.variant_details?.gift_packaging ?? item.gift_packaging;
+
+                return (
+                  <div key={item.id} className="py-6 flex gap-6">
+                    <div className="h-32 w-32 flex-shrink-0 overflow-hidden rounded-xl border border-slate-700 bg-slate-950">
+                      {item.product?.images?.[0] ? (
+                        <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover object-center" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-slate-500"><Package size={28} /></div>
                       )}
                     </div>
-                    <div className="flex items-center justify-between text-[18px] mt-1">
-                      <p className="text-slate-400 font-medium">Qty: {item.quantity}</p>
-                      <p className="font-bold text-white">₹{(item.quantity * item.price_at_time).toFixed(2)}</p>
+                    <div className="flex flex-1 flex-col justify-center gap-2">
+                      <div>
+                        <div className="flex justify-between text-[20px] font-bold text-white tracking-wide">
+                          <h3>{item.product?.name || 'Unknown Product'}</h3>
+                          <p className="ml-4 text-[#FF6B00]">₹{item.price_at_time}</p>
+                        </div>
+                        {item.variant_details && (
+                          <div className="mt-1 flex items-center gap-2 text-sm font-medium text-slate-400">
+                            {item.variant_details.color && (
+                              <span className="flex items-center gap-1.5">
+                                Color: {item.variant_details.color}
+                                {item.variant_details.colorHex && (
+                                  <span 
+                                    className="w-3 h-3 rounded-full border border-slate-600 inline-block" 
+                                    style={{ backgroundColor: item.variant_details.colorHex }}
+                                  />
+                                )}
+                              </span>
+                            )}
+                            {item.variant_details.color && item.variant_details.size && <span>|</span>}
+                            {item.variant_details.size && <span>Size: {item.variant_details.size}</span>}
+                          </div>
+                        )}
+                        {isGift && (
+                          <div className="mt-2.5 p-2.5 rounded-lg bg-amber-950/30 border border-amber-600/30 text-amber-300 text-xs">
+                            <div className="flex items-center gap-1.5 font-semibold">
+                              <Gift size={14} className="text-amber-400" />
+                              <span>Gift Wrapped</span>
+                              {giftPackaging && <span className="text-slate-400 font-normal">(Premium Packaging)</span>}
+                            </div>
+                            {giftMessage && (
+                              <p className="mt-1 text-slate-300 italic text-[11px]">
+                                &ldquo;{giftMessage}&rdquo;
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between text-[18px] mt-1">
+                        <p className="text-slate-400 font-medium">Qty: {item.quantity}</p>
+                        <p className="font-bold text-white">₹{(item.quantity * item.price_at_time).toFixed(2)}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             
             <div className="border-t border-slate-800 mt-4 pt-4 space-y-2">
@@ -129,6 +149,12 @@ export default async function OrderDetails({ params }: { params: Promise<{ id: s
                 <span>Shipping</span>
                 <span>₹{order.shipping_charge}</span>
               </div>
+              {Number(order.gift_charge) > 0 && (
+                <div className="flex justify-between text-sm text-amber-400">
+                  <span>Gift Packaging</span>
+                  <span>₹{order.gift_charge}</span>
+                </div>
+              )}
               <div className="flex justify-between text-base font-medium text-white pt-2 border-t border-slate-800">
                 <span>Total</span>
                 <span>₹{order.total_amount}</span>

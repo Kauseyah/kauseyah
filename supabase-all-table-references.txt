@@ -1,0 +1,710 @@
+﻿FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 72
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 88
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 130
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 159
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 167
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 193
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 202
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 210
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 33
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 41
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 49
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 59
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 70
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 86
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 10
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 16
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\auth-actions.ts
+LINE: 23
+REFERENCE: login_attempts
+CODE: .from('login_attempts')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\auth-actions.ts
+LINE: 43
+REFERENCE: login_attempts
+CODE: await supabaseAdmin.from('login_attempts').insert({ ip_address: ip });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 14
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 48
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 56
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 63
+REFERENCE: blogs
+CODE: .from("blogs")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 95
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 103
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 110
+REFERENCE: blogs
+CODE: .from("blogs")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 127
+REFERENCE: blogs
+CODE: const { error } = await adminClient.from("blogs").delete().eq("id", id);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 136
+REFERENCE: blogs
+CODE: const { error } = await adminClient.from("blogs").update({ published }).eq("id", id);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 15
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 46
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 67
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 53
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 66
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 111
+REFERENCE: order_items
+CODE: .from("order_items")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 124
+REFERENCE: order_items
+CODE: await supabaseAdmin.from("order_items").insert(fallbackItems);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 132
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 140
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\customer-actions.ts
+LINE: 15
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\customer-actions.ts
+LINE: 35
+REFERENCE: profiles
+CODE: .from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 51
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 78
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 90
+REFERENCE: newsletter_subscribers
+CODE: await adminClient.from("newsletter_subscribers").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 102
+REFERENCE: marketing_consent_records
+CODE: await adminClient.from("marketing_consent_records").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 136
+REFERENCE: user_roles
+CODE: .from("user_roles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 170
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 200
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 205
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 236
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 322
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 364
+REFERENCE: newsletter_subscribers
+CODE: const { error } = await adminClient.from("newsletter_subscribers").insert(recordsToInsert);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 402
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 416
+REFERENCE: newsletter_campaigns
+CODE: .from("newsletter_campaigns")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 454
+REFERENCE: newsletter_campaigns
+CODE: .from("newsletter_campaigns")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 463
+REFERENCE: newsletter_campaign_logs
+CODE: .from("newsletter_campaign_logs")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 471
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 485
+REFERENCE: newsletter_campaigns
+CODE: .from("newsletter_campaigns")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 520
+REFERENCE: newsletter_campaign_logs
+CODE: await adminClient.from("newsletter_campaign_logs").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 529
+REFERENCE: newsletter_campaign_logs
+CODE: await adminClient.from("newsletter_campaign_logs").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 546
+REFERENCE: newsletter_campaigns
+CODE: .from("newsletter_campaigns")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 556
+REFERENCE: newsletter_campaigns
+CODE: .from("newsletter_campaigns")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 19
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 36
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\payment-log.ts
+LINE: 27
+REFERENCE: payment_logs
+CODE: const { error: logError } = await supabaseAdmin.from("payment_logs").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 16
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 87
+REFERENCE: product-images
+CODE: .from("product-images")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 95
+REFERENCE: product-images
+CODE: .from("product-images")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 105
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 113
+REFERENCE: subcategories
+CODE: await adminClient.from("subcategories").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 132
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 190
+REFERENCE: product-images
+CODE: .from("product-images")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 198
+REFERENCE: product-images
+CODE: .from("product-images")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 208
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 216
+REFERENCE: subcategories
+CODE: await adminClient.from("subcategories").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 239
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\products.ts
+LINE: 15
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\products.ts
+LINE: 35
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 15
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 74
+REFERENCE: store_settings
+CODE: .from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 81
+REFERENCE: store_settings
+CODE: .from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 100
+REFERENCE: store_settings
+CODE: result = await adminClient.from("store_settings").update(coreUpdate).eq("id", id).select();
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 102
+REFERENCE: store_settings
+CODE: result = await adminClient.from("store_settings").insert([coreUpdate]).select();
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 15
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 51
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 71
+REFERENCE: subcategories
+CODE: .from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 34
+REFERENCE: profiles
+CODE: .from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 44
+REFERENCE: profiles
+CODE: .from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 55
+REFERENCE: profiles
+CODE: .from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\blogs\[id]\page.tsx
+LINE: 25
+REFERENCE: blogs
+CODE: .from("blogs")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\blogs\page.tsx
+LINE: 14
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 18
+REFERENCE: profiles
+CODE: .from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 29
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\page.tsx
+LINE: 23
+REFERENCE: profiles
+CODE: .from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 29
+REFERENCE: products
+CODE: supabaseAdmin.from('products').select('*', { count: 'exact', head: true }),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 30
+REFERENCE: orders
+CODE: supabaseAdmin.from('orders').select('*', { count: 'exact', head: true }),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 31
+REFERENCE: profiles
+CODE: supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true }).neq('role', 'admin'),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 32
+REFERENCE: orders
+CODE: supabaseAdmin.from('orders').select('total_amount').eq('payment_status', 'paid'),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 33
+REFERENCE: orders
+CODE: supabaseAdmin.from('orders').select('*').order('created_at', { ascending: false }).limit(5),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 34
+REFERENCE: profiles
+CODE: supabaseAdmin.from('profiles').select('*').neq('role', 'admin').order('created_at', { ascending: false }).limit(4)
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 15
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 22
+REFERENCE: profiles
+CODE: .from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 40
+REFERENCE: order_items
+CODE: .from("order_items")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 24
+REFERENCE: orders
+CODE: .from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 13
+REFERENCE: orders
+CODE: .from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\page.tsx
+LINE: 27
+REFERENCE: orders
+CODE: .from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 12
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 128
+REFERENCE: categories
+CODE: supabase.from("categories").select("*"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 129
+REFERENCE: subcategories
+CODE: supabase.from("subcategories").select("*")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 15
+REFERENCE: categories
+CODE: supabase.from("categories").select("*").order("name"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 16
+REFERENCE: subcategories
+CODE: supabase.from("subcategories").select("*, category:categories(name)").order("created_at", { ascending: false })
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 52
+REFERENCE: categories
+CODE: supabase.from("categories").select("*"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 53
+REFERENCE: subcategories
+CODE: supabase.from("subcategories").select("*")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 61
+REFERENCE: products
+CODE: const { data: prod, error } = await supabase.from("products").select("*").eq("id", id).single();
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 11
+REFERENCE: products
+CODE: .from('products')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\settings\page.tsx
+LINE: 12
+REFERENCE: store_settings
+CODE: .from('store_settings')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 38
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 60
+REFERENCE: orders
+CODE: .from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 64
+REFERENCE: orders
+CODE: .from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 69
+REFERENCE: profiles
+CODE: .from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\newsletter\unsubscribe\route.ts
+LINE: 23
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\newsletter\unsubscribe\route.ts
+LINE: 79
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\newsletter\unsubscribe\route.ts
+LINE: 90
+REFERENCE: newsletter_subscribers
+CODE: .from("newsletter_subscribers")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\search\route.ts
+LINE: 20
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\search\route.ts
+LINE: 37
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\blog\[slug]\page.tsx
+LINE: 14
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\blog\page.tsx
+LINE: 9
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 70
+REFERENCE: categories
+CODE: const { data: categories } = await supabase.from("categories").select("*").order("created_at", { ascending: true });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 71
+REFERENCE: subcategories
+CODE: const { data: subcategories } = await supabase.from("subcategories").select("*").order("created_at", { ascending: true });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 23
+REFERENCE: products
+CODE: .from('products')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 36
+REFERENCE: blogs
+CODE: .from('blogs')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 49
+REFERENCE: categories
+CODE: .from('categories')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\CuratedGiftHampers.tsx
+LINE: 10
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\FeaturedProducts.tsx
+LINE: 10
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\FeaturedProducts.tsx
+LINE: 20
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\HandEmbroideredToys.tsx
+LINE: 10
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 76
+REFERENCE: categories
+CODE: .from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 87
+REFERENCE: products
+CODE: .from("products")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\whatsapp.ts
+LINE: 33
+REFERENCE: store_settings
+CODE: .from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\whatsapp.ts
+LINE: 73
+REFERENCE: notification_logs
+CODE: .from("notification_logs")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\whatsapp.ts
+LINE: 123
+REFERENCE: notification_logs
+CODE: await supabaseAdmin.from("notification_logs").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\supabase\middleware.ts
+LINE: 77
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\supabase\middleware.ts
+LINE: 94
+REFERENCE: user_roles
+CODE: .from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\order-utils.ts
+LINE: 25
+REFERENCE: store_settings
+CODE: .from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\order-utils.ts
+LINE: 47
+REFERENCE: products
+CODE: .from("products")
+

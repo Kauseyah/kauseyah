@@ -52,17 +52,17 @@ export default function Footer() {
 
   return (
     <footer className="relative bg-[#111111] text-white font-body overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 z-20" style={{ height: "2px", background: "#FF6B00" }} />
-      {/* Subtle weave pattern background (using SVG to prevent Android GPU crash) */}
+      <div className="absolute top-0 left-0 right-0 z-20" style={{ height: "2px", background: "#D95D1E" }} />
+      {/* Subtle weave pattern background */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.4]" 
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.35]" 
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0,0 h40 M0,0 v40' stroke='%23FF6B00' stroke-opacity='0.15' stroke-width='1' /%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0,0 h40 M0,0 v40' stroke='%23D95D1E' stroke-opacity='0.15' stroke-width='1' /%3E%3C/svg%3E")`,
           backgroundSize: "40px 40px"
         }}
       />
       
-      <div className="relative z-10 max-w-[1400px] mx-auto px-10 lg:px-20 pt-8 pb-0">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-20 pt-10 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.1fr_1.1fr_1.1fr_1fr] gap-8 lg:gap-10 items-start text-center lg:text-left">
 
           <div className="flex flex-col items-center lg:items-start">
@@ -78,17 +78,17 @@ export default function Footer() {
               </Link>
             </div>
 
-            <p className="font-body text-[9px] tracking-[0.2em] text-[#FF6B00] mb-2 uppercase font-bold">
+            <p className="font-body text-[10px] tracking-[0.2em] text-[#D95D1E] mb-2 uppercase font-semibold">
               {SITE_TAGLINE}
             </p>
 
-            <p className="font-body text-[12px] leading-[1.6] text-[#FFFFFF]/80 max-w-[220px] font-light">
-              India&apos;s handloom heritage, ethically made. Every thread preserves a story.
+            <p className="font-body text-[13px] leading-[1.65] text-[#FFFFFF]/80 max-w-[240px] font-light">
+              India&apos;s tribal handloom heritage, ethically woven by hands. Every thread preserves an indigenous artisan story.
             </p>
           </div>
 
-          <div className="pt-10 flex flex-col items-center lg:items-start">
-            <h3 className="font-display text-[1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
+          <div className="pt-2 lg:pt-10 flex flex-col items-center lg:items-start">
+            <h3 className="font-display text-[1.1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
               Quick Links
             </h3>
 
@@ -97,60 +97,51 @@ export default function Footer() {
                 { label: "About Us", href: "/about" },
                 { label: "Collections", href: "/collections" },
                 { label: "Contact", href: "/contact" },
-                { label: "FAQ" },
+                { label: "FAQ", href: "/contact" },
                 { label: "Blog", href: "/blog" },
               ].map((l) => (
-                l.href ? (
-                  <Link
-                    key={l.label}
-                    href={l.href}
-                    className="font-body text-[15px] text-[#FFFFFF]/70 hover:text-[#FF6B00] transition-colors duration-200"
-                  >
-                    {l.label}
-                  </Link>
-                ) : (
-                  <span
-                    key={l.label}
-                    className="font-body text-[15px] text-[#FFFFFF]/70"
-                  >
-                    {l.label}
-                  </span>
-                )
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className="font-body text-[14px] text-[#FFFFFF]/75 hover:text-[#D95D1E] transition-colors duration-200"
+                >
+                  {l.label}
+                </Link>
               ))}
             </div>
           </div>
 
-          <div className="pt-10 flex flex-col items-center lg:items-start">
-            <h3 className="font-display text-[1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
+          <div className="pt-2 lg:pt-10 flex flex-col items-center lg:items-start">
+            <h3 className="font-display text-[1.1rem] text-[#FFFFFF] mb-4 font-medium tracking-wide">
               Reach Us
             </h3>
 
-            <div className="space-y-3">
+            <div className="space-y-3 text-sm">
               <div>
-                <p className="font-body text-[14px] leading-[1.7] text-[#FFFFFF]/80">
+                <p className="font-body text-[13.5px] leading-[1.7] text-[#FFFFFF]/80">
                   Mon – Sat: 10:00 AM – 7:00 PM
                 </p>
               </div>
 
               <div className="flex items-center justify-center lg:justify-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#FF6B00]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#D95D1E]">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                 </svg>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="font-body text-[14px] text-[#FFFFFF]/80 hover:text-[#FF6B00] transition-colors duration-200"
+                  className="font-body text-[13.5px] text-[#FFFFFF]/85 hover:text-[#D95D1E] transition-colors duration-200"
                 >
                   {CONTACT_EMAIL}
                 </a>
               </div>
 
               <div className="flex items-center justify-center lg:justify-start gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#FF6B00]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#D95D1E]">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
                 <a
                   href={`tel:${CONTACT_PHONE}`}
-                  className="font-body text-[14px] text-[#FFFFFF]/80 hover:text-[#FF6B00] transition-colors duration-200"
+                  className="font-body text-[13.5px] text-[#FFFFFF]/85 hover:text-[#D95D1E] transition-colors duration-200"
                 >
                   {CONTACT_PHONE}
                 </a>
@@ -172,7 +163,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   aria-label={platform}
                   title={platform}
-                  className="w-8 h-8 flex items-center justify-center rounded-full border border-[#FF6B00]/20 text-white/70 hover:bg-[#FF6B00] hover:border-[#FF6B00] hover:text-white transition-all duration-300"
+                  className="w-8 h-8 flex items-center justify-center rounded-full border border-[#D95D1E]/30 text-white/80 hover:bg-[#D95D1E] hover:border-[#D95D1E] hover:text-white transition-all duration-300"
                 >
                   {SOCIAL_ICONS[platform.toLowerCase()] ?? (
                     <span className="text-[10px] uppercase font-semibold">{platform[0]}</span>
@@ -199,7 +190,7 @@ export default function Footer() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="font-body text-[11px] tracking-[0.1em] uppercase text-[#FFFFFF]/40 hover:text-[#FF6B00] transition-colors duration-200"
+                className="font-body text-[11px] tracking-[0.1em] uppercase text-[#FFFFFF]/50 hover:text-[#D95D1E] transition-colors duration-200"
               >
                 {l.label}
               </Link>
@@ -211,7 +202,7 @@ export default function Footer() {
               href="https://www.techsyntricinnovations.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#FFFFFF]/60 hover:text-[#FF6B00] transition-all duration-200"
+              className="text-[#FFFFFF]/60 hover:text-[#D95D1E] transition-all duration-200"
             >
               Techsyntric Innovations
             </Link>

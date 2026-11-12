@@ -6,6 +6,7 @@ import { useCart } from "@/store/CartContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 export default function CartPage() {
   const { cart, itemCount, removeItem, updateQty } = useCart();
   const router = useRouter();
@@ -67,6 +68,22 @@ export default function CartPage() {
                             {[item.variant.size, item.variant.color].filter(Boolean).join(" / ")}
                           </p>
                         )}
+
+                        {item.giftDetails?.isGift && (
+                          <div className="mt-2.5 p-2.5 bg-[#FFF8F3] rounded-lg border border-[#FF6B00]/20 text-xs">
+                            <div className="flex items-center gap-1.5 font-medium text-[#FF6B00]">
+                              <span>🎁 Gift Packaging</span>
+                              {item.giftDetails.packaging && (
+                                <span className="text-[11px] text-[#6E6E6E]">(Eco-Luxury Box)</span>
+                              )}
+                            </div>
+                            {item.giftDetails.message && (
+                              <p className="text-gray-600 mt-1 italic text-[11px] line-clamp-2">
+                                &ldquo;{item.giftDetails.message}&rdquo;
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex justify-between items-end mt-4">
@@ -97,10 +114,16 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between text-[#6E6E6E]">
                       <span>Shipping</span>
-                      <span className={cart.total === cart.subtotal ? "font-medium text-emerald-600" : "font-medium text-[#111111]"}>
-                        {cart.total === cart.subtotal ? "Complimentary" : `₹${(cart.total - cart.subtotal).toLocaleString("en-IN")}`}
+                      <span className={cart.shipping === 0 ? "font-medium text-emerald-600" : "font-medium text-[#111111]"}>
+                        {cart.shipping === 0 ? "Complimentary" : `₹${cart.shipping.toLocaleString("en-IN")}`}
                       </span>
                     </div>
+                    {cart.giftCharge > 0 && (
+                      <div className="flex justify-between text-[#6E6E6E]">
+                        <span>Gift Packaging</span>
+                        <span className="font-medium text-[#111111]">₹{cart.giftCharge.toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex justify-between items-center mb-8">
@@ -130,6 +153,3 @@ export default function CartPage() {
     </main>
   );
 }
-
-
-

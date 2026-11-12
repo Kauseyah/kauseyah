@@ -90,15 +90,25 @@ export interface Artisan {
 
 // ─── Cart Types ───────────────────────────────────────────────────────────────
 
+export interface GiftDetails {
+  isGift: boolean;
+  packaging?: boolean;
+  message?: string;
+  charge?: number;
+}
+
 export interface CartItem {
   product: Product;
   variant: ProductVariant;
   quantity: number;
+  giftDetails?: GiftDetails;
 }
 
 export interface Cart {
   items: CartItem[];
   subtotal: number;
+  shipping: number;
+  giftCharge: number;
   discount: number;
   total: number;
 }

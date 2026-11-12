@@ -1,0 +1,1164 @@
+﻿
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 15
+// These are special multi-category collections that don't map 1:1 with the DB categories.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 72
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 88
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 131
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 159
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 168
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 193
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 202
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\collections\[slug]\page.tsx
+LINE: 211
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 34
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 42
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 50
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 60
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 71
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\[slug]\page.tsx
+LINE: 87
+.select("*, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 11
+.select("*, category:categories(id, name, slug)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 14
+// Fetch all categories for the filter sidebar
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 15
+const { data: sbCategories } = await supabase
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 16
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 22
+// Format categories for the sidebar
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 23
+const categoriesData = (sbCategories || []).map((cat) => ({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 27
+subcategories: ["All"], // No subcategories in schema currently
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\page.tsx
+LINE: 30
+return <ProductsClient initialProducts={products} categoriesData={categoriesData} />;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 25
+export default function ProductsClient({ initialProducts, categoriesData }: { initialProducts: any[], categoriesData: any[] }) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 45
+const found = categoriesData.find(c => c.slug === cat || c.id === cat);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 49
+}, [categoriesData]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 76
+const catObj = categoriesData.find(c => c.id === selectedCategory);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 100
+}, [searchQuery, selectedCategory, selectedPriceRange, selectedRating, sortBy, initialProducts, categoriesData]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 178
+Categories
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\(shop)\products\ProductsClient.tsx
+LINE: 198
+{categoriesData.map((cat) => {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\auth-actions.ts
+LINE: 23
+.from('login_attempts')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\auth-actions.ts
+LINE: 43
+await supabaseAdmin.from('login_attempts').insert({ ip_address: ip });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\auth-actions.ts
+LINE: 126
+from: 'Kauseyah <orders@kauseyah.com>',
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\blog-actions.ts
+LINE: 14
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 15
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 46
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 54
+revalidatePath("/admin/products/categories");
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 67
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\categories.ts
+LINE: 76
+revalidatePath("/admin/products/categories");
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 53
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 66
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 111
+.from("order_items")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 115
+// If order_items table lacks the new columns, insert with variant_details JSONB only
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\checkout.ts
+LINE: 124
+await supabaseAdmin.from("order_items").insert(fallbackItems);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\contact-actions.ts
+LINE: 24
+// The email is sent TO the admin/orders email
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\customer-actions.ts
+LINE: 15
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\customer-actions.ts
+LINE: 35
+.from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\newsletter-actions.ts
+LINE: 136
+.from("user_roles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 6
+export async function updateOrderStatus(orderId: string, formData: FormData) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 19
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 36
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 48
+revalidatePath(`/admin/orders`);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\orders.ts
+LINE: 49
+revalidatePath(`/admin/orders/${orderId}`);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\payment-log.ts
+LINE: 8
+* Logs the payment details to `payment_logs` for manual reconciliation
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\payment-log.ts
+LINE: 26
+// 1. Try to save to payment_logs table for DB-level reconciliation
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\payment-log.ts
+LINE: 27
+const { error: logError } = await supabaseAdmin.from("payment_logs").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 16
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 105
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 113
+await adminClient.from("subcategories").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 208
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\product-actions.ts
+LINE: 216
+await adminClient.from("subcategories").insert({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\products.ts
+LINE: 15
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 15
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 74
+.from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 81
+.from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 100
+result = await adminClient.from("store_settings").update(coreUpdate).eq("id", id).select();
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\setting-actions.ts
+LINE: 102
+result = await adminClient.from("store_settings").insert([coreUpdate]).select();
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 15
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 51
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 58
+revalidatePath("/admin/products/subcategories");
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 71
+.from("subcategories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\subcategories.ts
+LINE: 79
+revalidatePath("/admin/products/subcategories");
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 34
+.from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 44
+.from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\actions\user-actions.ts
+LINE: 55
+.from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 18
+.from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 27
+// Fetch customer orders
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 28
+const { data: orders } = await supabase
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 29
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 34
+// Dynamically calculate real total spent from orders
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 35
+const validOrders = orders ? orders.filter(o => o.order_status !== 'cancelled') : [];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 36
+const realTotalSpent = validOrders.reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 130
+<p className="text-[11px] text-slate-500 uppercase font-bold tracking-wider mb-2">Total Orders</p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 131
+<p className="text-lg font-bold text-white">{orders ? orders.length : 0} <span className="text-sm text-slate-500 font-medium">orders</span></p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 162
+{orders && orders.length > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 163
+orders.map((order) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 193
+<Link href={`/admin/orders/${order.id}`} className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-950 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800 hover:text-orange-400 text-slate-400 text-xs font-bold rounded-lg shadow-sm transition-all">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\[id]\page.tsx
+LINE: 207
+<p className="text-sm">This customer hasn't placed any orders yet.</p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\page.tsx
+LINE: 21
+// Fetch profiles where role is not admin (including null which is default for customers)
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\page.tsx
+LINE: 23
+.from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\customers\page.tsx
+LINE: 37
+View and manage customer profiles and activity.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 23
+{ count: ordersCount },
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 25
+{ data: paidOrders },
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 26
+{ data: recentOrders },
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 30
+supabaseAdmin.from('orders').select('*', { count: 'exact', head: true }),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 31
+supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true }).neq('role', 'admin'),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 32
+supabaseAdmin.from('orders').select('total_amount').eq('payment_status', 'paid'),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 33
+supabaseAdmin.from('orders').select('*').order('created_at', { ascending: false }).limit(5),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 34
+supabaseAdmin.from('profiles').select('*').neq('role', 'admin').order('created_at', { ascending: false }).limit(4)
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 37
+const totalRevenue = paidOrders?.reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0) || 0;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 67
+<Link href="/admin/orders" className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm hover:shadow-md hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[160px] group relative overflow-hidden">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 96
+{/* Orders Card */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 97
+<Link href="/admin/orders" className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm hover:shadow-md hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[160px] group relative overflow-hidden">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 103
+<h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider font-sans">Orders</h3>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 106
+<p className="text-3xl font-bold text-white tracking-tight">{ordersCount || 0}</p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 131
+{/* Recent Orders Table */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 136
+Recent Orders
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 138
+<Link href="/admin/orders" className="text-sm text-orange-500 font-medium hover:text-orange-400 flex items-center gap-1">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 144
+{recentOrders && recentOrders.length > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 155
+{recentOrders.map((order) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\dashboard\page.tsx
+LINE: 180
+No orders have been placed yet.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 15
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 22
+.from("profiles")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 33
+<Link href="/admin/orders" className="text-blue-600 hover:underline">Return to Orders</Link>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 40
+.from("order_items")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\page.tsx
+LINE: 48
+href="/admin/orders"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\UpdateStatusForm.tsx
+LINE: 5
+import { updateOrderStatus } from "@/app/actions/orders";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\[id]\UpdateStatusForm.tsx
+LINE: 16
+const res = await updateOrderStatus(order.id, formData);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 7
+export default async function AdminOrders({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 23
+const { data: orders, count } = await supabase
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 24
+.from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 35
+<h1 className="text-2xl font-bold text-white tracking-tight">Orders</h1>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 37
+View and manage customer orders.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 48
+placeholder="Search orders by ID or customer..."
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 63
+{/* Orders Table */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 79
+{orders && orders.length > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 80
+orders.map((order) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 118
+<Link href={`/admin/orders/${order.id}`} className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-orange-400 transition-colors bg-slate-800/50 border border-slate-700 hover:border-orange-500/50 hover:bg-slate-800 px-4 py-2 rounded-lg shadow-sm">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\orders\page.tsx
+LINE: 128
+No orders found.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 11
+// Fetch payment details from orders table
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 13
+.from("orders")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 14
+.select("*, profiles:user_id(full_name, email)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 23
+const customer = payment.profiles;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\[id]\page.tsx
+LINE: 90
+<Link href={`/admin/orders/${order.id}`} className="font-mono font-medium text-blue-600 hover:underline">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\page.tsx
+LINE: 25
+// Fetch payments from the orders table since payments are stored on the order record
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\page.tsx
+LINE: 27
+.from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\payments\PaymentsTable.tsx
+LINE: 97
+<Link href={`/admin/orders/${payment.id}`} className="hover:text-orange-400 hover:underline transition-colors">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\DeleteCategoryButton.tsx
+LINE: 5
+import { deleteCategory } from "@/app/actions/categories";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 2
+import { createCategory } from "@/app/actions/categories";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 9
+export default async function Categories() {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 11
+const { data: categories } = await supabase
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 12
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 19
+<h1 className="text-3xl font-bold text-white tracking-tight">Categories</h1>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 21
+Create and manage product categories.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 63
+{/* Categories List */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 76
+{categories && categories.length > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 77
+categories.map((category) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\categories\page.tsx
+LINE: 93
+No categories found. Create one to get started.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 95
+const [categories, setCategories] = useState<any[]>([]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 96
+const [subcategories, setSubcategories] = useState<any[]>([]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 128
+supabase.from("categories").select("*"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 129
+supabase.from("subcategories").select("*")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 133
+console.error("Error fetching categories:", catsRes.error);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 135
+setCategories(catsRes.data);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 139
+console.error("Error fetching subcategories:", subcatsRes.error);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 141
+setSubcategories(subcatsRes.data);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 174
+const selectedCat = categories.find(c => c.id === categoryId);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 175
+const filteredSubcategories = subcategories.filter(sc =>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 180
+const filteredSubGroups = filteredSubcategories.length > 0 ? [
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 182
+label: selectedCat?.name || "Subcategories",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 183
+options: filteredSubcategories.map(sc => ({ value: sc.name, label: sc.name }))
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 442
+<Link href="/admin/products/categories" className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\new\page.tsx
+LINE: 453
+options={categories.map(c => ({ value: c.id, label: c.name }))}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\DeleteSubcategoryButton.tsx
+LINE: 5
+import { deleteSubcategory } from "@/app/actions/subcategories";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 2
+import { createSubcategory } from "@/app/actions/subcategories";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 11
+export default async function Subcategories() {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 14
+const [categoriesRes, subcategoriesRes] = await Promise.all([
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 15
+supabase.from("categories").select("*").order("name"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 16
+supabase.from("subcategories").select("*, category:categories(name)").order("created_at", { ascending: false })
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 19
+const categories = categoriesRes.data || [];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 20
+const subcategories = subcategoriesRes.data || [];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 29
+<h1 className="text-3xl font-bold text-white tracking-tight">Subcategories</h1>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 31
+Create and manage product subcategories.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 52
+{categories.map(c => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 87
+{/* Subcategories List */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 101
+{subcategories && subcategories.length > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 102
+subcategories.map((subcategory: any) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\subcategories\page.tsx
+LINE: 119
+No subcategories found. Create one to get started.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 20
+const [categories, setCategories] = useState<any[]>([]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 21
+const [subcategories, setSubcategories] = useState<any[]>([]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 52
+supabase.from("categories").select("*"),
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 53
+supabase.from("subcategories").select("*")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 56
+if (catsRes.data) setCategories(catsRes.data);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 57
+if (subcatsRes.data) setSubcategories(subcatsRes.data);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 385
+<Link href="/admin/products/categories" className="text-xs font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors">
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 396
+{categories.map(c => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 409
+{isCustomSubcategory || (subcategories.filter(sc => !selectedCategoryId || sc.category_id === selectedCategoryId).length === 0) ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\[id]\page.tsx
+LINE: 420
+{subcategories.filter(sc => !selectedCategoryId || sc.category_id === selectedCategoryId).map((sc: any) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 12
+.select('*, category:categories(name)')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 26
+href="/admin/products/categories"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 29
+Categories
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 32
+href="/admin/products/subcategories"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\products\page.tsx
+LINE: 35
+Subcategories
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\settings\page.tsx
+LINE: 12
+.from('store_settings')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\settings\SettingsForm.tsx
+LINE: 98
+<p className="text-[11px] text-slate-500 mt-1">Free shipping is applied automatically for orders strictly above ₹6,000.</p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 22
+totalOrders,
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 27
+totalOrders: number;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 33
+const [seenOrders, setSeenOrders] = useState(totalOrders);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 40
+const storedOrders = localStorage.getItem('seenOrders');
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 44
+if (storedOrders) setSeenOrders(parseInt(storedOrders));
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 45
+else localStorage.setItem('seenOrders', totalOrders.toString());
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 60
+if (pathname.includes('/admin/orders')) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 61
+setSeenOrders(totalOrders);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 62
+localStorage.setItem('seenOrders', totalOrders.toString());
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 72
+}, [pathname, totalOrders, totalPayments, totalCustomers, isMounted]);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 74
+const newOrdersCount = isMounted ? Math.max(0, totalOrders - seenOrders) : 0;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 135
+href="/admin/orders"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 140
+<span>Orders</span>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 142
+{newOrdersCount > 0 ? (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\AdminSidebar.tsx
+LINE: 144
+{newOrdersCount}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 38
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 59
+const { count: totalOrdersCount } = await supabaseAdmin
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 60
+.from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 64
+.from('orders')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 69
+.from('profiles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\admin\layout.tsx
+LINE: 78
+totalOrders={totalOrdersCount || 0}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\newsletter\unsubscribe\route.ts
+LINE: 215
+<p>Are you sure you want to stop receiving stories on indigenous arts, weaver profiles, and handloom highlights for <strong>${email}</strong>?</p>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\razorpay\order\route.ts
+LINE: 42
+const order = await instance.orders.create(options);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\search\route.ts
+LINE: 21
+.select("id, name, slug, price, discount_price, images, subcategory, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\api\search\route.ts
+LINE: 38
+.select("id, name, slug, price, discount_price, images, subcategory, category:categories(name)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\blog\BlogClient.tsx
+LINE: 26
+const categories = ["All", "Educational", "Insights", "Heritage", "Artisans"];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\contact\page.tsx
+LINE: 6
+description: "Get in touch with the Kauseyah team for orders, partnerships, and inquiries. Fast delivery across India including Mumbai, Delhi, Hyderabad, and Bangalore.",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\privacy\page.tsx
+LINE: 23
+The information we collect is used to process your orders, communicate with you about your
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\return-refund-policy\page.tsx
+LINE: 56
+In accordance with our terms of service, all orders must be paid in full prior to dispatch.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\return-refund-policy\page.tsx
+LINE: 81
+Certain categories are strictly non-returnable to preserve hygiene, artisan labor, and custom specifications:
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\return-refund-policy\page.tsx
+LINE: 157
+If you need to cancel an order, please contact customer support immediately. Orders can be cancelled provided they have not yet been dispatched by our logistics partners. Once an order is packed and dispatched, it cannot be cancelled in transit. Custom or bespoke orders enter craftsmanship production immediately and cannot be cancelled once weaving or tailoring begins.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\return-refund-policy\page.tsx
+LINE: 165
+Our standard shipping policy applies across all domestic orders:
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\return-refund-policy\page.tsx
+LINE: 178
+For approved returns of damaged or defective merchandise, {SITE_NAME} arranges reverse pickup or reimburses the return shipping fee. Initial shipping fees on non-defective orders are non-refundable.
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 70
+const { data: categories } = await supabase.from("categories").select("*").order("created_at", { ascending: true });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 71
+const { data: subcategories } = await supabase.from("subcategories").select("*").order("created_at", { ascending: true });
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 73
+const dynamicCategoryGroups = categories?.map(cat => ({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 79
+items: subcategories?.filter(sub => sub.category_id === cat.id).map(sub => ({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\layout.tsx
+LINE: 95
+<Navbar dynamicCategories={dynamicCategoryGroups} />
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\page.tsx
+LINE: 3
+import ShopCategories from "@/components/sections/ShopCategories";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\page.tsx
+LINE: 30
+{/* 2. Curated Categories Rail */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\page.tsx
+LINE: 31
+<ShopCategories />
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 47
+// 4. Dynamic Categories
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 48
+const { data: categories } = await supabase
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 49
+.from('categories')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\app\sitemap.ts
+LINE: 52
+const categoryRoutes: MetadataRoute.Sitemap = (categories || []).map((category) => ({
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\account\AccountSidebar.tsx
+LINE: 62
+href="/account/orders"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\account\AccountSidebar.tsx
+LINE: 63
+className={`flex items-center gap-2 px-5 py-2.5 rounded-full transition-all text-[13px] tracking-widest uppercase font-bold ${pathname.startsWith('/account/orders') ? 'bg-[#FF6B00] text-white shadow-lg shadow-[#FF6B00]/30' : 'text-muted hover:text-[#FF6B00] hover:bg-[#FF6B00]/10'}`}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\account\AccountSidebar.tsx
+LINE: 65
+<Package className={`w-4 h-4 ${pathname.startsWith('/account/orders') ? 'text-white' : 'text-[#FF6B00]'}`} />
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\account\AccountSidebar.tsx
+LINE: 66
+<span className="hidden sm:inline">My Orders</span>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\layout\AnnouncementBar.tsx
+LINE: 18
+text: "Free shipping for all orders above ₹6,000 within India.",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\layout\Navbar.tsx
+LINE: 37
+export default function Navbar({ dynamicCategories }: { dynamicCategories?: DynamicCategoryGroup[] }) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\layout\Navbar.tsx
+LINE: 51
+const groupsToUse = dynamicCategories && dynamicCategories.length > 0 ? dynamicCategories : SHOP_CATEGORY_GROUPS;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\pages\ProductDetailPageClient.tsx
+LINE: 694
+<h3 className="font-display text-2xl lg:text-3xl text-[#111111] mb-4">Bulk Orders & Custom Products</h3>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\Achievements.tsx
+LINE: 12
+const CATEGORIES = [
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\Achievements.tsx
+LINE: 58
+const activeCategory = CATEGORIES.find(c => c.id === activeTab) || CATEGORIES[0];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\Achievements.tsx
+LINE: 82
+{CATEGORIES.map((cat, i) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\Achievements.tsx
+LINE: 103
+{i < CATEGORIES.length - 1 && (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\BehindTheLoom.tsx
+LINE: 41
+caption: "Generations of tribal memory preserved in geometric borders and temple motifs.",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\CraftJournalNewsletter.tsx
+LINE: 7
+const CATEGORIES = [
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\CraftJournalNewsletter.tsx
+LINE: 93
+{/* Categories / Pill Tags */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\CraftJournalNewsletter.tsx
+LINE: 95
+{CATEGORIES.map((cat) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\CuratedGiftHampers.tsx
+LINE: 11
+.select("*, category:categories(name, slug)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\FAQ.tsx
+LINE: 28
+a: "Yes, we ship worldwide. International orders are carefully packaged to protect the textile during transit. Delivery typically takes 7–14 business days depending on destination. Customs duties, if applicable, are the responsibility of the buyer and vary by country.",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\FeaturedProducts.tsx
+LINE: 11
+.select("*, category:categories(name, slug)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\FeaturedProducts.tsx
+LINE: 21
+.select("*, category:categories(name, slug)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\HandEmbroideredToys.tsx
+LINE: 11
+.select("*, category:categories(name, slug)")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ProductDetailDrawer.tsx
+LINE: 46
+const [orderSubmitted, setOrderSubmitted] = useState(false);
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 2
+import ShopCategoriesClient, { CategoryCardData } from "./ShopCategoriesClient";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 71
+export default async function ShopCategories() {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 76
+.from("categories")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 84
+const categoriesWithData: CategoryCardData[] = await Promise.all(
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategories.tsx
+LINE: 111
+return <ShopCategoriesClient categories={categoriesWithData} />;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 17
+interface ShopCategoriesClientProps {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 18
+categories: CategoryCardData[];
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 21
+export default function ShopCategoriesClient({ categories }: ShopCategoriesClientProps) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 22
+if (!categories || categories.length === 0) {
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 28
+aria-label="Curated Categories Discovery"
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 47
+{/* Categories Grid (Mobile: Horizontal Swipe Rail; Tablet: 3 cols; Desktop: 6 cols) */}
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\components\sections\ShopCategoriesClient.tsx
+LINE: 49
+{categories.map((cat, idx) => (
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\constants\index.ts
+LINE: 301
+// ─── Product Categories (simplified for filters) ─────────────────────────────
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\constants\index.ts
+LINE: 303
+export const CATEGORIES = [
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\data\index.ts
+LINE: 499
+description: "Woven in the rural clusters of Odisha, this Tussar silk saree features delicate thread work borders inspired by tribal temple carvings. Crafted by weaver families using generations-old wooden looms.",
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\data\index.ts
+LINE: 518
+{ id: "r24", userName: "Aditi S.", rating: 4, comment: "Beautiful borders and authentic weave feel.", date: "2026-06-28" }
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\email.ts
+LINE: 16
+const fromEmail = process.env.RESEND_FROM_EMAIL || 'Kauseyah Store <orders@kauseyah.com>';
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\email.ts
+LINE: 143
+const fromEmail = process.env.RESEND_FROM_EMAIL || "Kauseyah Orders <orders@kauseyah.com>";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\email.ts
+LINE: 240
+<a href="https://www.kauseyah.com/admin/orders/${orderId}" style="display: inline-block; background: #FF6B00; color: #ffffff; padding: 12px 24px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 14px;">View Order in Admin Panel &rarr;</a>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\email.ts
+LINE: 303
+<li><strong>Meet the Artisans:</strong> Intimate profiles of generational weavers across India.</li>
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\email.ts
+LINE: 457
+const fromEmail = process.env.RESEND_FROM_EMAIL || "Kauseyah Alerts <orders@kauseyah.com>";
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\whatsapp.ts
+LINE: 26
+// Also verify store_settings database toggle if available
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\lib\whatsapp.ts
+LINE: 33
+.from("store_settings")
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\types\index.ts
+LINE: 118
+export type OrderStatus =
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\types\index.ts
+LINE: 130
+status: OrderStatus;
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\supabase\middleware.ts
+LINE: 75
+// Checking if user has admin role from user_roles table
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\supabase\middleware.ts
+LINE: 77
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\supabase\middleware.ts
+LINE: 94
+.from('user_roles')
+
+FILE: C:\Users\ashish kathait\Downloads\kauseyah\kauseyah\src\utils\order-utils.ts
+LINE: 25
+.from("store_settings")

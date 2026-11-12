@@ -13,6 +13,7 @@ import {
   Users,
   CreditCard,
   FileText,
+  Mail,
   Menu,
   X
 } from "lucide-react";
@@ -173,13 +174,20 @@ export default function AdminSidebar({
           ) : null}
         </Link>
 
-        <div className="px-3 pb-2 pt-6 text-[11px] font-bold tracking-wider text-slate-500 uppercase">Content</div>
+        <div className="px-3 pb-2 pt-6 text-[11px] font-bold tracking-wider text-slate-500 uppercase">Marketing & Content</div>
         <Link 
           href="/admin/blogs" 
           className="flex items-center gap-3 px-3 py-2.5 text-slate-300 rounded-xl hover:bg-slate-900 hover:text-white transition-all font-medium text-sm group"
         >
           <FileText size={18} strokeWidth={2} className="text-slate-500 group-hover:text-orange-400 transition-colors" />
           <span>Blogs</span>
+        </Link>
+        <Link 
+          href="/admin/newsletter" 
+          className="flex items-center gap-3 px-3 py-2.5 text-slate-300 rounded-xl hover:bg-slate-900 hover:text-white transition-all font-medium text-sm group"
+        >
+          <Mail size={18} strokeWidth={2} className="text-slate-500 group-hover:text-orange-400 transition-colors" />
+          <span>Newsletter</span>
         </Link>
 
         <div className="px-3 pb-2 pt-6 text-[11px] font-bold tracking-wider text-slate-500 uppercase">System</div>

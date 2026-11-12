@@ -8,10 +8,22 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useScrollY } from "@/hooks";
 import { useCart } from "@/store/CartContext";
 import { NAV_LINKS, SITE_NAME, BRAND_TAGLINE, SHOP_CATEGORY_GROUPS } from "@/constants";
-import { PRODUCTS } from "@/data";
 import { cn } from "@/utils";
-import { Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight, Search } from "lucide-react";
+import { Heart, ShoppingBag, Menu, X, User, ChevronDown, ArrowRight, ArrowUpRight, Search, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import AnnouncementBar from "./AnnouncementBar";
+
+
+interface SearchSuggestion {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  discountPrice?: number;
+  image: string;
+  subcategory?: string;
+  category?: string;
+}
 
 interface DynamicCategoryGroup {
   id: string;
@@ -40,22 +52,49 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
 
 
 
-  // Live suggestions derived from product catalog
-  const suggestions = searchQuery.trim().length >= 1
-    ? PRODUCTS.filter((p) => {
-        const q = searchQuery.toLowerCase();
-        return (
-          p.name.toLowerCase().includes(q) ||
-          p.shortDescription.toLowerCase().includes(q) ||
-          p.subcategory?.toLowerCase().includes(q) ||
-          p.tags.some(t => t.toLowerCase().includes(q))
-        );
-      }).slice(0, 6)
-    : [];
+    const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (trimmed.length < 1) {
+      setSuggestions([]);
+      setIsLoadingSuggestions(false);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(Array.isArray(data.results) ? data.results : []);
+        } else {
+          setSuggestions([]);
+        }
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          console.error("Search fetch error:", err);
+          setSuggestions([]);
+        }
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 250);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [searchQuery]);
 
   const handleSearchSubmit = useCallback((slug?: string) => {
     if (slug) {
-      router.push(`/products/${slug}`);
+      router.push(`/products/${encodeURIComponent(slug.trim())}`);
     } else if (searchQuery.trim()) {
       router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
     }
@@ -127,6 +166,8 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
 
   return (
     <>
+
+    
       <header
         data-nav-transparent={(isScrolled || forceScrolledStyle) ? "false" : "true"}
         data-light-text={useLightNavText ? "true" : "false"}
@@ -141,6 +182,8 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                 : "top-0 left-0 right-0 bg-gradient-to-b from-black/75 via-black/40 to-transparent"
         )}
       >
+      
+        <AnnouncementBar />
         <nav
           className={cn(
             "w-full transition-all duration-700",
@@ -182,10 +225,10 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                 <div className={cn(
                   "flex items-center gap-3 rounded-full px-5 py-2.5 w-full transition-all duration-300 shadow-lg",
                   isScrolled
-                    ? "bg-white/15 border border-white/20 backdrop-blur-xl text-white ring-1 ring-[#FF6B00]/40"
-                    : "bg-white border border-[#FF6B00]/30 text-[#111111] ring-1 ring-[#FF6B00]/20 shadow-[0_4px_24px_rgba(255,107,0,0.10)]"
+                    ? "bg-white/15 border border-white/20 backdrop-blur-xl text-white ring-1 ring-[#D95D1E]/40"
+                    : "bg-white border border-[#D95D1E]/30 text-[#111111] ring-1 ring-[#D95D1E]/20 shadow-[0_4px_24px_rgba(255,107,0,0.10)]"
                 )}>
-                  <Search size={16} className="text-[#FF6B00] shrink-0" />
+                  {isLoadingSuggestions ? <Loader2 size={16} className="text-[#D95D1E] animate-spin shrink-0" /> : <Search size={16} className="text-[#D95D1E] shrink-0" />}
                   <input
                     ref={inputRef}
                     type="text"
@@ -202,7 +245,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                   {searchQuery && (
                     <button
                       onClick={() => { setSearchQuery(""); setHighlightedIndex(-1); inputRef.current?.focus(); }}
-                      className="text-stone-400 hover:text-[#FF6B00] transition-colors cursor-pointer shrink-0"
+                      className="text-stone-400 hover:text-[#D95D1E] transition-colors cursor-pointer shrink-0"
                     >
                       <X size={14} />
                     </button>
@@ -210,13 +253,13 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                   <div className="w-px h-4 bg-stone-300/40 shrink-0" />
                   <button
                     onClick={() => handleSearchSubmit()}
-                    className="shrink-0 bg-[#FF6B00] hover:bg-[#e55f00] text-white rounded-full px-3 py-1 text-xs font-body font-semibold tracking-wider transition-colors duration-200"
+                    className="shrink-0 bg-[#D95D1E] hover:bg-[#BF4E15] text-white rounded-full px-3 py-1 text-xs font-body font-semibold tracking-wider transition-colors duration-200"
                   >
                     Search
                   </button>
                   <button
                     onClick={() => { setSearchOpen(false); setSearchQuery(""); setHighlightedIndex(-1); }}
-                    className="text-stone-400 hover:text-[#FF6B00] transition-colors cursor-pointer shrink-0"
+                    className="text-stone-400 hover:text-[#D95D1E] transition-colors cursor-pointer shrink-0"
                   >
                     <X size={16} />
                   </button>
@@ -243,8 +286,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                       {/* Suggestion Items */}
                       <ul className="py-1">
                         {suggestions.map((product, idx) => {
-                          const primaryImg = product.images.find(img => img.isPrimary)?.url || product.images[0]?.url;
-                          const isHighlighted = idx === highlightedIndex;
+                                                    const isHighlighted = idx === highlightedIndex;
                           return (
                             <li key={product.id}>
                               <button
@@ -257,13 +299,13 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                                 )}
                               >
                                 {/* Thumbnail */}
-                                <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 bg-stone-100 border border-stone-100">
+                                <div className="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 bg-stone-100 border border-stone-100 relative">
                                   <Image
-                                    src={primaryImg}
+                                    src={product.image || "/images/placeholder.png"}
                                     alt={product.name}
-                                    width={44}
-                                    height={44}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    sizes="44px"
+                                    className="object-cover"
                                   />
                                 </div>
 
@@ -271,12 +313,12 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                                 <div className="flex-1 min-w-0">
                                   <p className={cn(
                                     "font-body text-sm font-semibold leading-tight truncate transition-colors",
-                                    isHighlighted ? "text-[#FF6B00]" : "text-[#111111] group-hover:text-[#FF6B00]"
+                                    isHighlighted ? "text-[#D95D1E]" : "text-[#111111] group-hover:text-[#D95D1E]"
                                   )}>
                                     {product.name}
                                   </p>
                                   <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="font-body text-[10px] font-bold tracking-[0.12em] uppercase text-[#FF6B00]/70 bg-[#FF6B00]/10 px-2 py-0.5 rounded-full">
+                                    <span className="font-body text-[10px] font-bold tracking-[0.12em] uppercase text-[#D95D1E]/70 bg-[#D95D1E]/10 px-2 py-0.5 rounded-full">
                                       {product.subcategory ?? product.category}
                                     </span>
                                   </div>
@@ -287,7 +329,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                                   <p className="font-body text-sm font-bold text-[#111111]">
                                     ₹{product.price.toLocaleString("en-IN")}
                                   </p>
-                                  <ArrowUpRight size={13} className={cn("ml-auto transition-opacity", isHighlighted ? "opacity-100 text-[#FF6B00]" : "opacity-0")} />
+                                  <ArrowUpRight size={13} className={cn("ml-auto transition-opacity", isHighlighted ? "opacity-100 text-[#D95D1E]" : "opacity-0")} />
                                 </div>
                               </button>
                             </li>
@@ -299,7 +341,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                       <div className="border-t border-stone-100 px-4 py-2.5">
                         <button
                           onClick={() => handleSearchSubmit()}
-                          className="w-full flex items-center justify-center gap-2 font-body text-xs font-semibold tracking-[0.15em] uppercase text-[#FF6B00] hover:text-[#e55f00] transition-colors py-0.5"
+                          className="w-full flex items-center justify-center gap-2 font-body text-xs font-semibold tracking-[0.15em] uppercase text-[#D95D1E] hover:text-[#BF4E15] transition-colors py-0.5"
                         >
                           View all results for "{searchQuery}"
                           <ArrowRight size={12} />
@@ -309,7 +351,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                   )}
 
                   {/* No results state */}
-                  {searchQuery.trim().length >= 2 && suggestions.length === 0 && (
+                  {searchQuery.trim().length >= 2 && !isLoadingSuggestions && suggestions.length === 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -358,7 +400,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                             "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
                             useLightNavText
                               ? isScrolled ? "bg-white" : "bg-white/80"
-                              : "bg-[#FF6B00]"
+                              : "bg-[#D95D1E]"
                           )} />
                         </span>
                       </div>
@@ -381,7 +423,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                           "h-px w-0 group-hover:w-full transition-all duration-500 ease-out block",
                           useLightNavText
                             ? isScrolled ? "bg-white" : "bg-white/80"
-                            : "bg-[#FF6B00]"
+                            : "bg-[#D95D1E]"
                         )} />
                       </span>
                     </Link>
@@ -399,18 +441,18 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                 <button
                   aria-label="Search"
                   onClick={() => setSearchOpen(true)}
-                  className={cn("hidden sm:block transition-all duration-300 hover:-translate-y-0.5 cursor-pointer", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}
+                  className={cn("transition-all duration-300 hover:-translate-y-0.5 cursor-pointer", useLightNavText && isScrolled ? "hover:text-[#D95D1E]" : "hover:text-[#D95D1E]")}
                 >
                   <Search strokeWidth={1.5} size={19} />
                 </button>
               )}
               
-              <Link href="/cart" className={cn("relative transition-all duration-300 hover:-translate-y-0.5 flex items-center", useLightNavText && isScrolled ? "hover:text-[#FF6B00]" : "hover:text-[#FF6B00]")}>
+              <Link href="/cart" className={cn("relative transition-all duration-300 hover:-translate-y-0.5 flex items-center", useLightNavText && isScrolled ? "hover:text-[#D95D1E]" : "hover:text-[#D95D1E]")}>
                 <ShoppingBag strokeWidth={1.5} size={19} />
                 {itemCount > 0 && (
                   <span className={cn(
                     "absolute -top-2 -right-2 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold",
-                    isScrolled ? "bg-[#111111] text-[#FFFFFF]" : (isScrolled || isSolidHeaderPage) ? "bg-[#FF8100] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111]"
+                    isScrolled ? "bg-[#111111] text-[#FFFFFF]" : (isScrolled || isSolidHeaderPage) ? "bg-[#D95D1E] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111]"
                   )}>
                     {itemCount}
                   </span>
@@ -450,16 +492,16 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                       href={group.href}
                       className="group inline-flex items-start"
                     >
-                      <span className="font-body text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase text-[#111111] group-hover:text-[#FF6B00] transition-colors duration-200 leading-normal">
+                      <span className="font-body text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase text-[#111111] group-hover:text-[#D95D1E] transition-colors duration-200 leading-normal">
                         {group.label}
                       </span>
                     </Link>
-                    <ul className="flex flex-col gap-2.5 pl-3 border-l border-[#FF6B00]/35">
+                    <ul className="flex flex-col gap-2.5 pl-3 border-l border-[#D95D1E]/35">
                       {group.items.map((item) => (
                         <li key={item.href}>
                           <Link
                             href={item.href}
-                            className="block font-body text-[13px] text-[#111111] hover:text-[#FF6B00] transition-colors duration-200 leading-[1.65]"
+                            className="block font-body text-[13px] text-[#111111] hover:text-[#D95D1E] transition-colors duration-200 leading-[1.65]"
                           >
                             {item.label}
                           </Link>
@@ -474,7 +516,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
             <div className="flex items-center justify-end px-8 lg:px-12 py-4 border-t border-stone-100 bg-white">
               <Link
                 href="/collections"
-                className="flex items-center gap-2 font-body text-xs font-medium tracking-[0.18em] uppercase text-[#111111] hover:text-[#FF6B00] transition-colors duration-200"
+                className="flex items-center gap-2 font-body text-xs font-medium tracking-[0.18em] uppercase text-[#111111] hover:text-[#D95D1E] transition-colors duration-200"
               >
                 View All Collections <ArrowRight size={12} />
               </Link>
@@ -496,8 +538,8 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
           >
             <div className="p-6 flex justify-between items-center border-b border-white/5 sticky top-0 bg-[#111111]/97 backdrop-blur-2xl z-10">
               <div>
-                <span className="font-display text-2xl text-[#FF6B00] block">{SITE_NAME}</span>
-                <span className="font-body text-[9px] tracking-[0.3em] text-[#FF6B00]/60 uppercase">{BRAND_TAGLINE}</span>
+                <span className="font-display text-2xl text-[#D95D1E] block">{SITE_NAME}</span>
+                <span className="font-body text-[9px] tracking-[0.3em] text-[#D95D1E]/60 uppercase">{BRAND_TAGLINE}</span>
               </div>
               <button onClick={() => setMobileOpen(false)} className="text-[#F1F3E0]/80 hover:text-white transition-transform hover:rotate-90 duration-300 mr-4">
                 <X strokeWidth={1.5} size={28} />
@@ -521,7 +563,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                         <span className="font-display text-3xl text-[#F1F3E0]">{link.label}</span>
                         <ChevronDown
                           size={20}
-                          className={cn("transition-transform duration-300 text-[#FF6B00]", mobileShopOpen ? "rotate-180" : "")}
+                          className={cn("transition-transform duration-300 text-[#D95D1E]", mobileShopOpen ? "rotate-180" : "")}
                         />
                       </button>
                       <AnimatePresence>
@@ -541,7 +583,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                                     onClick={() => setMobileOpen(false)}
                                     className="flex items-center gap-2 mb-2"
                                   >
-                                    <span className="font-body text-[11px] font-bold tracking-[0.2em] uppercase text-[#FF6B00]">
+                                    <span className="font-body text-[11px] font-bold tracking-[0.2em] uppercase text-[#D95D1E]">
                                       {group.label}
                                     </span>
                                   </Link>
@@ -578,7 +620,7 @@ export default function Navbar({ dynamicCategories }: { dynamicCategories?: Dyna
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block font-display text-3xl text-[#F1F3E0] hover:text-[#FF6B00] transition-colors py-4"
+                      className="block font-display text-3xl text-[#F1F3E0] hover:text-[#D95D1E] transition-colors py-4"
                     >
                       {link.label}
                     </Link>
