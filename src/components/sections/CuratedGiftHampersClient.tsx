@@ -2,174 +2,256 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
-
-const slideUpBlur = {
-  hidden: { opacity: 0, y: 50, filter: "blur(8px)", scale: 0.98 },
-  show: (i = 0) => ({
-    opacity: 1, y: 0, filter: "blur(0px)", scale: 1, transition: { duration: 1.1, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] as const }
-  }),
-};
+import { useRef, useState } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, Gift, Sparkles, ShoppingBag, Check } from "lucide-react";
+import { useCart } from "@/store/CartContext";
+import ProductDetailDrawer from "./ProductDetailDrawer";
 
 export default function CuratedGiftHampersClient({ hampers }: { hampers: any[] }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { addItem } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [addedId, setAddedId] = useState<string | null>(null);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const { current } = scrollContainerRef;
-      const scrollAmount = current.clientWidth > 768 ? 400 : 300;
-      current.scrollBy({
+      const scrollAmount = scrollContainerRef.current.clientWidth > 768 ? 440 : 320;
+      scrollContainerRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
 
+  const handleQuickAdd = (e: React.MouseEvent, product: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (product.variants && product.variants.length > 1) {
+      setSelectedProduct(product);
+      return;
+    }
+
+    const variantToAdd = (product.variants && product.variants.length > 0)
+      ? product.variants[0]
+      : { id: `${product.id}-default`, stock: product.stock ?? 10, price: product.price };
+
+    addItem(product, variantToAdd);
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 1800);
+  };
+
   return (
-    <section className="w-full py-12 lg:py-16 overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF8F3 100%)' }}>
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-20">
+    <section
+      aria-label="Conscious Gifting and Hampers"
+      className="w-full py-16 sm:py-20 lg:py-24 bg-[#FFF9F4] border-b border-[#1A1412]/8 overflow-hidden"
+    >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-16">
 
-        {/* ── Standardized Header ── */}
-        <div className="flex flex-col items-center text-center mb-10 lg:mb-12 max-w-4xl mx-auto">
-          <motion.h2 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
-          >
-            Curated <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Gift Hampers</span>
-          </motion.h2>
-          <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium">
-             Fill them with conscious, handcrafted products that reflect your story
-          </p>
-        </div>
+        {/* ── Section Header ── */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-14 gap-6">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#D95D1E]/20 text-[#D95D1E] mb-3 shadow-sm">
+              <Gift size={12} className="text-[#D95D1E]" />
+              <span className="font-body text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase">
+                Conscious Gifting · Handcrafted
+              </span>
+            </div>
 
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.05] tracking-tight">
+              Gifts with a <span className="text-[#D95D1E] italic font-light font-display">Story to Tell</span>
+            </h2>
+            <div className="w-12 h-[1.5px] bg-[#D95D1E] mt-3 mb-3" />
 
-
-        {/* ── Carousel Container ── */}
-        <div className="relative group/carousel">
-          {/* Left Arrow */}
-          <button 
-            onClick={() => scroll("left")}
-            className="absolute left-[-20px] lg:left-[-40px] top-[40%] -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full border border-[#E5E5E5] flex items-center justify-center hover:border-[#FF6B00] hover:text-[#FF6B00] hover:shadow-lg transition-all opacity-0 group-hover/carousel:opacity-100 disabled:opacity-0"
-            aria-label="Scroll left"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-
-          <div 
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
-          >
-            {hampers && hampers.length > 0 ? hampers.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, margin: "-100px" }}
-                custom={i}
-                variants={slideUpBlur}
-                className="group bg-white border border-[#E5E5E5] hover:shadow-[0_20px_40px_rgba(107,112,92,0.06)] hover:border-[#FF6B00]/30 transition-all duration-500 flex flex-col w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 snap-center sm:snap-start"
-              >
-              {/* Image Header */}
-              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#FFF8F3]">
-                <Image
-                  src={product.images.find((img: any) => img.isPrimary)?.url || product.images[0].url}
-                  alt={product.images.find((img: any) => img.isPrimary)?.alt || product.name}
-                  fill
-                  className="object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                
-                {/* Floating Tags */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  {product.tags?.slice(0, 2).map((tag: string, idx: number) => (
-                    <span key={idx} className="bg-white/90 backdrop-blur-sm text-[#111111] px-3 py-1 font-body text-[9px] uppercase tracking-[0.2em] shadow-sm rounded-md">
-                      {tag.replace("-", " ")}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Rich Text Body */}
-              <div className="p-8 flex flex-col flex-1">
-                {/* Artisan & Region Meta */}
-                {product.artisan && (
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#FF6B00]">
-                    {product.artisan.region}
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
-                  <span className="font-body text-[10px] uppercase tracking-[0.2em] text-[#6E6E6E]/60">
-                    By {product.artisan.name}
-                  </span>
-                </div>
-                )}
-
-                {/* Title */}
-                <Link href={`/products/${encodeURIComponent(product.slug)}`} className="block font-display text-3xl text-[#111111] group-hover:text-[#FF6B00] transition-colors mb-4 leading-tight">
-                  {product.name}
-                </Link>
-
-                {/* Descriptive Text Added Here */}
-                <p className="font-body text-[14px] text-[#555555] leading-relaxed mb-8 line-clamp-3">
-                  {product.description}
-                </p>
-
-                {/* Footer / Price & Action */}
-                <div className="mt-auto pt-6 border-t border-[#E5E5E5] flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="font-body text-[16px] font-medium text-[#111111]">
-                      ₹{product.price.toLocaleString("en-IN")}
-                    </span>
-                    {product.compareAtPrice && (
-                      <span className="font-body text-[12px] text-[#6E6E6E]/40 line-through mt-0.5">
-                        ₹{product.compareAtPrice.toLocaleString("en-IN")}
-                      </span>
-                    )}
-                  </div>
-
-                  <Link 
-                    href={`/products/${encodeURIComponent(product.slug)}`}
-                    className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-[#111111] border-b border-[#111111] pb-0.5 group-hover:text-[#FF6B00] group-hover:border-[#FF6B00] transition-colors"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </div>
-              </motion.div>
-            )) : (
-              <div className="w-full text-center py-12 bg-white rounded-2xl border border-dashed border-[#E5E5E5]">
-                <p className="font-body text-[#111111]/60">Check back soon for our new curated gift hampers!</p>
-              </div>
-            )}
+            <p className="font-body text-sm sm:text-base text-[#665D59] font-light leading-relaxed">
+              Thoughtfully curated keepsakes packaged in handcrafted keepsake boxes with organic botanical details. Each gift honors traditional craft wisdom and sustains rural artisan livelihoods.
+            </p>
           </div>
 
-          {/* Right Arrow */}
-          <button 
-            onClick={() => scroll("right")}
-            className="absolute right-[-20px] lg:right-[-40px] top-[40%] -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full border border-[#E5E5E5] flex items-center justify-center hover:border-[#FF6B00] hover:text-[#FF6B00] hover:shadow-lg transition-all opacity-0 group-hover/carousel:opacity-100 disabled:opacity-0"
-            aria-label="Scroll right"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          </button>
+          {/* Navigation Controls */}
+          <div className="flex items-center gap-3 self-start md:self-end">
+            <Link
+              href="/collections/gift-hampers"
+              className="inline-flex items-center gap-2 font-body text-xs font-bold uppercase tracking-[0.18em] text-[#1A1412] hover:text-[#D95D1E] transition-colors pr-2"
+            >
+              <span>Explore All Hampers</span>
+              <ArrowRight size={13} />
+            </Link>
+            <div className="h-4 w-[1px] bg-[#1A1412]/15 hidden sm:block" />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                aria-label="Scroll hampers left"
+                className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                aria-label="Scroll hampers right"
+                className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Global CTA */}
-        <div className="mt-12 lg:mt-20 flex justify-center">
-          <Link
-            href="/collections/conscious-gifting"
-            className="group inline-flex items-center gap-4 border-b border-[#111111]/30 pb-2 hover:border-[#FF6B00] transition-colors"
-          >
-            <span className="font-body text-xs font-black tracking-[0.3em] uppercase text-[#111111] group-hover:text-[#FF6B00] transition-colors">
-              Shop our curated hampers
-            </span>
-            <ArrowUpRight size={16} className="text-[#111111] group-hover:text-[#FF6B00] transition-colors" />
-          </Link>
+        {/* ── Editorial Split: Featured Packaging Banner + Product Rail ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch mb-4">
+
+          {/* Left: Editorial Story Banner (4 cols on desktop) */}
+          <div className="lg:col-span-4 rounded-2xl overflow-hidden relative bg-[#F7EFE8] border border-[#1A1412]/8 flex flex-col justify-between p-6 sm:p-8 min-h-[380px] lg:min-h-full">
+            <div className="absolute inset-0 z-0">
+              <Image
+                src="/images/seasonal_edit.png"
+                alt="Conscious Gifting Hampers with handcrafted stationery and botanicals"
+                fill
+                sizes="(max-width: 1024px) 100vw, 33vw"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412]/92 via-[#1A1412]/50 to-transparent" />
+            </div>
+
+            {/* Top Badge */}
+            <div className="relative z-10 self-start">
+              <span className="inline-block px-3 py-1 rounded-sm bg-white/20 backdrop-blur-md border border-white/25 text-white font-body text-[9.5px] uppercase tracking-[0.2em] font-bold">
+                Mindful Unboxing
+              </span>
+            </div>
+
+            {/* Bottom Content */}
+            <div className="relative z-10 text-white mt-auto pt-16">
+              <p className="font-body text-[11px] uppercase tracking-[0.2em] text-[#D4A359] font-semibold mb-2">
+                Personalized Packaging
+              </p>
+              <h3 className="font-display text-2xl sm:text-3xl text-white leading-tight mb-2">
+                Curated Keepsakes with Purpose
+              </h3>
+              <p className="font-body text-xs sm:text-sm text-white/80 font-light leading-relaxed mb-5">
+                Every hamper is presented in a reusable keepsake box made from reclaimed materials, complete with an optional handwritten artisan card.
+              </p>
+
+              <div className="inline-flex items-center gap-2 bg-[#851A36] text-white px-3.5 py-1.5 rounded-sm font-body text-[10px] uppercase tracking-wider font-semibold shadow-md">
+                <Sparkles size={11} className="text-[#D4A359]" />
+                <span>Optional +₹100 Custom Box &amp; Note</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Real Published Products Carousel (8 cols on desktop) */}
+          <div className="lg:col-span-8 overflow-hidden">
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto snap-x snap-mandatory gap-5 sm:gap-6 pb-4 pt-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-full"
+            >
+              {hampers && hampers.length > 0 ? (
+                hampers.map((product) => {
+                  const primaryImg = product.images.find((img: any) => img.isPrimary)?.url || product.images[0]?.url;
+                  const isAdded = addedId === product.id;
+                  const hasMultipleVariants = product.variants && product.variants.length > 1;
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="group w-[78vw] sm:w-[320px] lg:w-[330px] shrink-0 snap-start flex flex-col bg-white rounded-2xl border border-[#1A1412]/8 hover:border-[#D95D1E]/40 hover:shadow-[0_16px_36px_rgba(26,20,18,0.08)] transition-all duration-300 overflow-hidden"
+                    >
+                      {/* Product Image */}
+                      <Link
+                        href={`/products/${encodeURIComponent(product.slug.trim())}`}
+                        className="relative w-full aspect-[4/3] overflow-hidden bg-[#F7EFE8] block"
+                      >
+                        <Image
+                          src={primaryImg}
+                          alt={product.name}
+                          fill
+                          sizes="(max-width: 640px) 85vw, 330px"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+
+                        <div className="absolute top-3 left-3 bg-[#1A1412]/85 backdrop-blur-md text-white px-2.5 py-1 rounded-sm font-body text-[9px] uppercase tracking-[0.16em] font-semibold">
+                          {product.subcategory || "Gift Hamper"}
+                        </div>
+                      </Link>
+
+                      {/* Product Details */}
+                      <div className="p-5 sm:p-6 flex flex-col flex-1">
+                        <Link
+                          href={`/products/${encodeURIComponent(product.slug.trim())}`}
+                          className="font-display text-xl sm:text-2xl text-[#1A1412] group-hover:text-[#D95D1E] transition-colors leading-snug line-clamp-1 mb-1.5"
+                        >
+                          {product.name}
+                        </Link>
+
+                        <p className="font-body text-xs text-[#665D59] line-clamp-2 leading-relaxed mb-5 font-light">
+                          {product.shortDescription || product.description}
+                        </p>
+
+                        {/* Price & Quick Add Button */}
+                        <div className="mt-auto pt-4 border-t border-[#1A1412]/8 flex items-center justify-between gap-3">
+                          <div>
+                            <span className="font-body text-base font-bold text-[#1A1412]">
+                              ₹{product.price.toLocaleString("en-IN")}
+                            </span>
+                            {product.compareAtPrice && product.compareAtPrice > product.price && (
+                              <span className="font-body text-xs text-[#665D59]/60 line-through ml-2">
+                                ₹{product.compareAtPrice.toLocaleString("en-IN")}
+                              </span>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleQuickAdd(e, product)}
+                            className={`px-3.5 py-2 rounded-lg font-body text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer ${
+                              isAdded
+                                ? "bg-emerald-700 text-white"
+                                : "bg-[#1A1412] hover:bg-[#D95D1E] text-white shadow-sm"
+                            }`}
+                          >
+                            {isAdded ? (
+                              <>
+                                <Check size={13} className="text-white" />
+                                <span>Added</span>
+                              </>
+                            ) : hasMultipleVariants ? (
+                              <>
+                                <ShoppingBag size={13} />
+                                <span>Options</span>
+                              </>
+                            ) : (
+                              <>
+                                <ShoppingBag size={13} />
+                                <span>Add</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="w-full py-12 text-center text-[#665D59]">
+                  <p className="font-body text-sm">Hampers are currently being curated by our artisan team.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
 
       </div>
+
+      {/* Variant Selector Drawer if multiple variants exist */}
+      {selectedProduct && (
+        <ProductDetailDrawer
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </section>
   );
 }

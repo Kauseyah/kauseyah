@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { COLLECTIONS } from "@/data";
 import CollectionDetailPageClient from "@/components/pages/CollectionDetailPageClient";
@@ -38,9 +38,22 @@ const PREDEFINED_COLLECTIONS: Record<
   },
 };
 
+
+const COLLECTION_ALIASES: Record<string, string> = {
+  "handlooms": "apparels",
+  "handloom": "apparels",
+  "textiles": "apparels",
+  "hamper": "gift-hampers",
+  "hampers": "gift-hampers",
+  "gifts": "gift-hampers",
+  "upcycled-waste": "textile-toys",
+  "toys": "textile-toys",
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug);
+  const rawClean = decodeURIComponent(rawSlug).trim();
+  const slug = COLLECTION_ALIASES[rawClean.toLowerCase()] || rawClean;
 
   // 1. Check predefined collections
   const predefined = PREDEFINED_COLLECTIONS[slug];
@@ -102,7 +115,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CollectionDetailPage({ params, searchParams }: Props) {
   const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug);
+  const rawClean = decodeURIComponent(rawSlug).trim();
+  const slug = COLLECTION_ALIASES[rawClean.toLowerCase()] || rawClean;
   const sp = await searchParams;
   const subcategoryQuery = typeof sp.subcategory === "string" ? sp.subcategory : undefined;
 

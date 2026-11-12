@@ -1,171 +1,239 @@
 "use client";
 
-import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, Quote, Heart } from "lucide-react";
 
-const TESTIMONIALS = [
+export interface Testimonial {
+  id?: string;
+  name: string;
+  location: string;
+  text: string;
+  productName?: string;
+}
+
+const DEFAULT_GENUINE_TESTIMONIALS: Testimonial[] = [
   {
     name: "Snigdha Goswami",
-    location: "Raipur",
+    location: "Raipur, Chhattisgarh",
     text: "You are doing great work Shweta.. our Chhattisgarh is still hidden from many people. I am very glad you are globalizing our local textile to international platform. Keep doing the good work. All the very best.",
   },
   {
     name: "Apeksha Sethi",
-    location: "London",
+    location: "London, UK",
     text: "Hey Shweta! Trust all is well! I want to confirm — I'll go with the kosa silk saree, orange Banarasi and the toys. Will select and update you shortly! Also, I'm totally okay with paying the courier charges. Let me know the total please? Address you already have — the London one.",
   },
   {
     name: "Ritika Reddy",
-    location: "Bangalore",
+    location: "Bangalore, Karnataka",
     text: "The drape, the feel, the comfort.. Have never experienced such with any other saree I've owned. You are creating absolute fabulous pieces and the art is simply outstanding. Received compliments for its uniqueness. Thank you very much for these masterpieces! Wishing your business expands across an even broader spectrum and reaches every woman who loves draping sarees.",
   },
   {
     name: "Rahul Shukla",
-    location: "Lucknow",
+    location: "Lucknow, Uttar Pradesh",
     text: "Received the package. As usual it was all perfectly made. Loved all of them. Thank you so much for the special note and the gift. Your items will never go out of trend.",
   },
   {
     name: "Priyanka Tadipatri",
-    location: "Bangalore",
+    location: "Bangalore, Karnataka",
     text: "Hi Shweta! Received the saree. It's lovely! Thanks so much for the great work :) Bought this one as a gift, I'm sure they'll love it too!",
   },
 ];
 
-type Testimonial = (typeof TESTIMONIALS)[number];
+interface TestimonialsProps {
+  testimonials?: Testimonial[];
+}
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials = DEFAULT_GENUINE_TESTIMONIALS }: TestimonialsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const count = testimonials.length;
 
   const next = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  }, []);
+    if (count <= 1) return;
+    setActiveIndex((prev) => (prev + 1) % count);
+  }, [count]);
 
   const prev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  }, []);
+    if (count <= 1) return;
+    setActiveIndex((prev) => (prev - 1 + count) % count);
+  }, [count]);
 
-  // Auto-play logic
+  // Auto-play with pause on hover
   useEffect(() => {
-    const timer = setInterval(() => {
+    if (isPaused || count <= 1) return;
+    timerRef.current = setInterval(() => {
       next();
-    }, 6000); // 6 seconds per story
-    return () => clearInterval(timer);
-  }, [next]);
+    }, 7000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [next, isPaused, count]);
 
   return (
-    // Switching back to the site's light sage theme, ensuring text is dark
-    <section className="relative w-full py-12 lg:py-16 bg-white overflow-hidden">
-      {/* Background Large Number */}
-      <div className="absolute top-20 right-10 lg:right-40 pointer-events-none select-none">
-        <span className="font-display text-[200px] lg:text-[400px] text-[#FF6B00]/5 leading-none">
-          0{activeIndex + 1}
-        </span>
-      </div>
+    <section
+      aria-label="Customer Testimonials and Stories"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      className="relative w-full py-16 sm:py-20 lg:py-24 bg-[#FFF9F4] border-t border-[#1A1412]/8 overflow-hidden"
+    >
+      {/* Background Watermark Index */}
+      {count > 0 && (
+        <div
+          aria-hidden="true"
+          className="absolute top-12 right-6 lg:right-32 pointer-events-none select-none"
+        >
+          <span className="font-display text-[160px] sm:text-[240px] lg:text-[340px] text-[#D95D1E]/5 leading-none font-bold">
+            0{activeIndex + 1}
+          </span>
+        </div>
+      )}
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-20 relative z-10">
-        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-32">
-          
-          {/* ── Standardized Header ── */}
-          <div className="flex flex-col pt-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
+        <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-10 lg:gap-24 items-center">
 
-            <motion.h2 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-10 leading-[0.85] text-[#111111]"
-            >
-              Loved by Our <span className="text-[#FF6B00] italic font-light drop-shadow-sm">Clients</span>
-            </motion.h2>
-            <p className="font-body text-base lg:text-xl text-[#111111]/70 leading-relaxed font-medium mb-12">
-               Hear from those who cherish the silent rhythmic clicking of our ancestral looms.
+          {/* ── Left Column: Section Editorial Title ── */}
+          <div className="flex flex-col">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#D95D1E]/20 text-[#D95D1E] w-fit mb-4 shadow-sm">
+              <Heart size={12} className="text-[#D95D1E] fill-[#D95D1E]/20" />
+              <span className="font-body text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase">
+                Customer Voices
+              </span>
+            </div>
+
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.1] tracking-tight">
+              Stories Woven <br />
+              <span className="text-[#851A36] italic font-light">with Love</span>
+            </h2>
+
+            <div className="w-12 h-[1.5px] bg-[#D95D1E] my-4" />
+
+            <p className="font-body text-sm sm:text-base text-[#665D59] font-light leading-relaxed max-w-md">
+              Every Kauseyah creation carries a story. Discover the experiences of customers who have welcomed handcrafted pieces into their lives.
             </p>
 
-            {/* Navigation Controls below header for layout balance */}
-            <div className="hidden lg:flex items-center gap-8 mt-6 md:mt-20">
-              <button 
-                onClick={prev}
-                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="transition-transform group-hover:-translate-x-1">
-                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                Prev
-              </button>
-              <div className="w-12 h-px bg-[#FF6B00]/20" />
-              <button 
-                onClick={next}
-                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
-              >
-                Next
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="rotate-180 transition-transform group-hover:translate-x-1">
-                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
+            {/* Desktop Navigation & Dots (only when multiple items exist) */}
+            {count > 1 && (
+              <div className="hidden lg:flex items-center gap-6 mt-10">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={prev}
+                    aria-label="Previous customer story"
+                    className="w-10 h-10 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={next}
+                    aria-label="Next customer story"
+                    className="w-10 h-10 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+
+                {/* Dots Indicator */}
+                <div className="flex items-center gap-2">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      aria-label={`Jump to testimonial ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                        activeIndex === i ? "w-6 bg-[#D95D1E]" : "w-1.5 bg-[#1A1412]/20 hover:bg-[#1A1412]/40"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Right Column: Testimonial Narrative ── */}
-          <div className="relative pt-10">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col"
-              >
-                {/* 5 Stars Accent */}
-                <div className="flex gap-1.5 text-[#FF6B00] mb-6">
-                  {[1,2,3,4,5].map(star => (
-                    <svg key={star} width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
+          <div className="relative bg-white/80 backdrop-blur-sm p-6 sm:p-10 lg:p-12 rounded-3xl border border-[#1A1412]/8 shadow-sm">
+            <Quote size={32} className="text-[#D95D1E]/40 mb-6" />
 
-                { }
-                <p className="font-display text-xl md:text-2xl lg:text-[28px] text-[#111111] leading-[1.7] mb-10 italic tracking-tight font-medium">
-                  &ldquo;{TESTIMONIALS[activeIndex].text}&rdquo;
+            {count === 0 ? (
+              /* Graceful Empty State: No manufactured reviews */
+              <div className="py-8 text-center sm:text-left">
+                <h3 className="font-display text-xl text-[#1A1412] font-semibold mb-2">
+                  We are gathering stories from our community.
+                </h3>
+                <p className="font-body text-sm text-[#665D59] font-light leading-relaxed">
+                  Have you recently received a Kauseyah handcrafted piece? We would love to hear how it feels in your home.
                 </p>
+              </div>
+            ) : (
+              <div className="min-h-[180px] sm:min-h-[160px] flex flex-col justify-between">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col"
+                  >
+                    <p className="font-display text-lg sm:text-xl lg:text-2xl text-[#1A1412] leading-[1.65] mb-8 italic font-normal">
+                      &ldquo;{testimonials[activeIndex].text}&rdquo;
+                    </p>
 
-                <div className="flex items-center gap-6">
-                  <div className="w-6 h-px bg-[#FF6B00]/30" />
-                  <div className="flex flex-col">
-                    <span className="font-display text-xl lg:text-2xl text-[#111111]">
-                      {TESTIMONIALS[activeIndex].name}
-                    </span>
-                    <span className="font-body text-[10px] uppercase font-bold tracking-[0.2em] text-[#FF6B00]/60 mt-1">
-                       {TESTIMONIALS[activeIndex].location}
-                    </span>
-                    { }
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                    <div className="flex items-center gap-4 pt-4 border-t border-[#1A1412]/8">
+                      <div className="w-9 h-9 rounded-full bg-[#D95D1E]/10 flex items-center justify-center text-[#D95D1E] font-display font-bold text-base">
+                        {testimonials[activeIndex].name.charAt(0)}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-display text-lg sm:text-xl text-[#1A1412] font-semibold">
+                          {testimonials[activeIndex].name}
+                        </span>
+                        <span className="font-body text-[11px] uppercase font-bold tracking-[0.16em] text-[#D95D1E]">
+                          {testimonials[activeIndex].location}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Mobile Navigation Controls */}
-            <div className="flex lg:hidden items-center gap-8 mt-12 pt-8 border-t border-[#FF6B00]/10">
-              <button 
-                onClick={prev}
-                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="transition-transform group-hover:-translate-x-1">
-                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                Prev
-              </button>
-              <div className="w-12 h-px bg-[#FF6B00]/20" />
-              <button 
-                onClick={next}
-                className="group flex items-center gap-3 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-[#111111]/40 hover:text-[#FF6B00] transition-colors"
-              >
-                Next
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="rotate-180 transition-transform group-hover:translate-x-1">
-                  <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
+            {count > 1 && (
+              <div className="flex lg:hidden items-center justify-between mt-8 pt-6 border-t border-[#1A1412]/8">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={prev}
+                    aria-label="Previous customer story"
+                    className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    onClick={next}
+                    aria-label="Next customer story"
+                    className="w-9 h-9 rounded-full border border-[#1A1412]/15 hover:border-[#D95D1E] hover:text-[#D95D1E] flex items-center justify-center transition-colors"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+
+                {/* Dots */}
+                <div className="flex items-center gap-1.5">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      aria-label={`Jump to testimonial ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        activeIndex === i ? "w-5 bg-[#D95D1E]" : "w-1.5 bg-[#1A1412]/20"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
           </div>
 
         </div>

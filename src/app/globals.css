@@ -6,27 +6,29 @@
 /* ─── CSS Custom Properties ──────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Brand palette — Orange · White · Black */
-    --color-ivory:    #FFF8F3;   /* warm cream base — feels orange, not cold white */
-    --color-sand:     #FFF2E6;   /* deeper warm cream for alternate sections */
-    --color-card:     #FFFFFF;   /* pure white cards for contrast */
-    --color-ink:      #0D0400;   /* warm near-black (orange undertone) */
-    --color-muted:    #6B4F3A;   /* warm muted brown */
-    --color-brand:    #FF6B00;   /* Heritage Orange */
-    --color-brand-deep:#1A0800;  /* Deep orange-black */
-    --color-brand-mid: #FF8C1A;  /* Saffron Orange */
-    --color-brand-lite: #FFD4A8; /* Soft amber tint */
-    --color-btn:      #111111;   /* primary button */
-    --color-btn-hover:#FF6B00;   /* button hover */
-    --color-border:   #FFD4A8;   /* warm amber borders */
-    --color-footer:   #1A0800;   /* Deep orange-black footer */
+    /* Approved Handcrafted Heritage Palette */
+    --color-ivory:        #FFF9F4;   /* Warm Ivory — primary organic base */
+    --color-sand:         #F7EFE8;   /* Sand — soft warm alternate section */
+    --color-card:         #FFFFFF;   /* Cotton White — crisp surface cards */
+    --color-ink:          #1A1412;   /* Charcoal Brown — deep luxury primary text */
+    --color-muted:        #665D59;   /* Muted Brown — earthy readable secondary text */
+    --color-brand:        #D95D1E;   /* Terracotta — vegetable-dyed primary accent */
+    --color-brand-hover:  #BF4E15;   /* Terracotta Hover */
+    --color-wine:         #851A36;   /* Deep Burgundy — royal heritage banner */
+    --color-wine-dark:    #6B1229;   /* Burgundy Dark hover */
+    --color-gold:         #D4A359;   /* Antique Gold — fine craft accent */
+    --color-border:       rgba(217, 93, 30, 0.20); /* Soft terracotta border */
+    --color-border-subtle:rgba(26, 20, 18, 0.08); /* Clean subtle divider */
+    --color-btn:          #1A1412;   /* Primary button charcoal */
+    --color-btn-hover:    #D95D1E;   /* Primary button hover terracotta */
+    --color-footer:       #1A1412;   /* Deep charcoal footer */
 
     /* Typography */
     --font-body:      var(--font-inter), system-ui, sans-serif;
     --font-display:   var(--font-cormorant), Georgia, serif;
 
     /* Spacing */
-    --max-w-site:     1280px;
+    --max-w-site:     1440px;
     --section-px:     clamp(1.25rem, 5vw, 5rem);
   }
 
@@ -68,11 +70,11 @@
   }
 
   ::selection {
-    background-color: #FF6B00 !important;
+    background-color: #D95D1E !important;
     color: #FFFFFF !important;
   }
   ::-moz-selection {
-    background-color: #FF6B00 !important;
+    background-color: #D95D1E !important;
     color: #FFFFFF !important;
   }
 
@@ -123,20 +125,38 @@
 }
 
 /* ─── Navbar Text Color Override ─────────────────────────────────────────── */
-/* Forces white text on navbar when React component requests light text        */
-header[data-light-text="true"] a,
-header[data-light-text="true"] button,
-header[data-light-text="true"] span,
-header[data-light-text="true"] svg {
+/* Scope overrides to nav element so AnnouncementBar stays untouched          */
+header[data-light-text="true"] nav a,
+header[data-light-text="true"] nav button,
+header[data-light-text="true"] nav span,
+header[data-light-text="true"] nav svg {
   color: #FFFFFF !important;
 }
 
-/* Force dark text on navbar when React component requests dark text         */
-header[data-light-text="false"] a,
-header[data-light-text="false"] button,
-header[data-light-text="false"] span,
-header[data-light-text="false"] svg {
+/* Force dark text on nav elements when light text is not requested           */
+header[data-light-text="false"] nav a,
+header[data-light-text="false"] nav button,
+header[data-light-text="false"] nav span,
+header[data-light-text="false"] nav svg {
   color: #111111 !important;
+}
+
+/* ─── Announcement Bar Text Isolation ─────────────────────────────────────── */
+/* Announcement bar must ALWAYS stay crisp white and never be overridden      */
+[data-announcement-bar],
+[data-announcement-bar] * {
+  color: #FFFFFF !important;
+}
+[data-announcement-bar] a {
+  color: #FFFFFF !important;
+  text-decoration-color: rgba(255, 255, 255, 0.85) !important;
+}
+[data-announcement-bar] a:hover {
+  color: #FEE685 !important;
+  text-decoration-color: #FEE685 !important;
+}
+[data-announcement-bar] svg circle {
+  stroke-opacity: 1;
 }
 
 /* ─── Utility Classes ────────────────────────────────────────────────────── */
