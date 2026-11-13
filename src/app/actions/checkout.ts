@@ -2,7 +2,7 @@
 
 import { createClient as createServerClient } from "@/utils/supabase/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendOrderReceipt } from "@/lib/email";
+import { sendOrderReceipt, sendAdminOrderNotification } from "@/lib/email";
 import { calculateSecureOrderTotals } from "@/utils/order-utils";
 
 export async function createOrder(orderData: any, cartItems: any[]) {
@@ -105,18 +105,22 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     }
   }
 
-  // 5. Send HTML Email Receipt
+  // 5. Send Customer Email Receipt
   // Fire and forget so it doesn't block the checkout response
+  const verifiedOrderData = {
+    ...orderData,
+    subtotal: calculatedSubtotal,
+    shipping_charge: calculatedShipping,
+    gift_charge: calculatedGiftCharge,
+    total_amount: calculatedTotal,
+  };
+
   if (orderData.email) {
-    const verifiedOrderData = {
-      ...orderData,
-      subtotal: calculatedSubtotal,
-      shipping_charge: calculatedShipping,
-      gift_charge: calculatedGiftCharge,
-      total_amount: calculatedTotal,
-    };
     sendOrderReceipt(orderData.email, order.id, verifiedOrderData, verifiedCartItems).catch(() => {});
   }
+
+  // 6. Send Automatic Admin Order Email Notification
+  sendAdminOrderNotification(order.id, verifiedOrderData, verifiedCartItems).catch(() => {});
 
   return { success: true, orderId: order.id };
 }
