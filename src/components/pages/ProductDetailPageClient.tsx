@@ -8,7 +8,7 @@ import { formatPrice } from "@/utils";
 import { useCart } from "@/store/CartContext";
 import { PRODUCTS } from "@/data";
 import { CONTACT_EMAIL, CONTACT_PHONE } from "@/constants";
-import { Star, ShoppingBag, Heart, ArrowRight, ShieldCheck, Truck, RotateCcw, ChevronRight } from "lucide-react";
+import { Star, ShoppingBag, Heart, ArrowRight, ShieldCheck, Truck, RotateCcw, ChevronRight, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Review {
@@ -32,6 +32,9 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
   const [activeTab, setActiveTab] = useState("description");
   const [wishlistAdded, setWishlistAdded] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [giftPackaging, setGiftPackaging] = useState(true);
+  const [giftMessage, setGiftMessage] = useState("");
 
   // Review states
   const [reviewsList, setReviewsList] = useState<Review[]>(product.reviews || []);
@@ -67,9 +70,17 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
   // Add to cart helper
   const handleAddToCart = () => {
     if (selectedVariant) {
-      // Loop to add multiple quantity
+      const giftDetails = isGift
+        ? {
+            isGift: true,
+            packaging: giftPackaging,
+            message: giftMessage.trim().substring(0, 250),
+            charge: giftPackaging ? 100 : 0,
+          }
+        : undefined;
+
       for (let i = 0; i < quantity; i++) {
-        addItem(product, selectedVariant);
+        addItem(product, selectedVariant, giftDetails);
       }
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
@@ -297,6 +308,63 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
                 </div>
               </div>
             )}
+
+            {/* 🎁 Gift Option Box */}
+            <div className="bg-[#FFF8F3] border border-[#FF6B00]/25 rounded-2xl p-4 sm:p-5 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isGift}
+                  onChange={(e) => setIsGift(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded text-[#FF6B00] accent-[#FF6B00] cursor-pointer"
+                />
+                <div>
+                  <span className="font-body text-sm font-bold text-[#111111] flex items-center gap-1.5">
+                    <Gift size={16} className="text-[#FF6B00]" />
+                    Is this a Gift?
+                    <span className="text-[#FF6B00] font-bold text-xs bg-[#FF6B00]/10 px-2 py-0.5 rounded-full ml-1">
+                      +₹100
+                    </span>
+                  </span>
+                  <p className="font-body text-xs text-stone-600 mt-0.5">
+                    Add handcrafted gift wrapping and a personalised message card.
+                  </p>
+                </div>
+              </label>
+
+              {isGift && (
+                <div className="pt-3 border-t border-[#FF6B00]/15 space-y-3">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-stone-700">
+                    <input
+                      type="checkbox"
+                      checked={giftPackaging}
+                      onChange={(e) => setGiftPackaging(e.target.checked)}
+                      className="w-3.5 h-3.5 rounded text-[#FF6B00] accent-[#FF6B00]"
+                    />
+                    <span>Include Handcrafted Gift Packaging (+₹100)</span>
+                  </label>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="block text-xs font-bold text-stone-700">
+                        Personalised Gift Message (Optional)
+                      </label>
+                      <span className="text-[11px] text-stone-400 font-medium">
+                        {giftMessage.length} / 250
+                      </span>
+                    </div>
+                    <textarea
+                      value={giftMessage}
+                      onChange={(e) => setGiftMessage(e.target.value.substring(0, 250))}
+                      placeholder="Write your heartfelt message here..."
+                      rows={2}
+                      maxLength={250}
+                      className="w-full text-xs font-body p-2.5 bg-white border border-stone-200 focus:border-[#FF6B00] rounded-xl outline-none resize-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Add to Cart Actions row */}
             <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-stone-100">

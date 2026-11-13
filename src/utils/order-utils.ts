@@ -1,5 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
-import { FREE_SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE, calculateShipping } from "@/constants";
+import {
+  FREE_SHIPPING_THRESHOLD,
+  STANDARD_SHIPPING_FEE,
+  calculateShipping,
+  calculateGiftCharge,
+  DEFAULT_GIFT_CHARGE
+} from "@/constants";
 
 export async function calculateSecureOrderTotals(cartItems: any[]) {
   const supabaseAdmin = createClient(
@@ -57,21 +63,40 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
     }
 
     calculatedSubtotal += itemPrice * item.quantity;
+
+    // Securely sanitize and verify gift details
+    const isGift = Boolean(item.giftDetails?.isGift);
+    const packaging = isGift ? Boolean(item.giftDetails?.packaging) : false;
+    const message = isGift && typeof item.giftDetails?.message === "string"
+      ? item.giftDetails.message.trim().substring(0, 250)
+      : undefined;
+
+    const verifiedGiftDetails = isGift
+      ? {
+          isGift: true,
+          packaging,
+          message,
+          charge: packaging ? DEFAULT_GIFT_CHARGE : 0,
+        }
+      : undefined;
     
-    // Completely overwrite the user's potentially untrusted variant object with our verified one
+    // Completely overwrite the user's potentially untrusted variant/gift objects with our verified ones
     verifiedCartItems.push({
       ...item,
       variant: verifiedVariant,
-      verifiedPrice: itemPrice
+      verifiedPrice: itemPrice,
+      giftDetails: verifiedGiftDetails,
     });
   }
 
   const calculatedShipping = calculateShipping(calculatedSubtotal, cartItems.length);
-  const calculatedTotal = calculatedSubtotal + calculatedShipping;
+  const calculatedGiftCharge = calculateGiftCharge(verifiedCartItems);
+  const calculatedTotal = calculatedSubtotal + calculatedShipping + calculatedGiftCharge;
 
   return {
     calculatedSubtotal,
     calculatedShipping,
+    calculatedGiftCharge,
     calculatedTotal,
     verifiedCartItems
   };

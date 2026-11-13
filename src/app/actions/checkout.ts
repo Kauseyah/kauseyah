@@ -13,18 +13,19 @@ export async function createOrder(orderData: any, cartItems: any[]) {
   );
 
   // 1. Calculate totals securely on the server
-  let calculatedSubtotal, calculatedShipping, calculatedTotal, verifiedCartItems;
+  let calculatedSubtotal, calculatedShipping, calculatedGiftCharge, calculatedTotal, verifiedCartItems;
   try {
     const totals = await calculateSecureOrderTotals(cartItems);
     calculatedSubtotal = totals.calculatedSubtotal;
     calculatedShipping = totals.calculatedShipping;
+    calculatedGiftCharge = totals.calculatedGiftCharge || 0;
     calculatedTotal = totals.calculatedTotal;
     verifiedCartItems = totals.verifiedCartItems;
   } catch (error: any) {
     return { error: error.message };
   }
 
-  // 2. Insert Order
+  // 2. Insert Order (relying strictly on existing database columns)
   const { data: order, error: orderError } = await supabaseAdmin
     .from("orders")
     .insert({
@@ -38,7 +39,7 @@ export async function createOrder(orderData: any, cartItems: any[]) {
         address: orderData.shipping_address,
         city: orderData.city,
         state: orderData.state || "Not Specified",
-        pincode: orderData.pincode
+        pincode: orderData.pincode,
       },
       payment_status: orderData.payment_status,
       total_amount: calculatedTotal,
@@ -48,32 +49,44 @@ export async function createOrder(orderData: any, cartItems: any[]) {
     .single();
 
   if (orderError) {
-    // // console.error("Failed to insert order:", orderError);
     return { error: `Failed to create order: ${orderError.message}` };
   }
 
-  // 3. Insert Order Items
-  const orderItemsData = verifiedCartItems.map((item) => ({
-    order_id: order.id,
-    product_id: item.product.id,
-    quantity: item.quantity,
-    price_at_time: item.verifiedPrice,
-    variant_details: { size: item.variant.size, color: item.variant.color, colorHex: item.variant.colorHex }
-  }));
+  // 3. Insert Order Items (persisting gift metadata safely inside variant_details JSONB)
+  const orderItemsData = verifiedCartItems.map((item) => {
+    const isGift = Boolean(item.giftDetails?.isGift);
+    const packaging = isGift ? Boolean(item.giftDetails?.packaging) : false;
+    const message = isGift ? (item.giftDetails?.message || "") : "";
+    const itemGiftCharge = packaging ? (100 * item.quantity) : 0;
+
+    return {
+      order_id: order.id,
+      product_id: item.product.id,
+      quantity: item.quantity,
+      price_at_time: item.verifiedPrice,
+      variant_details: {
+        size: item.variant?.size,
+        color: item.variant?.color,
+        colorHex: item.variant?.colorHex,
+        is_gift: isGift,
+        gift_packaging: packaging,
+        gift_message: message,
+        gift_charge: itemGiftCharge,
+      },
+    };
+  });
 
   const { error: itemsError } = await supabaseAdmin
     .from("order_items")
     .insert(orderItemsData);
 
   if (itemsError) {
-    // // console.error("Failed to insert order items:", itemsError);
     return { error: `Order created but failed to add items: ${itemsError.message}` };
   }
 
   // 4. Update Product Stock
   for (const item of verifiedCartItems) {
     try {
-      // Fetch current stock to avoid setting to negative if something goes wrong
       const { data: product } = await supabaseAdmin
         .from("products")
         .select("stock")
@@ -88,18 +101,18 @@ export async function createOrder(orderData: any, cartItems: any[]) {
           .eq("id", item.product.id);
       }
     } catch (err) {
-      // // console.error(`Failed to update stock for product ${item.product.id}:`, err);
+      // Stock update error caught without failing order
     }
   }
 
   // 5. Send HTML Email Receipt
   // Fire and forget so it doesn't block the checkout response
   if (orderData.email) {
-    // Override orderData with verified totals for the email receipt
     const verifiedOrderData = {
       ...orderData,
       subtotal: calculatedSubtotal,
       shipping_charge: calculatedShipping,
+      gift_charge: calculatedGiftCharge,
       total_amount: calculatedTotal,
     };
     sendOrderReceipt(orderData.email, order.id, verifiedOrderData, verifiedCartItems).catch(() => {});

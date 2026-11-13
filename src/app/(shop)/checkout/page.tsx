@@ -52,7 +52,8 @@ export default function CheckoutPage() {
           pincode,
           shipping_phone: phone,
           subtotal: cart.subtotal,
-          shipping_charge: cart.total - cart.subtotal,
+          shipping_charge: cart.shipping,
+          gift_charge: cart.giftCharge,
           payment_status: "pending",
           total_amount: cart.total,
         };
@@ -124,7 +125,8 @@ export default function CheckoutPage() {
                 pincode,
                 shipping_phone: phone,
                 subtotal: cart.subtotal,
-                shipping_charge: cart.total - cart.subtotal,
+                shipping_charge: cart.shipping,
+                gift_charge: cart.giftCharge,
                 payment_status: "paid",
                 total_amount: cart.total,
                 razorpay_order_id: response.razorpay_order_id,
@@ -415,16 +417,23 @@ export default function CheckoutPage() {
             {/* Cart list preview */}
             <div className="divide-y divide-stone-100 max-h-48 overflow-y-auto pr-2">
               {cart.items.map((item) => {
-                const imgUrl = item.product.images.find(img => img.isPrimary)?.url || item.product.images[0].url;
+                const imgUrl = item.product.images.find(img => img.isPrimary)?.url || item.product.images[0]?.url;
+                const lineKey = item.id || item.variant.id;
                 return (
-                  <div key={item.variant.id} className="py-3 flex gap-4 items-center">
+                  <div key={lineKey} className="py-3 flex gap-4 items-center">
                     <div className="relative w-12 h-16 bg-stone-50 rounded overflow-hidden shrink-0 border border-stone-100">
-                      <Image src={imgUrl} alt={item.product.name} fill className="object-cover" />
+                      {imgUrl && <Image src={imgUrl} alt={item.product.name} fill className="object-cover" />}
                     </div>
                     <div className="flex-1 font-sans text-base">
                       <h4 className="font-semibold text-stone-900 line-clamp-2">{item.product.name}</h4>
                       <p className="text-stone-600 text-sm mt-1">Qty: {item.quantity}</p>
                       {item.variant.color && <p className="text-stone-600 text-sm">Color: {item.variant.color}</p>}
+                      {item.giftDetails?.isGift && (
+                        <div className="mt-1 flex items-center gap-1.5 text-xs text-[#FF6B00] font-medium">
+                          <span>🎁 Gift Item</span>
+                          {item.giftDetails.packaging ? <span>(+₹100)</span> : <span className="text-stone-400 font-normal">(Card only)</span>}
+                        </div>
+                      )}
                     </div>
                     <span className="font-sans text-base font-bold text-stone-900">
                       {formatPrice(item.variant.price * item.quantity)}
@@ -443,9 +452,15 @@ export default function CheckoutPage() {
               <div className="flex justify-between">
                 <span className="text-stone-600 font-medium">Shipping</span>
                 <span className="font-semibold text-stone-900">
-                  {cart.total - cart.subtotal === 0 ? "Free" : formatPrice(cart.total - cart.subtotal)}
+                  {cart.shipping === 0 ? "Free" : formatPrice(cart.shipping)}
                 </span>
               </div>
+              {cart.giftCharge > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-stone-600 font-medium">Gift Packaging</span>
+                  <span className="font-semibold text-stone-900">{formatPrice(cart.giftCharge)}</span>
+                </div>
+              )}
               <div className="border-t border-stone-200 pt-4 flex justify-between font-sans text-lg font-bold text-[#FF6B00]">
                 <span>Total Amount</span>
                 <span>{formatPrice(cart.total)}</span>

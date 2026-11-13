@@ -7,6 +7,7 @@ import { useCart } from "@/store/CartContext";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 export default function CartPage() {
   const { cart, itemCount, removeItem, updateQty } = useCart();
   const router = useRouter();
@@ -80,9 +81,10 @@ export default function CartPage() {
               {/* Left Side: Items */}
               <div className="space-y-5">
                 {cart.items.map((item) => {
+                  const lineKey = item.id || item.variant.id;
                   const primaryImg = item.product.images.find(img => img.isPrimary)?.url || item.product.images[0]?.url;
                   return (
-                  <div key={item.variant.id} className="flex gap-5 sm:gap-6 p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-300">
+                  <div key={lineKey} className="flex gap-5 sm:gap-6 p-5 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-300">
                     <div className="w-24 h-32 sm:w-28 sm:h-36 bg-[#f5efe6] overflow-hidden flex-shrink-0 relative rounded-xl">
                       {primaryImg && (
                         <Image src={primaryImg} alt={item.product.name} fill className="object-cover hover:scale-105 transition-transform duration-700" />
@@ -102,16 +104,34 @@ export default function CartPage() {
                             {[item.variant.size, item.variant.color].filter(Boolean).join(" / ")}
                           </p>
                         )}
+
+                        {item.giftDetails?.isGift && (
+                          <div className="mt-2.5 p-2.5 bg-[#FFF8F3] rounded-lg border border-[#FF6B00]/20 text-xs">
+                            <div className="flex items-center gap-1.5 font-medium text-[#FF6B00]">
+                              <span>🎁 Gift Item</span>
+                              {item.giftDetails.packaging ? (
+                                <span className="text-[11px] text-[#6E6E6E]">(Handcrafted Packaging Included · ₹100)</span>
+                              ) : (
+                                <span className="text-[11px] text-[#6E6E6E]">(Card Message Only · Free)</span>
+                              )}
+                            </div>
+                            {item.giftDetails.message && (
+                              <p className="text-gray-600 mt-1 italic text-[11px] line-clamp-2">
+                                &ldquo;{item.giftDetails.message}&rdquo;
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex justify-between items-end mt-4">
                         <div className="flex items-center gap-3 sm:gap-4 border border-gray-200 rounded-lg px-2 sm:px-3 py-1 bg-gray-50/50">
-                          <button onClick={() => updateQty(item.variant.id, Math.max(1, item.quantity - 1))} className="text-gray-500 hover:text-[#FF6B00] w-6 h-6 flex items-center justify-center text-lg transition-colors">-</button>
+                          <button onClick={() => updateQty(lineKey, Math.max(1, item.quantity - 1))} className="text-gray-500 hover:text-[#FF6B00] w-6 h-6 flex items-center justify-center text-lg transition-colors">-</button>
                           <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                          <button onClick={() => updateQty(item.variant.id, item.quantity + 1)} className="text-gray-500 hover:text-[#FF6B00] w-6 h-6 flex items-center justify-center text-lg transition-colors">+</button>
+                          <button onClick={() => updateQty(lineKey, item.quantity + 1)} className="text-gray-500 hover:text-[#FF6B00] w-6 h-6 flex items-center justify-center text-lg transition-colors">+</button>
                         </div>
                         
-                        <button onClick={() => removeItem(item.variant.id)} className="text-sm text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 group pb-1">
+                        <button onClick={() => removeItem(lineKey)} className="text-sm text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 group pb-1">
                           <span className="underline decoration-red-200 underline-offset-4 group-hover:decoration-red-600 transition-colors">Remove</span>
                         </button>
                       </div>
@@ -132,10 +152,16 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between text-[#6E6E6E]">
                       <span>Shipping</span>
-                      <span className={cart.total === cart.subtotal ? "font-medium text-emerald-600" : "font-medium text-[#111111]"}>
-                        {cart.total === cart.subtotal ? "Complimentary" : `₹${(cart.total - cart.subtotal).toLocaleString("en-IN")}`}
+                      <span className={cart.shipping === 0 ? "font-medium text-emerald-600" : "font-medium text-[#111111]"}>
+                        {cart.shipping === 0 ? "Complimentary" : `₹${cart.shipping.toLocaleString("en-IN")}`}
                       </span>
                     </div>
+                    {cart.giftCharge > 0 && (
+                      <div className="flex justify-between text-[#6E6E6E]">
+                        <span>Gift Packaging</span>
+                        <span className="font-medium text-[#111111]">₹{cart.giftCharge.toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex justify-between items-center mb-8">
@@ -165,6 +191,3 @@ export default function CartPage() {
     </main>
   );
 }
-
-
-
