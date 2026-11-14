@@ -59,12 +59,12 @@ export default function CuratedGiftHampersClient({ hampers }: { hampers: any[] }
             </div>
 
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.05] tracking-tight">
-              Gifts with a <span className="text-[#D95D1E] italic font-light font-display">Story to Tell</span>
+              Thoughtful Keepsakes &amp; <span className="text-[#D95D1E] italic font-light font-display">Hampers</span>
             </h2>
             <div className="w-12 h-[1.5px] bg-[#D95D1E] mt-3 mb-3" />
 
             <p className="font-body text-sm sm:text-base text-[#665D59] font-light leading-relaxed">
-              Thoughtfully curated keepsakes packaged in handcrafted keepsake boxes with organic botanical details. Each gift honors traditional craft wisdom and sustains rural artisan livelihoods.
+              Putting together these lovely hampers, wrapped in fabric and filled with little pieces of craft, culture and stories. A thoughtful way to gift something that feels personal, beautiful and rooted in India.
             </p>
           </div>
 
@@ -106,32 +106,35 @@ export default function CuratedGiftHampersClient({ hampers }: { hampers: any[] }
           <div className="lg:col-span-4 rounded-2xl overflow-hidden relative bg-[#F7EFE8] border border-[#1A1412]/8 flex flex-col justify-between p-6 sm:p-8 min-h-[380px] lg:min-h-full">
             <div className="absolute inset-0 z-0">
               <Image
-                src="/images/seasonal_edit.png"
-                alt="Conscious Gifting Hampers with handcrafted stationery and botanicals"
+                src="/images/pooja.png"
+                alt="Beautifully packed pooja hamper with handwritten note on Sal leaf"
                 fill
                 sizes="(max-width: 1024px) 100vw, 33vw"
                 className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412]/92 via-[#1A1412]/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1412]/95 via-[#1A1412]/60 to-transparent" />
             </div>
 
             {/* Top Badge */}
             <div className="relative z-10 self-start">
               <span className="inline-block px-3 py-1 rounded-sm bg-white/20 backdrop-blur-md border border-white/25 text-white font-body text-[9.5px] uppercase tracking-[0.2em] font-bold">
-                Mindful Unboxing
+                Client Celebration Story
               </span>
             </div>
 
             {/* Bottom Content */}
             <div className="relative z-10 text-white mt-auto pt-16">
               <p className="font-body text-[11px] uppercase tracking-[0.2em] text-[#D4A359] font-semibold mb-2">
-                Personalized Packaging
+                Conscious Celebration
               </p>
               <h3 className="font-display text-2xl sm:text-3xl text-white leading-tight mb-2">
-                Curated Keepsakes with Purpose
+                Handcrafted Pooja Hamper
               </h3>
-              <p className="font-body text-xs sm:text-sm text-white/80 font-light leading-relaxed mb-5">
-                Every hamper is presented in a reusable keepsake box made from reclaimed materials, complete with an optional handwritten artisan card.
+              <p className="font-body text-xs sm:text-[13px] text-white/95 font-light leading-relaxed mb-3">
+                A beautifully packed pooja hamper, with a sweet handwritten note on our Sal leaf, requested by the client 🪷
+              </p>
+              <p className="font-body text-[11px] sm:text-xs text-white/80 font-light leading-relaxed mb-4">
+                So happy to see these beautiful hampers packed and ready to leave for their new homes. Thank you to everyone who chose Kauseyah and trusted us to be a small part of your celebrations. 🪷
               </p>
 
               <div className="inline-flex items-center gap-2 bg-[#851A36] text-white px-3.5 py-1.5 rounded-sm font-body text-[10px] uppercase tracking-wider font-semibold shadow-md">

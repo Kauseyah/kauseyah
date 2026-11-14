@@ -3,12 +3,12 @@ import LifestyleGalleryClient, { LifestyleCardItem } from "./LifestyleGalleryCli
 const DEFAULT_LIFESTYLE_CARDS: LifestyleCardItem[] = [
   {
     id: "handloom-sarees",
-    tag: "Kosa Silk & Handlooms",
-    title: "The Festive Handloom Edit",
+    tag: "Bespoke Bridal · Shadi Edit",
+    title: "Explore Shadi Collection",
     description:
-      "Authentic wild Kosa silks and traditional drapes woven by master artisans on traditional pit-looms.",
+      "Handloom Mashru Banarasi silks, heirloom bridal drapes, and bespoke trousseau weaves lovingly created for life's most cherished celebrations.",
     image: "/images/shadi_collection.png",
-    href: "/collections/sarees",
+    href: "/collections/bespoke-bridal-collection",
     gridSpan: "lg:col-span-7 h-[420px] sm:h-[480px] lg:h-[500px]",
     imagePosition: "center 20%",
   },
@@ -17,8 +17,8 @@ const DEFAULT_LIFESTYLE_CARDS: LifestyleCardItem[] = [
     tag: "Conscious Gifting",
     title: "Thoughtful Keepsakes & Hampers",
     description:
-      "Curated gift boxes, hand-bound journals, and botanical accents celebrating ethical craftsmanship.",
-    image: "/images/seasonal_edit.png",
+      "Putting together these lovely hampers, wrapped in fabric and filled with little pieces of craft, culture and stories. A thoughtful way to gift something that feels personal, beautiful and rooted in India.",
+    image: "/images/pooja.png",
     href: "/collections/gift-hampers",
     gridSpan: "lg:col-span-5 h-[420px] sm:h-[480px] lg:h-[500px]",
     imagePosition: "center 25%",

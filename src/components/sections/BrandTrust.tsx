@@ -1,6 +1,7 @@
 "use client";
 
-import { Sparkles, Feather, Gift, Recycle } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, Feather, Gift, Recycle, ArrowRight } from "lucide-react";
 
 export interface TrustPillar {
   icon: typeof Sparkles;
@@ -43,24 +44,45 @@ interface BrandTrustProps {
 export default function BrandTrust({ pillars = DEFAULT_PILLARS }: BrandTrustProps) {
   return (
     <section
-      aria-label="Kauseyah Core Craft Values"
-      className="w-full py-14 sm:py-16 lg:py-20 bg-[#F7EFE8] border-b border-[#1A1412]/8"
+      aria-label="Kauseyah Bespoke Gifting & Living Values"
+      className="w-full py-16 sm:py-20 lg:py-24 bg-[#F7EFE8] border-b border-[#1A1412]/8"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-16">
 
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-block px-3.5 py-1 rounded-full bg-white border border-[#D95D1E]/20 text-[#D95D1E] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase shadow-sm mb-3">
-            Our Living Promise
+        {/* ── Primary Hero Message: Bespoke Gifting ── */}
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#D95D1E]/25 text-[#D95D1E] text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase shadow-sm mb-4">
+            <Gift size={13} className="text-[#D95D1E]" />
+            <span>Bespoke &amp; Celebratory Gifting</span>
           </div>
-          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl text-[#1A1412] tracking-tight">
-            Rooted in <span className="text-[#851A36] italic font-light">Integrity & Tradition</span>
+
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.08] tracking-tight mb-4">
+            Discover Kauseyah <span className="text-[#851A36] italic font-light font-display">Bespoke Gifts</span>
           </h2>
-          <div className="w-12 h-0.5 bg-[#D95D1E] mx-auto mt-3" />
+          <div className="w-14 h-[1.5px] bg-[#D95D1E] mx-auto mb-5" />
+
+          <p className="font-body text-sm sm:text-base lg:text-lg text-[#665D59] font-light leading-relaxed max-w-2xl mx-auto mb-8">
+            Thoughtfully curated gifts, personalized details and handcrafted keepsakes, created to make every celebration meaningful.
+          </p>
+
+          {/* Primary CTA */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#851A36] text-white hover:bg-[#6e132b] transition-all duration-200 font-body text-xs sm:text-sm font-bold uppercase tracking-[0.18em] shadow-md hover:shadow-lg group"
+            >
+              <span>Contact Us</span>
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+
+            <span className="font-body text-xs text-[#8C827A] font-light tracking-wide">
+              Weddings · Corporate Curations · Personal Celebrations
+            </span>
+          </div>
         </div>
 
-        {/* 4 Pillars Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        {/* ── Supporting Craft Values ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pt-6 border-t border-[#1A1412]/10">
           {pillars.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (
