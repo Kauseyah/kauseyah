@@ -16,7 +16,7 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
   const productIds = cartItems.map((item: any) => item.product.id);
   const { data: dbProducts, error: dbProductsError } = await supabaseAdmin
     .from("products")
-    .select("id, name, price, variants")
+    .select("id, name, price, stock, variants")
     .in("id", productIds);
 
   if (dbProductsError || !dbProducts) {
@@ -34,6 +34,7 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
 
     let itemPrice = dbProduct.price;
     let verifiedVariant: any = {}; // We will only populate this with SAFE, database-verified data
+    let availableStock = dbProduct.stock ?? 0;
 
     // Check if the specific variant exists in the database
     if (dbProduct.variants && Array.isArray(dbProduct.variants) && dbProduct.variants.length > 0) {
@@ -46,6 +47,9 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
       if (dbVariant) {
         if (dbVariant.price !== undefined) {
           itemPrice = dbVariant.price;
+        }
+        if (typeof dbVariant.stock === "number") {
+          availableStock = dbVariant.stock;
         }
         // ONLY copy fields that actually exist on the database variant
         verifiedVariant = {
@@ -60,6 +64,14 @@ export async function calculateSecureOrderTotals(cartItems: any[]) {
     } else if (item.variant?.color || item.variant?.size) {
        // The product has no variants in the DB, but the user tried to send fake ones
        throw new Error(`Variants are not available for product ${dbProduct.name}.`);
+    }
+
+    // Validate that requested quantity does not exceed available stock
+    if (typeof availableStock === "number" && availableStock < item.quantity) {
+      const variantDesc = [item.variant?.size, item.variant?.color].filter(Boolean).join(" / ");
+      throw new Error(
+        `Insufficient stock for "${dbProduct.name}${variantDesc ? ` (${variantDesc})` : ''}". Available: ${availableStock}, Requested: ${item.quantity}.`
+      );
     }
 
     calculatedSubtotal += itemPrice * item.quantity;

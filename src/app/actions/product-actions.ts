@@ -67,16 +67,46 @@ export async function createProduct(formData: FormData) {
 
     // Parse variants if provided
     const rawVariants = formData.get("variants") as string;
-    let variants = null;
+    let variants: any[] | null = null;
     if (rawVariants) {
       try {
-        variants = JSON.parse(rawVariants);
+        const parsed = JSON.parse(rawVariants);
+        if (Array.isArray(parsed)) {
+          variants = parsed.map((v: any) => ({
+            ...v,
+            stock: Math.max(0, parseInt(v.stock, 10) || 0),
+            price: typeof v.price === "number" && v.price > 0 ? v.price : undefined,
+          }));
+        }
       } catch (e) {}
     }
 
-    // Handle Multiple Image Upload
+    // If variants with individual stock exist, synchronize parent stock
+    if (variants && variants.length > 0 && variants.some((v: any) => typeof v.stock === "number")) {
+      const sumVariantStock = variants.reduce(
+        (sum: number, v: any) => sum + (typeof v.stock === "number" ? v.stock : 0),
+        0
+      );
+      validatedData.stock = Math.max(0, sumVariantStock);
+    }
+
+    // Handle Image Upload (support existing_images from duplication + new uploads)
+    const rawExisting = formData.getAll("existing_images") as string[];
+    const existingImages: string[] = [];
+    for (const item of rawExisting) {
+      if (typeof item === "string" && item.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(item);
+          if (Array.isArray(parsed)) existingImages.push(...parsed);
+        } catch (_) {
+          existingImages.push(item);
+        }
+      } else if (item) {
+        existingImages.push(item);
+      }
+    }
     const imageFiles = formData.getAll("images") as File[];
-    const imageUrls: string[] = [];
+    const imageUrls: string[] = [...existingImages.filter(Boolean)];
 
     for (const imageFile of imageFiles) {
       if (imageFile && imageFile.size > 0) {
@@ -169,11 +199,27 @@ export async function updateProduct(id: string, formData: FormData) {
 
     // Parse variants if provided
     const rawVariants = formData.get("variants") as string;
-    let variants = null;
+    let variants: any[] | null = null;
     if (rawVariants) {
       try {
-        variants = JSON.parse(rawVariants);
+        const parsed = JSON.parse(rawVariants);
+        if (Array.isArray(parsed)) {
+          variants = parsed.map((v: any) => ({
+            ...v,
+            stock: Math.max(0, parseInt(v.stock, 10) || 0),
+            price: typeof v.price === "number" && v.price > 0 ? v.price : undefined,
+          }));
+        }
       } catch (e) {}
+    }
+
+    // If variants with individual stock exist, synchronize parent stock
+    if (variants && variants.length > 0 && variants.some((v: any) => typeof v.stock === "number")) {
+      const sumVariantStock = variants.reduce(
+        (sum: number, v: any) => sum + (typeof v.stock === "number" ? v.stock : 0),
+        0
+      );
+      validatedData.stock = Math.max(0, sumVariantStock);
     }
 
     // Handle Image Upload (new images + existing)

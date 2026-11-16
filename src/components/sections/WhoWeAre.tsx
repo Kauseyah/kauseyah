@@ -66,11 +66,11 @@ const DEFAULT_BRAND_STORY: BrandStoryProps = {
     },
   ],
   primaryImage: {
-    src: "/images/artesian/image12.jpg",
+    src: "/images/artesian/image (1).png",
     alt: "Women artisans in authentic handloom workshop in Chhattisgarh",
   },
   secondaryImage: {
-    src: "/images/artesian/image2.jpg",
+    src: "/images/artesian/image.png",
     alt: "Artisan hand weaving vivid red ikat cloth on traditional loom",
   },
   originBadge: {

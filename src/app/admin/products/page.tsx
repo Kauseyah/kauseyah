@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Copy } from "lucide-react";
 import Link from "next/link";
 import { deleteProduct } from "@/app/actions/products";
 import DeleteProductButton from "./DeleteProductButton";
@@ -138,6 +138,14 @@ export default async function AdminProducts() {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex justify-end gap-2 transition-opacity">
+                      <Link
+                        href={`/admin/products/new?duplicate_from=${product.id}`}
+                        className="text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors p-2 rounded-lg"
+                        title="Duplicate Product"
+                        aria-label={`Duplicate ${product.name}`}
+                      >
+                        <Copy size={16} />
+                      </Link>
                       <Link href={`/admin/products/${product.id}`} className="text-slate-400 hover:text-orange-400 hover:bg-orange-500/10 transition-colors p-2 rounded-lg" title="Edit">
                         <Edit size={16} />
                       </Link>

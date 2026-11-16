@@ -32,29 +32,29 @@ export default function HomePage() {
       {/* 3. Bestselling & Featured Products */}
       <FeaturedProducts />
 
-      {/* 4. Brand Story / Who We Are */}
+      {/* 4. Client Testimonials & Social Proof (elevated for early trust) */}
+      <Testimonials />
+
+      {/* 5. Brand Story / Who We Are */}
       <WhoWeAre />
 
-      {/* 5. Lifestyle & Craft Edit */}
+      {/* 6. Lifestyle & Craft Edit */}
       <LifestyleGallery />
 
-      {/* 6. Conscious Gifting & Hampers */}
+      {/* 7. Conscious Gifting & Hampers */}
       <CuratedGiftHampers />
 
-      {/* 7. Handcrafted Zero-Waste Toys */}
+      {/* 8. Handcrafted Zero-Waste Toys */}
       <HandEmbroideredToys />
 
-      {/* 8. Behind the Loom / Artisan Stories */}
+      {/* 9. Behind the Loom / Artisan Stories */}
       <BehindTheLoom />
 
-      {/* 9. Brand Trust & Living Values */}
+      {/* 10. Bespoke Gifting & Living Values */}
       <BrandTrust />
 
-      {/* 10. National Recognition, Press Coverage & Brand Features */}
+      {/* 11. National Recognition, Press Coverage & Brand Features */}
       <FeaturedIn />
-
-      {/* 11. Client Testimonials */}
-      <Testimonials />
     </main>
   );
 }

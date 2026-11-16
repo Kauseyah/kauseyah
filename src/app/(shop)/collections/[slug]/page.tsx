@@ -48,6 +48,13 @@ const COLLECTION_ALIASES: Record<string, string> = {
   "gifts": "gift-hampers",
   "upcycled-waste": "textile-toys",
   "toys": "textile-toys",
+  "kurtis": "easy-cotton-kurtis",
+  "textile-earrings": "handcrafted-earrings",
+  "earrings": "handcrafted-earrings",
+  "shadi-collection": "bespoke-bridal-collection",
+  "bridal": "bespoke-bridal-collection",
+  "bridal-collection": "bespoke-bridal-collection",
+  "shadi": "bespoke-bridal-collection",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

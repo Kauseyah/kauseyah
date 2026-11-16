@@ -12,32 +12,53 @@ interface Props {
 const KNOWN_SLUG_ALIASES: Record<string, string> = {
   // Men's Kosa Silk Jacket (Verified DB slug: "premium-handloom-kosa-silk-jacket-men")
   "men-kosa-jacket": "premium-handloom-kosa-silk-jacket-men",
+  "men kosa jacket": "premium-handloom-kosa-silk-jacket-men",
   "men-kosa-silk-jacket": "premium-handloom-kosa-silk-jacket-men",
+  "men kosa silk jacket": "premium-handloom-kosa-silk-jacket-men",
   "kosa-silk-jacket": "premium-handloom-kosa-silk-jacket-men",
+  "kosa silk jacket": "premium-handloom-kosa-silk-jacket-men",
   "kosa-jacket": "premium-handloom-kosa-silk-jacket-men",
+  "kosa jacket": "premium-handloom-kosa-silk-jacket-men",
   "handloom-kosa-silk-jacket": "premium-handloom-kosa-silk-jacket-men",
+  "handloom kosa silk jacket": "premium-handloom-kosa-silk-jacket-men",
 
   // The Cuddle Hamper Box (Verified DB slug: "hamper")
   "cuddle-hamper": "hamper",
+  "cuddle hamper": "hamper",
   "gift-hamper": "hamper",
+  "gift hamper": "hamper",
   "the-cuddle-hamper-box": "hamper",
+  "the cuddle hamper box": "hamper",
 
   // The Bhai Keepsake Hamper (Verified DB slug: "ham")
   "bhai-keepsake-hamper": "ham",
+  "bhai keepsake hamper": "ham",
   "the-bhai-keepsake-hamper": "ham",
+  "the bhai keepsake hamper": "ham",
 
   // Corporate Gifts / Hampers (Verified DB slug: "corporate hampers")
   "corporate-gifts": "corporate hampers",
+  "corporate gifts": "corporate hampers",
   "corporate-hampers": "corporate hampers",
+  "corporate hampers": "corporate hampers",
 
   // Handcrafted Diwali Shagun Thali (Verified DB slug: "diwali")
   "diwali-shagun-thali": "diwali",
+  "diwali shagun thali": "diwali",
   "handcrafted-diwali-shagun-thali": "diwali",
+  "handcrafted diwali shagun thali": "diwali",
 
   // Verified records with specific whitespace in database slug
   "fabric-elephant": "Fabric elephant ",
+  "fabric elephant": "Fabric elephant ",
+  "our-favourite-ellie": "Fabric elephant ",
+  "our favourite ellie": "Fabric elephant ",
   "hand-embroidery": "hand embroidery ",
+  "hand embroidery": "hand embroidery ",
   "saree-organisers": "Saree organisers ",
+  "saree organisers": "Saree organisers ",
+  "saree-organiser": "Saree organisers ",
+  "saree organiser": "Saree organisers ",
 };
 
 async function fetchProductBySlug(supabase: any, rawSlug: string) {
@@ -45,9 +66,15 @@ async function fetchProductBySlug(supabase: any, rawSlug: string) {
   if (!cleanSlug) return null;
 
   const lowerSlug = cleanSlug.toLowerCase();
+  const hyphenSlug = lowerSlug.replace(/\s+/g, "-");
+  const spaceSlug = lowerSlug.replace(/-/g, " ");
 
-  // 1. Check verified alias map
-  const targetSlug = KNOWN_SLUG_ALIASES[lowerSlug] || cleanSlug;
+  // 1. Check verified alias map (supports hyphenated or spaced queries)
+  const targetSlug =
+    KNOWN_SLUG_ALIASES[lowerSlug] ||
+    KNOWN_SLUG_ALIASES[hyphenSlug] ||
+    KNOWN_SLUG_ALIASES[spaceSlug] ||
+    cleanSlug;
 
   // 2. Exact match on targetSlug
   const { data: exact } = await supabase
@@ -65,24 +92,41 @@ async function fetchProductBySlug(supabase: any, rawSlug: string) {
     .maybeSingle();
   if (ilikeMatch) return ilikeMatch;
 
-  // 4. Try hyphens replaced with spaces (e.g. URL '/products/rakhi-gift' -> DB 'rakhi gift')
+  // 4. Try matching with trailing space (for verified database records with trailing whitespace, e.g. 'Fabric elephant ')
+  if (!targetSlug.endsWith(" ")) {
+    const { data: trailingSpaceMatch } = await supabase
+      .from("products")
+      .select("*, category:categories(name)")
+      .ilike("slug", `${targetSlug} `)
+      .maybeSingle();
+    if (trailingSpaceMatch) return trailingSpaceMatch;
+  }
+
+  // 5. Try hyphens replaced with spaces (e.g. URL '/products/rakhi-gift' -> DB 'rakhi gift' or 'rakhi gift ')
   if (targetSlug.includes("-")) {
-    const spaceSlug = targetSlug.replace(/-/g, " ");
+    const spaceVariant = targetSlug.replace(/-/g, " ");
     const { data: spaceMatch } = await supabase
       .from("products")
       .select("*, category:categories(name)")
-      .ilike("slug", spaceSlug)
+      .ilike("slug", spaceVariant)
       .maybeSingle();
     if (spaceMatch) return spaceMatch;
+
+    const { data: spaceTrailingMatch } = await supabase
+      .from("products")
+      .select("*, category:categories(name)")
+      .ilike("slug", `${spaceVariant} `)
+      .maybeSingle();
+    if (spaceTrailingMatch) return spaceTrailingMatch;
   }
 
-  // 5. Try spaces replaced with hyphens (e.g. 'rakhi gift' -> 'rakhi-gift')
+  // 6. Try spaces replaced with hyphens (e.g. 'Fabric elephant' -> 'Fabric-elephant')
   if (targetSlug.includes(" ")) {
-    const hyphenSlug = targetSlug.replace(/\s+/g, "-");
+    const hyphenVariant = targetSlug.replace(/\s+/g, "-");
     const { data: hyphenMatch } = await supabase
       .from("products")
       .select("*, category:categories(name)")
-      .ilike("slug", hyphenSlug)
+      .ilike("slug", hyphenVariant)
       .maybeSingle();
     if (hyphenMatch) return hyphenMatch;
   }

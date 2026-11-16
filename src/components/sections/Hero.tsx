@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
+import { ArrowRight, Award, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 
 export interface HeroSlide {
   id: string;
@@ -257,7 +257,7 @@ export default function Hero({ slides = DEFAULT_SLIDES }: HeroProps) {
         <div className="grid lg:grid-cols-12 gap-8 items-end">
 
           {/* Left Column: Authentic Brand Messaging & Editorial Typography */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-7">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSlide.id}
@@ -308,69 +308,122 @@ export default function Hero({ slides = DEFAULT_SLIDES }: HeroProps) {
                     <span>{activeSlide.secondaryCtaText}</span>
                   </Link>
                 </div>
+
+                {/* Mobile National Recognition trust card */}
+                <div className="flex sm:hidden items-center gap-3 p-3 rounded-lg bg-[#1A1412]/85 backdrop-blur-md border border-[#D4A359]/35 mt-6 shadow-md max-w-sm">
+                  <div className="relative w-12 h-14 shrink-0 rounded overflow-hidden border border-[#D4A359]/40">
+                    <Image
+                      src="/images/winner.jpeg"
+                      alt="National Recognition - Smt. Smriti Zubin Irani presenting Certificate of Excellence to Kauseyah Founder Shweta Rao"
+                      fill
+                      sizes="48px"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-flex items-center gap-1 text-[#D4A359] text-[9.5px] font-semibold tracking-wider uppercase mb-0.5">
+                      <Award size={10} className="shrink-0" />
+                      <span>National Recognition</span>
+                    </div>
+                    <h3 className="font-display text-xs font-semibold text-[#FFF9F4] leading-tight">
+                      Certificate of Excellence
+                    </h3>
+                    <p className="font-body text-[10.5px] text-[#FFF9F4]/80 font-light leading-snug line-clamp-2">
+                      Presented by Smt. Smriti Zubin Irani at Bharat Mandapam, New Delhi
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Right Column: Accessible Slide Switcher Controls */}
-          <div className="lg:col-span-4 flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-end gap-3 sm:gap-4 pt-4 lg:pt-0">
+          {/* Right Column: National Recognition Feature Card + Accessible Slide Controls */}
+          <div className="lg:col-span-5 flex flex-col items-start lg:items-end justify-between lg:justify-end gap-5 pt-4 lg:pt-0">
 
-            {/* Slide Pill Switcher */}
-            <div
-              role="tablist"
-              aria-label="Carousel slide selectors"
-              className="flex items-center gap-1.5 sm:gap-2 bg-[#1A1412]/85 backdrop-blur-md p-1.5 rounded-full border border-white/15 shadow-lg"
-            >
-              {slides.map((slide, idx) => {
-                const isActive = idx === currentIdx;
-                return (
-                  <button
-                    key={slide.id}
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-label={`Switch to slide ${idx + 1}: ${slide.badge}`}
-                    onClick={() => setCurrentIdx(idx)}
-                    className={`px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-body transition-all duration-300 cursor-pointer ${
-                      isActive
-                        ? "bg-[#D95D1E] text-[#FFF9F4] font-semibold shadow-md"
-                        : "text-[#FFF9F4]/70 hover:text-[#FFF9F4] hover:bg-white/10"
-                    }`}
-                  >
-                    {slide.type === "video" ? "01 Film" : `0${idx + 1} Edit`}
-                  </button>
-                );
-              })}
-
-              {/* Pause/Play accessible toggle */}
-              <button
-                type="button"
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-[#FFF9F4]/75 hover:text-[#FFF9F4] hover:bg-white/10 transition-colors ml-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/50"
-                aria-label={isPlaying ? "Pause auto-rotation" : "Resume auto-rotation"}
-                title={isPlaying ? "Pause auto-rotation" : "Resume auto-rotation"}
-              >
-                {isPlaying ? <Pause size={12} /> : <Play size={12} className="translate-x-[1px]" />}
-              </button>
+            {/* Desktop & Tablet National Recognition Feature Card */}
+            <div className="hidden sm:flex items-center gap-4 p-4 rounded-xl bg-[#1A1412]/85 backdrop-blur-md border border-[#D4A359]/35 shadow-xl max-w-md w-full">
+              <div className="relative w-20 h-24 shrink-0 rounded-lg overflow-hidden border border-[#D4A359]/40 shadow-inner">
+                <Image
+                  src="/images/winner.jpeg"
+                  alt="National Recognition - Smt. Smriti Zubin Irani presenting Certificate of Excellence to Kauseyah Founder Shweta Rao"
+                  fill
+                  sizes="80px"
+                  className="object-cover object-top"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#D4A359]/15 border border-[#D4A359]/30 text-[#D4A359] text-[10px] font-semibold tracking-wider uppercase mb-1">
+                  <Award size={11} className="shrink-0" />
+                  <span>National Recognition</span>
+                </div>
+                <h3 className="font-display text-base font-semibold text-[#FFF9F4] leading-tight">
+                  Certificate of Excellence
+                </h3>
+                <p className="font-body text-xs text-[#FFF9F4]/80 font-light leading-snug mt-1">
+                  Presented by Smt. Smriti Zubin Irani at Bharat Mandapam, New Delhi
+                </p>
+              </div>
             </div>
 
-            {/* Prev / Next Chevron Controls */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handlePrev}
-                aria-label="Previous slide"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/20 text-[#FFF9F4] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-white/50"
+            {/* Controls Bar: Slide Pill Switcher & Arrows */}
+            <div className="flex flex-row items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full">
+              {/* Slide Pill Switcher */}
+              <div
+                role="tablist"
+                aria-label="Carousel slide selectors"
+                className="flex items-center gap-1.5 sm:gap-2 bg-[#1A1412]/85 backdrop-blur-md p-1.5 rounded-full border border-white/15 shadow-lg"
               >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next slide"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/20 text-[#FFF9F4] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-white/50"
-              >
-                <ChevronRight size={16} />
-              </button>
+                {slides.map((slide, idx) => {
+                  const isActive = idx === currentIdx;
+                  return (
+                    <button
+                      key={slide.id}
+                      role="tab"
+                      aria-selected={isActive}
+                      aria-label={`Switch to slide ${idx + 1}: ${slide.badge}`}
+                      onClick={() => setCurrentIdx(idx)}
+                      className={`px-3 sm:px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-body transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? "bg-[#D95D1E] text-[#FFF9F4] font-semibold shadow-md"
+                          : "text-[#FFF9F4]/70 hover:text-[#FFF9F4] hover:bg-white/10"
+                      }`}
+                    >
+                      {slide.type === "video" ? "01 Film" : `0${idx + 1} Edit`}
+                    </button>
+                  );
+                })}
+
+                {/* Pause/Play accessible toggle */}
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[#FFF9F4]/75 hover:text-[#FFF9F4] hover:bg-white/10 transition-colors ml-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/50"
+                  aria-label={isPlaying ? "Pause auto-rotation" : "Resume auto-rotation"}
+                  title={isPlaying ? "Pause auto-rotation" : "Resume auto-rotation"}
+                >
+                  {isPlaying ? <Pause size={12} /> : <Play size={12} className="translate-x-[1px]" />}
+                </button>
+              </div>
+
+              {/* Prev / Next Chevron Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  aria-label="Previous slide"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/20 text-[#FFF9F4] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-white/50"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  aria-label="Next slide"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 hover:bg-white/20 text-[#FFF9F4] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-white/50"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
 
           </div>
