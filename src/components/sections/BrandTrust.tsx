@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Sparkles, Feather, Gift, Recycle, ArrowRight } from "lucide-react";
+import BespokeGiftsCatalogue from "./BespokeGiftsCatalogue";
 
 export interface TrustPillar {
   icon: typeof Sparkles;
@@ -81,8 +82,11 @@ export default function BrandTrust({ pillars = DEFAULT_PILLARS }: BrandTrustProp
           </div>
         </div>
 
+        {/* ── 9 Handcrafted Bespoke Products Catalogue ── */}
+        <BespokeGiftsCatalogue />
+
         {/* ── Supporting Craft Values ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pt-6 border-t border-[#1A1412]/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pt-16 mt-16 sm:mt-20 border-t border-[#1A1412]/10">
           {pillars.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (

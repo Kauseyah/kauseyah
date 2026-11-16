@@ -232,7 +232,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
             {/* Price Detail */}
             <div className="flex items-baseline gap-4 pt-2">
               <span className="font-body text-3xl font-extrabold text-[#111111]">
-                {formatPrice(product.price)}
+                {formatPrice(selectedVariant?.price || product.price)}
               </span>
               {product.compareAtPrice && (
                 <>
@@ -240,16 +240,27 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
                     {formatPrice(product.compareAtPrice)}
                   </span>
                   <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
-                    Save {Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
+                    Save {Math.round(((product.compareAtPrice - (selectedVariant?.price || product.price)) / product.compareAtPrice) * 100)}%
                   </span>
                 </>
               )}
             </div>
 
-            {/* Short Description */}
-            <p className="font-body text-sm md:text-base text-stone-600 leading-relaxed">
-              {product.shortDescription}
-            </p>
+            {/* Short Description & Stock Status */}
+            <div>
+              <p className="font-body text-sm md:text-base text-stone-600 leading-relaxed">
+                {product.shortDescription}
+              </p>
+              {((typeof selectedVariant?.stock === "number" && selectedVariant.stock <= 0) || !product.isAvailable) ? (
+                <span className="inline-block mt-2 px-2.5 py-1 rounded-md text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                  Currently Out of Stock
+                </span>
+              ) : (typeof selectedVariant?.stock === "number" && selectedVariant.stock <= 5) ? (
+                <span className="inline-block mt-2 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                  Only {selectedVariant.stock} units remaining in craft batch
+                </span>
+              ) : null}
+            </div>
 
             {/* Color variants selector */}
             {uniqueColors.length > 0 && (
@@ -372,32 +383,47 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               {/* Qty count selector */}
               <div className="flex items-center border border-stone-200 rounded-xl bg-white p-1">
                 <button
+                  type="button"
                   onClick={() => handleQtyChange(-1)}
-                  className="w-8 h-8 font-body font-bold flex items-center justify-center hover:bg-stone-50 rounded-lg cursor-pointer"
+                  disabled={(typeof selectedVariant?.stock === "number" && selectedVariant.stock <= 0) || !product.isAvailable}
+                  className="w-8 h-8 font-body font-bold flex items-center justify-center hover:bg-stone-50 rounded-lg cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   -
                 </button>
                 <span className="w-10 text-center font-body text-sm font-semibold">{quantity}</span>
                 <button
+                  type="button"
                   onClick={() => handleQtyChange(1)}
-                  className="w-8 h-8 font-body font-bold flex items-center justify-center hover:bg-stone-50 rounded-lg cursor-pointer"
+                  disabled={(typeof selectedVariant?.stock === "number" && selectedVariant.stock <= 0) || !product.isAvailable}
+                  className="w-8 h-8 font-body font-bold flex items-center justify-center hover:bg-stone-50 rounded-lg cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
               </div>
 
               {/* Add to Cart Button */}
-              <button
-                onClick={handleAddToCart}
-                className={`flex-1 min-w-[180px] py-3.5 rounded-xl font-body text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-md transition-all cursor-pointer ${
-                  addedToCart
-                    ? "bg-emerald-600 text-white shadow-emerald-600/10 scale-[1.02]"
-                    : "bg-[#111111] text-white hover:bg-[#FF6B00] shadow-black/10 hover:shadow-[#FF6B00]/10"
-                }`}
-              >
-                <ShoppingBag size={14} />
-                {addedToCart ? "Added To Cart!" : "Add to Cart"}
-              </button>
+              {(() => {
+                const isOutOfStock =
+                  (typeof selectedVariant?.stock === "number" && selectedVariant.stock <= 0) ||
+                  !product.isAvailable;
+                return (
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    disabled={isOutOfStock}
+                    className={`flex-1 min-w-[180px] py-3.5 rounded-xl font-body text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2.5 shadow-md transition-all ${
+                      isOutOfStock
+                        ? "bg-stone-200 text-stone-500 cursor-not-allowed shadow-none"
+                        : addedToCart
+                        ? "bg-emerald-600 text-white shadow-emerald-600/10 scale-[1.02] cursor-pointer"
+                        : "bg-[#111111] text-white hover:bg-[#FF6B00] shadow-black/10 hover:shadow-[#FF6B00]/10 cursor-pointer"
+                    }`}
+                  >
+                    <ShoppingBag size={14} />
+                    {isOutOfStock ? "Out of Stock" : addedToCart ? "Added To Cart!" : "Add to Cart"}
+                  </button>
+                );
+              })()}
 
               {/* Wishlist Button */}
               <button

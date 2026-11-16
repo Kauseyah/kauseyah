@@ -35,6 +35,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isProcessing) return;
     if (!name || !email || !phone || !address || !city || !pincode) return;
 
     setIsProcessing(true);
