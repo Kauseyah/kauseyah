@@ -22,11 +22,17 @@ export interface ProductImage {
   isPrimary?: boolean;
 }
 
+export interface ProductSpecification {
+  key: string;
+  value: string;
+}
+
 export interface ProductVariant {
   id: string;
   size?: string;
   color?: string;
   colorHex?: string;
+  imageUrl?: string;
   stock: number;
   price: number;
 }
@@ -43,12 +49,22 @@ export interface Product {
   id: string;
   slug: string;
   name: string;
+  subtitle?: string;
   description: string;
   shortDescription: string;
   category: ProductCategory;
   subcategory?: string;
   price: number;
   compareAtPrice?: number;
+  discountPrice?: number;
+  dimensions?: string;
+  specifications?: ProductSpecification[];
+  videoUrl?: string;
+  videoPosterUrl?: string;
+  publicNotes?: string;
+  internalNotes?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   images: ProductImage[];
   variants: ProductVariant[];
   tags: ProductTag[];
@@ -56,6 +72,7 @@ export interface Product {
   region?: string;
   material?: string;
   careInstructions?: string;
+  sku?: string;
   isAvailable: boolean;
   isFeatured: boolean;
   createdAt: string;

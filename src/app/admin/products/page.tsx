@@ -109,16 +109,32 @@ export default async function AdminProducts() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        {product.discount_price ? (
-                          <>
-                            <span className="font-bold text-white">₹{product.discount_price}</span>
-                            <span className="text-xs text-slate-500 line-through mt-0.5">₹{product.price}</span>
-                          </>
-                        ) : (
-                          <span className="font-bold text-white">₹{product.price}</span>
-                        )}
-                      </div>
+                      {(() => {
+                        const originalPrice =
+                          typeof product.compare_at_price === "number" && product.compare_at_price > product.price
+                            ? product.compare_at_price
+                            : typeof product.discount_price === "number" && product.discount_price > product.price
+                            ? product.discount_price
+                            : null;
+                        const hasDiscount = originalPrice !== null;
+                        const discountPct = hasDiscount
+                          ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
+                          : 0;
+
+                        return (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-bold text-white">₹{product.price}</span>
+                            {hasDiscount && (
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs text-slate-500 line-through">₹{originalPrice}</span>
+                                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1 rounded">
+                                  Save {discountPct}%
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">

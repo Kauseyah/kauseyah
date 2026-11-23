@@ -144,8 +144,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return {};
 
   return {
-    title: `${product.name} - Authentic Handlooms`,
-    description: `Buy ${product.name} online. ${product.description?.substring(0, 120)}... Delivering across India including Delhi, Mumbai, Bangalore, Pune, and Hyderabad.`,
+    title: product.seo_title || `${product.name} - Authentic Handlooms`,
+    description:
+      product.seo_description ||
+      `Buy ${product.name} online. ${product.description?.substring(0, 120)}... Delivering across India including Delhi, Mumbai, Bangalore, Pune, and Hyderabad.`,
     keywords: [
       product.name,
       product.category?.name || product.category || "",

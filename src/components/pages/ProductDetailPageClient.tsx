@@ -8,7 +8,7 @@ import { formatPrice } from "@/utils";
 import { useCart } from "@/store/CartContext";
 import { PRODUCTS } from "@/data";
 import { CONTACT_EMAIL, CONTACT_PHONE } from "@/constants";
-import { Star, ShoppingBag, Heart, ArrowRight, ShieldCheck, Truck, RotateCcw, ChevronRight, Gift } from "lucide-react";
+import { Star, ShoppingBag, Heart, ArrowRight, ShieldCheck, Truck, RotateCcw, ChevronRight, Gift, Video, Play, Sparkles, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface Review {
@@ -26,6 +26,7 @@ interface ProductDetailPageClientProps {
 export default function ProductDetailPageClient({ product }: ProductDetailPageClientProps) {
   const { addItem } = useCart();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isVideoActive, setIsVideoActive] = useState(false);
   const [selectedSize, setSelectedSize] = useState(product.variants[0]?.size || "");
   const [selectedColor, setSelectedColor] = useState(product.variants[0]?.color || "");
   const [quantity, setQuantity] = useState(1);
@@ -58,6 +59,28 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
       return matchSize && matchColor;
     }) || product.variants[0];
   }, [selectedSize, selectedColor, product]);
+
+  // Handle color selection with photo binding
+  const handleColorSelect = (colorName: string) => {
+    setSelectedColor(colorName);
+    setIsVideoActive(false);
+
+    // If a variant with this color has an assigned photo, switch to it!
+    const matchingVariant = product.variants.find((v: any) => v.color === colorName && v.imageUrl);
+    if (matchingVariant?.imageUrl) {
+      const imgIdx = product.images.findIndex((img: any) => img.url === matchingVariant.imageUrl);
+      if (imgIdx !== -1) {
+        setActiveImageIdx(imgIdx);
+      }
+    }
+  };
+
+  // Pricing calculations
+  const currentPrice = selectedVariant?.price || product.price;
+  const originalPrice = product.compareAtPrice && product.compareAtPrice > currentPrice ? product.compareAtPrice : null;
+  const discountPercentage = originalPrice
+    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+    : 0;
 
   // Handle quantity modification
   const handleQtyChange = (val: number) => {
@@ -146,28 +169,45 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
         {/* 2. Complete Service / Product Detail Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start bg-white border border-[#FF6B00]/10 p-6 md:p-8 lg:p-12 rounded-3xl shadow-[0_12px_45px_rgba(181,84,26,0.03)] mb-16">
           
-          {/* Left Column: Interactive Image Gallery */}
+          {/* Left Column: Interactive Image & Video Gallery */}
           <div className="space-y-4">
             <div className="relative aspect-[4/5] bg-stone-50 overflow-hidden rounded-2xl border border-[#FF6B00]/10 shadow-[0_8px_30px_rgba(181,84,26,0.03)]">
-              <Image
-                src={product.images[activeImageIdx]?.url || product.images[0].url}
-                alt={product.images[activeImageIdx]?.alt || product.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 600px"
-                priority
-              />
+              {isVideoActive && product.videoUrl ? (
+                <div className="relative w-full h-full bg-black flex items-center justify-center">
+                  <video
+                    src={product.videoUrl}
+                    poster={product.videoPosterUrl || undefined}
+                    controls
+                    playsInline
+                    muted
+                    autoPlay
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              ) : (
+                <Image
+                  src={product.images[activeImageIdx]?.url || product.images[0].url}
+                  alt={product.images[activeImageIdx]?.alt || product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 600px"
+                  priority
+                />
+              )}
             </div>
 
-            {/* Thumbnail Carousel selection */}
-            {product.images.length > 1 && (
+            {/* Thumbnail Carousel selection with Video Button */}
+            {(product.images.length > 1 || product.videoUrl) && (
               <div className="flex items-center gap-3 overflow-x-auto py-2">
                 {product.images.map((img: any, idx: number) => (
                   <button
                     key={idx}
-                    onClick={() => setActiveImageIdx(idx)}
+                    onClick={() => {
+                      setIsVideoActive(false);
+                      setActiveImageIdx(idx);
+                    }}
                     className={`relative w-20 aspect-[4/5] rounded-lg overflow-hidden border bg-stone-50 shrink-0 cursor-pointer transition-all ${
-                      activeImageIdx === idx 
+                      !isVideoActive && activeImageIdx === idx
                         ? "border-[#FF6B00] shadow-[0_0_0_2px_rgba(255,107,0,0.15)] scale-[1.03]" 
                         : "border-stone-200 opacity-70 hover:opacity-100"
                     }`}
@@ -181,6 +221,36 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
                     />
                   </button>
                 ))}
+
+                {/* Video Thumbnail Button */}
+                {product.videoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setIsVideoActive(true)}
+                    className={`relative w-20 aspect-[4/5] rounded-lg overflow-hidden border bg-slate-900 shrink-0 cursor-pointer transition-all flex flex-col items-center justify-center text-white ${
+                      isVideoActive
+                        ? "border-[#FF6B00] shadow-[0_0_0_2px_rgba(255,107,0,0.25)] scale-[1.03]"
+                        : "border-stone-700 opacity-80 hover:opacity-100"
+                    }`}
+                    title="Watch Product Video"
+                  >
+                    {product.videoPosterUrl ? (
+                      <Image
+                        src={product.videoPosterUrl}
+                        alt="Video Thumbnail"
+                        fill
+                        className="object-cover opacity-60"
+                        sizes="80px"
+                      />
+                    ) : null}
+                    <div className="relative z-10 w-8 h-8 rounded-full bg-[#FF6B00] flex items-center justify-center shadow-md">
+                      <Play size={14} fill="currentColor" className="translate-x-[1px]" />
+                    </div>
+                    <span className="relative z-10 text-[9px] font-bold uppercase tracking-wider mt-1.5 drop-shadow-md">
+                      Video
+                    </span>
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -202,10 +272,17 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               )}
             </div>
 
-            {/* Product Title */}
-            <h1 className="font-display text-4xl md:text-5xl text-[#111111] leading-tight">
-              {product.name}
-            </h1>
+            {/* Product Title & Subtitle */}
+            <div>
+              <h1 className="font-display text-4xl md:text-5xl text-[#111111] leading-tight">
+                {product.name}
+              </h1>
+              {product.subtitle && (
+                <p className="font-display text-lg text-[#D95D1E] italic mt-1 font-light">
+                  {product.subtitle}
+                </p>
+              )}
+            </div>
 
             {/* Review Stars Summary */}
             {averageRating > 0 && (
@@ -229,18 +306,18 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               </div>
             )}
 
-            {/* Price Detail */}
+            {/* Authoritative Price & Strikethrough Discount Detail */}
             <div className="flex items-baseline gap-4 pt-2">
               <span className="font-body text-3xl font-extrabold text-[#111111]">
-                {formatPrice(selectedVariant?.price || product.price)}
+                {formatPrice(currentPrice)}
               </span>
-              {product.compareAtPrice && (
+              {originalPrice && (
                 <>
                   <span className="font-body text-lg text-stone-400 line-through">
-                    {formatPrice(product.compareAtPrice)}
+                    {formatPrice(originalPrice)}
                   </span>
                   <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md">
-                    Save {Math.round(((product.compareAtPrice - (selectedVariant?.price || product.price)) / product.compareAtPrice) * 100)}%
+                    Save {discountPercentage}%
                   </span>
                 </>
               )}
@@ -262,7 +339,22 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               ) : null}
             </div>
 
-            {/* Color variants selector */}
+            {/* Public Special Notes (Storefront Customer Notice) */}
+            {product.publicNotes && (
+              <div className="p-4 bg-[#FFF8F3] border border-[#D95D1E]/20 rounded-2xl flex items-start gap-3">
+                <Sparkles size={18} className="text-[#D95D1E] shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-xs uppercase tracking-wider text-[#D95D1E] block mb-0.5">
+                    Artisan Note &amp; Delivery Information
+                  </span>
+                  <p className="font-body text-xs text-stone-600 leading-relaxed">
+                    {product.publicNotes}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Color variants selector (triggers image binding) */}
             {uniqueColors.length > 0 && (
               <div className="space-y-2">
                 <span className="block font-body text-xs font-bold text-stone-700 uppercase tracking-wider">
@@ -274,7 +366,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
                     return (
                       <button
                         key={color.name}
-                        onClick={() => setSelectedColor(color.name)}
+                        onClick={() => handleColorSelect(color.name)}
                         style={{ backgroundColor: color.hex || "#FFF" }}
                         className={`w-8 h-8 rounded-full border cursor-pointer relative flex items-center justify-center transition-all ${
                           isSelected 
@@ -462,7 +554,7 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
         {/* ── Tabs Content View ── */}
         <div className="bg-white border border-[#FF6B00]/10 rounded-3xl p-6 md:p-8 lg:p-12 shadow-[0_12px_45px_rgba(181,84,26,0.03)] mb-16">
           <div className="flex border-b border-stone-100 gap-6 font-body text-xs font-bold uppercase tracking-widest mb-8 overflow-x-auto pb-1">
-            {["description", "materials", "artisan"].map((tab) => (
+            {["description", "specifications", "materials", "artisan"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -485,8 +577,14 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
                 <div className="pt-2 grid md:grid-cols-2 gap-4 text-sm border-t border-stone-50 mt-6">
                   {product.material && (
                     <div className="flex items-center gap-2">
-                      <strong className="text-[#111111] uppercase tracking-wider text-[11px]">Material:</strong> 
+                      <strong className="text-[#111111] uppercase tracking-wider text-[11px]">Material:</strong>
                       <span>{product.material}</span>
+                    </div>
+                  )}
+                  {product.dimensions && (
+                    <div className="flex items-center gap-2">
+                      <strong className="text-[#111111] uppercase tracking-wider text-[11px]">Dimensions:</strong>
+                      <span>{product.dimensions}</span>
                     </div>
                   )}
                   {product.region && (
@@ -499,9 +597,47 @@ export default function ProductDetailPageClient({ product }: ProductDetailPageCl
               </div>
             )}
 
+            {activeTab === "specifications" && (
+              <div className="space-y-4">
+                <h4 className="font-display text-xl text-[#111111] font-semibold mb-3">Craft Specifications</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm border-collapse">
+                    <tbody>
+                      {product.dimensions && (
+                        <tr className="border-b border-stone-100">
+                          <td className="py-2.5 pr-4 font-bold text-[#111111] w-1/3">Measurements / Size</td>
+                          <td className="py-2.5 text-stone-600">{product.dimensions}</td>
+                        </tr>
+                      )}
+                      {product.material && (
+                        <tr className="border-b border-stone-100">
+                          <td className="py-2.5 pr-4 font-bold text-[#111111] w-1/3">Craft Material</td>
+                          <td className="py-2.5 text-stone-600">{product.material}</td>
+                        </tr>
+                      )}
+                      {product.careInstructions && (
+                        <tr className="border-b border-stone-100">
+                          <td className="py-2.5 pr-4 font-bold text-[#111111] w-1/3">Care Instructions</td>
+                          <td className="py-2.5 text-stone-600">{product.careInstructions}</td>
+                        </tr>
+                      )}
+                      {product.specifications && product.specifications.length > 0 && (
+                        product.specifications.map((spec: any, idx: number) => (
+                          <tr key={idx} className="border-b border-stone-100">
+                            <td className="py-2.5 pr-4 font-bold text-[#111111] w-1/3">{spec.key}</td>
+                            <td className="py-2.5 text-stone-600">{spec.value}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {activeTab === "materials" && (
               <div className="space-y-4">
-                <h4 className="font-display text-lg text-[#111111]">Care & Fabric Instructions</h4>
+                <h4 className="font-display text-lg text-[#111111]">Care &amp; Fabric Instructions</h4>
                 <p><strong>Composition:</strong> {product.material || "Traditional hand-spun organic threads."}</p>
                 <p><strong>Care:</strong> {product.careInstructions || "Dry clean or handwash inside-out with cold water."}</p>
               </div>
