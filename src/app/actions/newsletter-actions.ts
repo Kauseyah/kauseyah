@@ -8,7 +8,9 @@ import {
 } from "@/lib/newsletter-email";
 import {
   escapeForCsvExport,
+  hashClientIp,
   parseCsvRfc4180,
+  parseRateLimitRpcResponse,
   validateNewsletterSubscriptionInput,
 } from "@/lib/newsletter-utils";
 import crypto from "crypto";
@@ -21,22 +23,25 @@ import { revalidatePath } from "next/cache";
 
 /**
  * Resolves an anonymized, salted SHA-256 IP hash for serverless rate-limiting and audit trails.
+ * Inspects trusted platform proxy headers (x-real-ip -> x-vercel-forwarded-for -> cf-connecting-ip -> x-forwarded-for first IP).
  * Never stores or exposes raw IP addresses to protect user privacy.
+ * Returns empty string if IP cannot be verified (handled as fail-closed downstream).
  */
 async function resolveClientIpHash(): Promise<string> {
   try {
     const headerList = await headers();
-    const forwarded = headerList.get("x-forwarded-for");
     const realIp = headerList.get("x-real-ip");
-    const rawIp = forwarded ? forwarded.split(",")[0].trim() : realIp || "unknown";
-    if (rawIp === "unknown") return "unknown";
-    return crypto
-      .createHash("sha256")
-      .update(rawIp + (process.env.SUPABASE_SERVICE_ROLE_KEY || "kauseyah_rate_salt"))
-      .digest("hex")
-      .slice(0, 32);
+    const vercelIp = headerList.get("x-vercel-forwarded-for");
+    const cfIp = headerList.get("cf-connecting-ip");
+    const forwarded = headerList.get("x-forwarded-for");
+    const rawIp =
+      realIp ||
+      vercelIp ||
+      cfIp ||
+      (forwarded ? forwarded.split(",")[0].trim() : "");
+    return hashClientIp(rawIp, process.env.SUPABASE_SERVICE_ROLE_KEY);
   } catch (_) {
-    return "unknown";
+    return "";
   }
 }
 
@@ -50,8 +55,13 @@ interface MemoryRateLimit {
 const inMemoryRateLimits = new Map<string, MemoryRateLimit>();
 
 function checkMemoryBurstLimit(ipHash: string, limit = 5, windowMs = 15 * 60 * 1000): boolean {
-  if (ipHash === "unknown") return true;
+  if (!ipHash || ipHash === "unknown") return false;
   const now = Date.now();
+  if (inMemoryRateLimits.size > 10000) {
+    for (const [key, val] of inMemoryRateLimits.entries()) {
+      if (now > val.resetAt) inMemoryRateLimits.delete(key);
+    }
+  }
   const entry = inMemoryRateLimits.get(ipHash);
   if (!entry || now > entry.resetAt) {
     inMemoryRateLimits.set(ipHash, { attempts: 1, resetAt: now + windowMs });
@@ -64,12 +74,10 @@ function checkMemoryBurstLimit(ipHash: string, limit = 5, windowMs = 15 * 60 * 1
   return true;
 }
 
-
-
 /**
  * Checks persistent rate limits in Supabase PostgreSQL across all serverless lambdas.
- * Invokes atomic check_and_record_newsletter_rate_limit RPC to eliminate read-modify-write race conditions.
- * Falls back safely without failing open.
+ * Invokes atomic check_and_record_newsletter_rate_limit RPC as the authoritative gate.
+ * Eliminates all unsafe fallbacks and fails closed on errors or missing client identity.
  */
 async function checkServerlessRateLimit(
   adminClient: any,
@@ -77,7 +85,13 @@ async function checkServerlessRateLimit(
   maxAttempts = 5,
   windowMinutes = 15
 ): Promise<{ allowed: boolean; error?: string }> {
-  if (ipHash === "unknown") return { allowed: true };
+  // Missing or unverifiable IP: Fail closed without storing or bypassing
+  if (!ipHash || ipHash === "unknown") {
+    return {
+      allowed: false,
+      error: "Unable to verify network security. Please refresh the page and try again.",
+    };
+  }
 
   // First check in-memory burst shield
   if (!checkMemoryBurstLimit(ipHash, maxAttempts, windowMinutes * 60 * 1000)) {
@@ -97,90 +111,16 @@ async function checkServerlessRateLimit(
 
     if (error) {
       console.warn("[Newsletter] Persistent rate limit RPC warning:", error.message);
-    } else if (Array.isArray(data) && data.length > 0) {
-      const record = data[0];
-      if (!record.allowed) {
-        return {
-          allowed: false,
-          error: "Too many subscription attempts from your network. Please wait a few minutes before trying again.",
-        };
-      }
-      return { allowed: true };
     }
+
+    return parseRateLimitRpcResponse(data, error);
   } catch (err: any) {
     console.warn("[Newsletter] Rate limit RPC execution exception:", err?.message || err);
+    return {
+      allowed: false,
+      error: "Subscription service is temporarily unavailable. Please try again in a few moments.",
+    };
   }
-
-  const now = new Date();
-  const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000).toISOString();
-
-  // Fail-safe persistent table check
-  try {
-    const { data: limitRow, error: fetchErr } = await adminClient
-      .from("newsletter_rate_limits")
-      .select("attempts, last_attempt_at, blocked_until")
-      .eq("ip_hash", ipHash)
-      .maybeSingle();
-
-    if (!fetchErr && limitRow) {
-      if (limitRow.blocked_until && new Date(limitRow.blocked_until) > now) {
-        return {
-          allowed: false,
-          error: "Too many subscription attempts from your network. Please wait a few minutes before trying again.",
-        };
-      }
-
-      if (new Date(limitRow.last_attempt_at) > new Date(windowStart)) {
-        if (limitRow.attempts >= maxAttempts) {
-          const blockedUntil = new Date(now.getTime() + windowMinutes * 60 * 1000).toISOString();
-          await adminClient
-            .from("newsletter_rate_limits")
-            .update({ attempts: limitRow.attempts + 1, blocked_until: blockedUntil, last_attempt_at: now.toISOString() })
-            .eq("ip_hash", ipHash);
-          return {
-            allowed: false,
-            error: "Too many subscription attempts from your network. Please wait a few minutes before trying again.",
-          };
-        }
-        await adminClient
-          .from("newsletter_rate_limits")
-          .update({ attempts: limitRow.attempts + 1, last_attempt_at: now.toISOString() })
-          .eq("ip_hash", ipHash);
-      } else {
-        await adminClient
-          .from("newsletter_rate_limits")
-          .update({ attempts: 1, last_attempt_at: now.toISOString(), blocked_until: null })
-          .eq("ip_hash", ipHash);
-      }
-      return { allowed: true };
-    } else if (!fetchErr && !limitRow) {
-      await adminClient.from("newsletter_rate_limits").insert({
-        ip_hash: ipHash,
-        attempts: 1,
-        first_attempt_at: now.toISOString(),
-        last_attempt_at: now.toISOString(),
-      });
-      return { allowed: true };
-    }
-  } catch (_) {}
-
-  // Fallback: Query marketing_consent_records with ip_hash (fail closed on >= maxAttempts)
-  try {
-    const { count: recentAttempts } = await adminClient
-      .from("marketing_consent_records")
-      .select("id", { count: "exact", head: true })
-      .eq("ip_hash", ipHash)
-      .gte("timestamp", windowStart);
-
-    if (typeof recentAttempts === "number" && recentAttempts >= maxAttempts) {
-      return {
-        allowed: false,
-        error: "Too many subscription attempts from your network. Please wait a few minutes before trying again.",
-      };
-    }
-  } catch (_) {}
-
-  return { allowed: true };
 }
 
 
@@ -225,7 +165,7 @@ export async function subscribeToNewsletter(payload: {
   try {
     const { data: existing, error: fetchError } = await adminClient
       .from("newsletter_subscribers")
-      .select("id, status, unsubscribe_token")
+      .select("id, status, unsubscribe_token, consent_given, first_name, unsubscribed_at")
       .eq("email", normalizedEmail)
       .maybeSingle();
 
@@ -273,7 +213,7 @@ export async function subscribeToNewsletter(payload: {
             email: normalizedEmail,
             consent_type: "craft_journal_reactivation",
             consent_text: "I would like to re-subscribe to The Kauseyah Craft Journal and stories on indigenous craft heritage.",
-            ip_hash: clientIpHash !== "unknown" ? clientIpHash : null,
+            ip_hash: clientIpHash && clientIpHash !== "unknown" ? clientIpHash : null,
             source: "craft_journal_section",
             consent_given: true,
             timestamp: new Date().toISOString(),
@@ -281,25 +221,38 @@ export async function subscribeToNewsletter(payload: {
 
         if (consentAuditError) {
           console.error("Failed to record reactivation marketing consent audit record:", consentAuditError);
-          // Rollback to prevent un-audited consent state
-          await adminClient
+          // Non-destructive compensation: revert to exact prior subscriber state
+          const { error: rollbackError } = await adminClient
             .from("newsletter_subscribers")
-            .update({ status: "unsubscribed", consent_given: false })
+            .update({
+              status: existing.status,
+              consent_given: existing.consent_given ?? false,
+              first_name: existing.first_name ?? null,
+              unsubscribed_at: existing.unsubscribed_at ?? null,
+              updated_at: new Date().toISOString(),
+            })
             .eq("id", existing.id);
+          if (rollbackError) {
+            console.error("Failed to restore previous subscriber state during compensation:", rollbackError);
+          }
           return { error: "Failed to securely record subscription consent audit. Please try again." };
         }
       }
     } else {
       // New subscriber
-      const { error: insertError } = await adminClient.from("newsletter_subscribers").insert({
-        email: normalizedEmail,
-        first_name: cleanFirstName || null,
-        status: "active",
-        consent_given: true,
-        consent_timestamp: new Date().toISOString(),
-        source: "craft_journal_section",
-        unsubscribe_token: token,
-      });
+      const { data: newSub, error: insertError } = await adminClient
+        .from("newsletter_subscribers")
+        .insert({
+          email: normalizedEmail,
+          first_name: cleanFirstName || null,
+          status: "active",
+          consent_given: true,
+          consent_timestamp: new Date().toISOString(),
+          source: "craft_journal_section",
+          unsubscribe_token: token,
+        })
+        .select("id")
+        .single();
 
       if (insertError) {
         console.error("Failed to insert subscriber:", insertError);
@@ -313,7 +266,7 @@ export async function subscribeToNewsletter(payload: {
           email: normalizedEmail,
           consent_type: "craft_journal_newsletter",
           consent_text: "I would like to receive The Kauseyah Craft Journal and stories on indigenous craft heritage.",
-          ip_hash: clientIpHash !== "unknown" ? clientIpHash : null,
+          ip_hash: clientIpHash && clientIpHash !== "unknown" ? clientIpHash : null,
           source: "craft_journal_section",
           consent_given: true,
           timestamp: new Date().toISOString(),
@@ -321,8 +274,16 @@ export async function subscribeToNewsletter(payload: {
 
       if (consentAuditError) {
         console.error("Failed to record initial marketing consent audit record:", consentAuditError);
-        // Rollback to prevent un-audited subscriber in database
-        await adminClient.from("newsletter_subscribers").delete().eq("email", normalizedEmail);
+        // Non-destructive compensation: mark unsubscribed strictly targeting the newly generated record ID (never delete by email)
+        if (newSub?.id) {
+          const { error: rollbackError } = await adminClient
+            .from("newsletter_subscribers")
+            .update({ status: "unsubscribed", consent_given: false, updated_at: new Date().toISOString() })
+            .eq("id", newSub.id);
+          if (rollbackError) {
+            console.error("Failed to update new subscriber during compensation:", rollbackError);
+          }
+        }
         return { error: "Failed to securely record subscription consent audit. Please try again." };
       }
     }
@@ -827,11 +788,16 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
     // Strict requirement: Fail closed if RPC is unavailable. Never fall back to
     // non-atomic application select-update races.
     // ─────────────────────────────────────────────────────────────────────────
+    const safeBatchSize =
+      typeof batchSize === "number" && !isNaN(batchSize)
+        ? Math.min(Math.max(Math.floor(batchSize), 1), 100)
+        : 15;
+
     const { data: rpcClaimed, error: rpcError } = await adminClient.rpc(
       "claim_campaign_recipients",
       {
         p_campaign_id: campaignId,
-        p_batch_size: batchSize,
+        p_batch_size: safeBatchSize,
         p_timeout_seconds: 300,
       }
     );

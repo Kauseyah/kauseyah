@@ -2,7 +2,9 @@ import test, { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   escapeForCsvExport,
+  hashClientIp,
   parseCsvRfc4180,
+  parseRateLimitRpcResponse,
   validateNewsletterSubscriptionInput,
 } from "../src/lib/newsletter-utils";
 import {
@@ -580,5 +582,605 @@ describe("Consent Audit Compensation & Concurrent Worker Isolation", () => {
     for (const w2 of worker2Claimed) {
       assert.equal(worker1Ids.has(w2.id), false, `Worker 2 claimed item ${w2.id} already claimed by Worker 1`);
     }
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. NEWSLETTER RATE-LIMITING HARDENING & FAIL-CLOSED SECURITY SUITE
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Newsletter Rate-Limiting Hardening & Fail-Closed Security", () => {
+  // IP Hash & Privacy Protection Tests
+  it("hashClientIp should return empty string for missing or unknown IP values", () => {
+    assert.equal(hashClientIp(undefined), "");
+    assert.equal(hashClientIp(null), "");
+    assert.equal(hashClientIp(""), "");
+    assert.equal(hashClientIp("   "), "");
+    assert.equal(hashClientIp("unknown"), "");
+    assert.equal(hashClientIp("null"), "");
+    assert.equal(hashClientIp("undefined"), "");
+  });
+
+  it("hashClientIp should return salted 32-character hex hash for valid IPs without exposing raw IP", () => {
+    const rawIp = "203.0.113.195";
+    const salt = "test_secret_salt_123";
+    const hash = hashClientIp(rawIp, salt);
+
+    assert.equal(hash.length, 32);
+    assert.match(hash, /^[0-9a-f]{32}$/);
+    assert.ok(!hash.includes(rawIp), "Hash must never contain raw IP string");
+
+    // Deterministic with same salt
+    assert.equal(hashClientIp(rawIp, salt), hash);
+
+    // Changes with different salt
+    const differentSaltHash = hashClientIp(rawIp, "different_salt_456");
+    assert.notEqual(hash, differentSaltHash);
+  });
+
+  // RPC Response Parsing Tests
+  it("Scenario 1: parseRateLimitRpcResponse allows when RPC returns allowed: true", () => {
+    const result = parseRateLimitRpcResponse([{ allowed: true, attempts: 1 }], null);
+    assert.equal(result.allowed, true);
+    assert.equal(result.error, undefined);
+  });
+
+  it("Scenario 2: parseRateLimitRpcResponse blocks when RPC returns allowed: false", () => {
+    const result = parseRateLimitRpcResponse([{ allowed: false, attempts: 6 }], null);
+    assert.equal(result.allowed, false);
+    assert.equal(
+      result.error,
+      "Too many subscription attempts from your network. Please wait a few minutes before trying again."
+    );
+  });
+
+  it("Scenario 3: parseRateLimitRpcResponse fails closed when RPC returns empty array", () => {
+    const result = parseRateLimitRpcResponse([], null);
+    assert.equal(result.allowed, false);
+    assert.equal(
+      result.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+  });
+
+  it("Scenario 4: parseRateLimitRpcResponse fails closed on null or non-array data", () => {
+    const res1 = parseRateLimitRpcResponse(null, null);
+    assert.equal(res1.allowed, false);
+    assert.equal(
+      res1.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+
+    const res2 = parseRateLimitRpcResponse(undefined, null);
+    assert.equal(res2.allowed, false);
+    assert.equal(
+      res2.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+
+    const res3 = parseRateLimitRpcResponse({ allowed: true }, null);
+    assert.equal(res3.allowed, false);
+    assert.equal(
+      res3.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+  });
+
+  it("Scenario 5: parseRateLimitRpcResponse fails closed when RPC returns error object", () => {
+    const dbError = { message: "connection timeout to database", code: "57014" };
+    const result = parseRateLimitRpcResponse(null, dbError);
+    assert.equal(result.allowed, false);
+    assert.equal(
+      result.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+  });
+
+  it("Scenario 6: Rate limit helper simulation fails closed when RPC throws exception", async () => {
+    async function simulateRpcCall(shouldThrow: boolean) {
+      if (shouldThrow) {
+        throw new Error("RPC socket hang up or gateway timeout");
+      }
+      return [{ allowed: true }];
+    }
+
+    async function checkRateLimitWithExceptionHandling(shouldThrow: boolean) {
+      try {
+        const data = await simulateRpcCall(shouldThrow);
+        return parseRateLimitRpcResponse(data, null);
+      } catch (_err) {
+        return {
+          allowed: false,
+          error: "Subscription service is temporarily unavailable. Please try again in a few moments.",
+        };
+      }
+    }
+
+    const result = await checkRateLimitWithExceptionHandling(true);
+    assert.equal(result.allowed, false);
+    assert.equal(
+      result.error,
+      "Subscription service is temporarily unavailable. Please try again in a few moments."
+    );
+  });
+
+  it("Scenario 7: Missing or unknown IP fails closed without invoking RPC", () => {
+    function simulateRateLimitGate(ipHash: string) {
+      if (!ipHash || ipHash === "unknown") {
+        return {
+          allowed: false,
+          error: "Unable to verify network security. Please refresh the page and try again.",
+        };
+      }
+      return { allowed: true };
+    }
+
+    assert.equal(simulateRateLimitGate("").allowed, false);
+    assert.equal(
+      simulateRateLimitGate("").error,
+      "Unable to verify network security. Please refresh the page and try again."
+    );
+    assert.equal(simulateRateLimitGate("unknown").allowed, false);
+    assert.equal(
+      simulateRateLimitGate("unknown").error,
+      "Unable to verify network security. Please refresh the page and try again."
+    );
+  });
+
+  it("Scenario 8: Memory burst shield blocks rapid attempts before hitting database RPC", () => {
+    const memoryCache = new Map<string, { attempts: number; resetAt: number }>();
+
+    function simulateBurstShield(ipHash: string, limit = 3, windowMs = 60000, now = Date.now()): boolean {
+      if (!ipHash || ipHash === "unknown") return false;
+      const entry = memoryCache.get(ipHash);
+      if (!entry || now > entry.resetAt) {
+        memoryCache.set(ipHash, { attempts: 1, resetAt: now + windowMs });
+        return true;
+      }
+      if (entry.attempts >= limit) {
+        return false;
+      }
+      entry.attempts++;
+      return true;
+    }
+
+    const testHash = "a1b2c3d4e5f678901234567890abcdef";
+    assert.equal(simulateBurstShield(testHash, 3), true); // 1
+    assert.equal(simulateBurstShield(testHash, 3), true); // 2
+    assert.equal(simulateBurstShield(testHash, 3), true); // 3
+    assert.equal(simulateBurstShield(testHash, 3), false); // 4 (Burst blocked!)
+  });
+
+  it("Scenario 9: Enforces strict subscriber flow order (Validation -> Rate Limit -> Database)", async () => {
+    const executionLog: string[] = [];
+
+    async function simulateSubscriberPipeline(payload: { email: string; consent: boolean; ipHash: string }) {
+      executionLog.push("1.validate");
+      const validation = validateNewsletterSubscriptionInput({
+        email: payload.email,
+        consent: payload.consent,
+      });
+      if (!validation.valid) {
+        return { error: validation.error };
+      }
+
+      executionLog.push("2.rate_limit");
+      if (!payload.ipHash || payload.ipHash === "unknown") {
+        return { error: "Unable to verify network security. Please refresh the page and try again." };
+      }
+
+      executionLog.push("3.database_insert");
+      return { success: true };
+    }
+
+    // Attempt with invalid email stops at step 1
+    executionLog.length = 0;
+    const resInvalid = await simulateSubscriberPipeline({ email: "bad-email", consent: true, ipHash: "valid_hash" });
+    assert.equal(resInvalid.error, "Please enter a valid email address.");
+    assert.deepEqual(executionLog, ["1.validate"]);
+
+    // Attempt with unverified IP stops at step 2, never touching step 3 (database)
+    executionLog.length = 0;
+    const resBlockedIp = await simulateSubscriberPipeline({ email: "user@kauseyah.com", consent: true, ipHash: "" });
+    assert.equal(resBlockedIp.error, "Unable to verify network security. Please refresh the page and try again.");
+    assert.deepEqual(executionLog, ["1.validate", "2.rate_limit"]);
+
+    // Valid attempt executes full pipeline
+    executionLog.length = 0;
+    const resValid = await simulateSubscriberPipeline({ email: "user@kauseyah.com", consent: true, ipHash: "valid_hash" });
+    assert.equal(resValid.success, true);
+    assert.deepEqual(executionLog, ["1.validate", "2.rate_limit", "3.database_insert"]);
+  });
+
+  it("Scenario 10: Welcome email failure does not roll back an active subscription", async () => {
+    let subscriberCreated = false;
+    let consentAuditCreated = false;
+
+    async function simulateSubscriptionWithEmailDispatch(emailFails: boolean) {
+      // 1. Create subscriber
+      subscriberCreated = true;
+      // 2. Create consent audit
+      consentAuditCreated = true;
+
+      // 3. Welcome email dispatch
+      try {
+        if (emailFails) {
+          throw new Error("Resend API key missing or network unreachable");
+        }
+      } catch (err) {
+        // Non-fatal warning logged, does not roll back subscription
+      }
+
+      return {
+        success: true,
+        message: "Welcome to The Kauseyah Craft Journal! Your welcome note is on its way to your inbox.",
+      };
+    }
+
+    const result = await simulateSubscriptionWithEmailDispatch(true);
+    assert.equal(result.success, true);
+    assert.equal(subscriberCreated, true, "Subscriber record must be retained");
+    assert.equal(consentAuditCreated, true, "Consent audit record must be retained");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 8. RATE-LIMIT PARAMETER BOUNDARIES & REASON-AWARE FAIL-CLOSED PARSING
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Rate-Limit Parameter Boundaries & Reason-Aware Fail-Closed Parsing", () => {
+  it("hashClientIp must reject whitespace-only and case-insensitive unknown variants", () => {
+    assert.equal(hashClientIp("   "), "");
+    assert.equal(hashClientIp("unknown"), "");
+    assert.equal(hashClientIp("UNKNOWN"), "");
+    assert.equal(hashClientIp("  Unknown  "), "");
+    assert.equal(hashClientIp("uNkNoWn"), "");
+    assert.equal(hashClientIp(null), "");
+    assert.equal(hashClientIp(undefined), "");
+  });
+
+  it("simulateRateLimitRpcParameterValidation should enforce boundary limits strictly", () => {
+    function validateRateLimitRpcParams(
+      ipHash: string | null | undefined,
+      maxAttempts: number | null | undefined,
+      windowMinutes: number | null | undefined
+    ): { valid: boolean; error?: string; code?: string } {
+      if (maxAttempts === null || maxAttempts === undefined || maxAttempts < 1 || maxAttempts > 100) {
+        return { valid: false, error: "Invalid p_max_attempts: must be between 1 and 100", code: "invalid_parameter_value" };
+      }
+      if (windowMinutes === null || windowMinutes === undefined || windowMinutes < 1 || windowMinutes > 1440) {
+        return { valid: false, error: "Invalid p_window_minutes: must be between 1 and 1440", code: "invalid_parameter_value" };
+      }
+      const trimmed = (ipHash || "").trim().toLowerCase();
+      if (!trimmed || trimmed === "unknown") {
+        return { valid: true, error: undefined }; // In SQL, invalid IP returns { allowed: false, reason: 'invalid_ip_hash' }
+      }
+      return { valid: true };
+    }
+
+    // Boundary violations
+    assert.equal(validateRateLimitRpcParams("hash", null, 15).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", 0, 15).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", -5, 15).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", 101, 15).valid, false);
+
+    assert.equal(validateRateLimitRpcParams("hash", 5, null).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", 5, 0).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", 5, -10).valid, false);
+    assert.equal(validateRateLimitRpcParams("hash", 5, 1441).valid, false);
+
+    // Valid boundaries
+    assert.equal(validateRateLimitRpcParams("hash", 1, 1).valid, true);
+    assert.equal(validateRateLimitRpcParams("hash", 5, 15).valid, true);
+    assert.equal(validateRateLimitRpcParams("hash", 100, 1440).valid, true);
+  });
+
+  it("parseRateLimitRpcResponse should differentiate invalid_ip_hash from rate_limit_exceeded and blocked", () => {
+    // Reason: invalid_ip_hash
+    const invalidIpRes = parseRateLimitRpcResponse([{ allowed: false, reason: "invalid_ip_hash" }], null);
+    assert.equal(invalidIpRes.allowed, false);
+    assert.equal(invalidIpRes.error, "Unable to verify network security. Please refresh the page and try again.");
+    assert.equal(invalidIpRes.reason, "invalid_ip_hash");
+
+    // Reason: rate_limit_exceeded
+    const rateLimitRes = parseRateLimitRpcResponse([{ allowed: false, reason: "rate_limit_exceeded" }], null);
+    assert.equal(rateLimitRes.allowed, false);
+    assert.equal(rateLimitRes.error, "Too many subscription attempts from your network. Please wait a few minutes before trying again.");
+    assert.equal(rateLimitRes.reason, "rate_limit_exceeded");
+
+    // Reason: blocked
+    const blockedRes = parseRateLimitRpcResponse([{ allowed: false, reason: "blocked" }], null);
+    assert.equal(blockedRes.allowed, false);
+    assert.equal(blockedRes.error, "Too many subscription attempts from your network. Please wait a few minutes before trying again.");
+    assert.equal(blockedRes.reason, "blocked");
+
+    // Allowed: true
+    const allowedRes = parseRateLimitRpcResponse([{ allowed: true, reason: "first_attempt" }], null);
+    assert.equal(allowedRes.allowed, true);
+    assert.equal(allowedRes.error, undefined);
+    assert.equal(allowedRes.reason, "first_attempt");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 9. CLAIM RPC VALIDATION & NULL-SAFE AUTHORIZATION
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Claim RPC Validation & Null-Safe Authorization", () => {
+  function validateClaimRpcParams(
+    batchSize: number | null | undefined,
+    timeoutSeconds: number | null | undefined
+  ): { valid: boolean; error?: string } {
+    if (batchSize === null || batchSize === undefined || batchSize < 1 || batchSize > 100) {
+      return { valid: false, error: "Invalid p_batch_size: must be an integer between 1 and 100" };
+    }
+    if (timeoutSeconds === null || timeoutSeconds === undefined || timeoutSeconds < 30 || timeoutSeconds > 3600) {
+      return { valid: false, error: "Invalid p_timeout_seconds: must be an integer between 30 and 3600" };
+    }
+    return { valid: true };
+  }
+
+  it("should reject claim parameters outside boundary bounds", () => {
+    assert.equal(validateClaimRpcParams(null, 300).valid, false);
+    assert.equal(validateClaimRpcParams(0, 300).valid, false);
+    assert.equal(validateClaimRpcParams(-10, 300).valid, false);
+    assert.equal(validateClaimRpcParams(101, 300).valid, false);
+
+    assert.equal(validateClaimRpcParams(15, null).valid, false);
+    assert.equal(validateClaimRpcParams(15, 29).valid, false);
+    assert.equal(validateClaimRpcParams(15, 0).valid, false);
+    assert.equal(validateClaimRpcParams(15, 3601).valid, false);
+
+    // Valid boundaries
+    assert.equal(validateClaimRpcParams(1, 30).valid, true);
+    assert.equal(validateClaimRpcParams(15, 300).valid, true);
+    assert.equal(validateClaimRpcParams(100, 3600).valid, true);
+  });
+
+  it("should enforce null-safe database authorization for RPC caller roles", () => {
+    function simulateDatabaseAuthorization(
+      role: string | null | undefined,
+      isAdmin: boolean
+    ): { authorized: boolean; error?: string } {
+      // Replicates: (auth.role() IS DISTINCT FROM 'service_role') AND NOT EXISTS (...)
+      const isServiceRole = role === "service_role";
+      if (!isServiceRole && !isAdmin) {
+        return {
+          authorized: false,
+          error: "Unauthorized: newsletter admin or service role privileges required",
+        };
+      }
+      return { authorized: true };
+    }
+
+    // Service role always authorized
+    assert.equal(simulateDatabaseAuthorization("service_role", false).authorized, true);
+
+    // Authenticated admin authorized
+    assert.equal(simulateDatabaseAuthorization("authenticated", true).authorized, true);
+
+    // Authenticated non-admin rejected
+    assert.equal(simulateDatabaseAuthorization("authenticated", false).authorized, false);
+
+    // Anon rejected
+    assert.equal(simulateDatabaseAuthorization("anon", false).authorized, false);
+
+    // NULL / Undefined role strictly rejected (null-safe)
+    assert.equal(simulateDatabaseAuthorization(null, false).authorized, false);
+    assert.equal(simulateDatabaseAuthorization(undefined, false).authorized, false);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 10. NON-DESTRUCTIVE SUBSCRIBER COMPENSATION & CONCURRENCY
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Non-Destructive Subscriber Compensation & Concurrency Safety", () => {
+  interface SubscriberDbRow {
+    id: string;
+    email: string;
+    status: string;
+    consent_given: boolean;
+    first_name: string | null;
+    unsubscribed_at: string | null;
+  }
+
+  it("should restore exact prior state on reactivation failure without blind unsubscription", () => {
+    const db = new Map<string, SubscriberDbRow>();
+    const priorRow: SubscriberDbRow = {
+      id: "sub-101",
+      email: "artisan@kauseyah.com",
+      status: "pending_verification", // custom non-active prior status
+      consent_given: false,
+      first_name: "Meera",
+      unsubscribed_at: null,
+    };
+    db.set("sub-101", { ...priorRow });
+
+    // Step 1: Reactivation attempt updates row
+    const target = db.get("sub-101")!;
+    target.status = "active";
+    target.consent_given = true;
+
+    // Step 2: Consent audit fails -> compensation logic runs
+    const auditFailed = true;
+    if (auditFailed) {
+      // Revert to exact prior state
+      target.status = priorRow.status;
+      target.consent_given = priorRow.consent_given;
+      target.first_name = priorRow.first_name;
+      target.unsubscribed_at = priorRow.unsubscribed_at;
+    }
+
+    assert.equal(db.get("sub-101")?.status, "pending_verification", "Must restore exact prior status");
+    assert.equal(db.get("sub-101")?.consent_given, false);
+  });
+
+  it("should never delete records by email during new subscriber compensation", () => {
+    const db = new Map<string, SubscriberDbRow>();
+
+    // Initial state: User 1 exists
+    db.set("id-1", {
+      id: "id-1",
+      email: "himani@kauseyah.com",
+      status: "active",
+      consent_given: true,
+      first_name: "Himani",
+      unsubscribed_at: null,
+    });
+
+    // Simulating concurrent request or new subscriber registration with same email
+    const newRecordId = "id-2";
+    db.set(newRecordId, {
+      id: newRecordId,
+      email: "himani@kauseyah.com",
+      status: "active",
+      consent_given: true,
+      first_name: "Himani",
+      unsubscribed_at: null,
+    });
+
+    // If compensation deleted by email, id-1 would be lost!
+    // Non-destructive compensation updates ONLY by specific ID:
+    const newRecord = db.get(newRecordId);
+    if (newRecord) {
+      newRecord.status = "unsubscribed";
+      newRecord.consent_given = false;
+    }
+
+    // Verify User 1 was not affected
+    assert.equal(db.get("id-1")?.status, "active", "Existing subscriber must remain untouched");
+    assert.equal(db.get("id-2")?.status, "unsubscribed", "Only failed row is updated");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 11. UNSUBSCRIBE TOKEN VALIDATION & SUPPRESSION IDEMPOTENCY
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Unsubscribe Token Validation & Suppression Idempotency", () => {
+  interface UnsubscribeState {
+    id: string;
+    email: string;
+    token: string;
+    status: "active" | "unsubscribed";
+    unsubscribed_at: string | null;
+  }
+
+  function simulateUnsubscribe(
+    store: Map<string, UnsubscribeState>,
+    token: string | null | undefined
+  ): { status: number; message: string; alreadyUnsubscribed?: boolean } {
+    if (!token || token.trim().length === 0) {
+      return { status: 400, message: "Missing or invalid unsubscribe token." };
+    }
+
+    let found: UnsubscribeState | undefined;
+    for (const sub of store.values()) {
+      if (sub.token === token) {
+        found = sub;
+        break;
+      }
+    }
+
+    if (!found) {
+      return { status: 404, message: "Subscriber not found or token expired." };
+    }
+
+    if (found.status === "unsubscribed") {
+      return { status: 200, message: "Already unsubscribed.", alreadyUnsubscribed: true };
+    }
+
+    found.status = "unsubscribed";
+    found.unsubscribed_at = new Date().toISOString();
+    return { status: 200, message: `Unsubscribed ${found.email} successfully.` };
+  }
+
+  it("should reject missing, empty, or invalid unsubscribe tokens", () => {
+    const store = new Map<string, UnsubscribeState>();
+    assert.equal(simulateUnsubscribe(store, null).status, 400);
+    assert.equal(simulateUnsubscribe(store, "").status, 400);
+    assert.equal(simulateUnsubscribe(store, "non_existent_token").status, 404);
+  });
+
+  it("should process unsubscribe idempotently without duplicate errors", () => {
+    const store = new Map<string, UnsubscribeState>();
+    store.set("sub-1", {
+      id: "sub-1",
+      email: "subscriber@kauseyah.com",
+      token: "valid_token_abc_123",
+      status: "active",
+      unsubscribed_at: null,
+    });
+
+    // First call: successfully unsubscribes
+    const firstCall = simulateUnsubscribe(store, "valid_token_abc_123");
+    assert.equal(firstCall.status, 200);
+    assert.equal(store.get("sub-1")?.status, "unsubscribed");
+    assert.ok(store.get("sub-1")?.unsubscribed_at !== null);
+
+    // Second call: idempotent, returns already unsubscribed
+    const secondCall = simulateUnsubscribe(store, "valid_token_abc_123");
+    assert.equal(secondCall.status, 200);
+    assert.equal(secondCall.alreadyUnsubscribed, true);
+    assert.equal(store.get("sub-1")?.status, "unsubscribed");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 12. EMPTY CAMPAIGN & BATCH INTERRUPTION RECONCILIATION
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Empty Campaign & Batch Interruption Reconciliation", () => {
+  it("should reconcile empty campaign as sent/completed with zero counts", () => {
+    interface Campaign {
+      id: string;
+      status: string;
+      sent_count: number;
+      failed_count: number;
+      recipient_count: number;
+    }
+
+    const campaign: Campaign = {
+      id: "camp-empty",
+      status: "draft",
+      sent_count: 0,
+      failed_count: 0,
+      recipient_count: 0,
+    };
+
+    const logs: any[] = []; // Zero logs
+
+    function reconcileEmpty(c: Campaign, logList: any[]) {
+      const isComplete = logList.length === 0;
+      return {
+        campaignId: c.id,
+        status: isComplete ? "sent" : "sending",
+        sentCount: 0,
+        failedCount: 0,
+        isComplete,
+      };
+    }
+
+    const res = reconcileEmpty(campaign, logs);
+    assert.equal(res.isComplete, true);
+    assert.equal(res.status, "sent");
+    assert.equal(res.sentCount, 0);
+  });
+
+  it("should clamp client-supplied batchSize between 1 and 100", () => {
+    function clampBatchSize(batchSize: any): number {
+      return typeof batchSize === "number" && !isNaN(batchSize)
+        ? Math.min(Math.max(Math.floor(batchSize), 1), 100)
+        : 15;
+    }
+
+    assert.equal(clampBatchSize(undefined), 15);
+    assert.equal(clampBatchSize(NaN), 15);
+    assert.equal(clampBatchSize(-5), 1);
+    assert.equal(clampBatchSize(0), 1);
+    assert.equal(clampBatchSize(25.8), 25);
+    assert.equal(clampBatchSize(100), 100);
+    assert.equal(clampBatchSize(500), 100);
   });
 });

@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 /**
  * Pure utility functions for the Kauseyah Craft Journal & Newsletter.
  * Kept isolated from "use server" actions to comply with Next.js App Router rules
@@ -136,4 +138,63 @@ export function parseCsvRfc4180(text: string): string[][] {
   }
 
   return rows;
+}
+
+/**
+ * Anonymizes and salts client IP address with SHA-256 (32 hex characters).
+ * Returns empty string if IP is missing, unknown, or empty.
+ * Zero raw IP addresses are ever stored or logged.
+ */
+export function hashClientIp(rawIp: string | null | undefined, salt?: string): string {
+  const trimmed = (rawIp || "").trim();
+  const lower = trimmed.toLowerCase();
+  if (!trimmed || lower === "unknown" || lower === "null" || lower === "undefined") {
+    return "";
+  }
+  const effectiveSalt = salt || "kauseyah_rate_salt";
+  return crypto
+    .createHash("sha256")
+    .update(trimmed + effectiveSalt)
+    .digest("hex")
+    .slice(0, 32);
+}
+
+/**
+ * Authoritative response parser for the check_and_record_newsletter_rate_limit RPC.
+ * Fails CLOSED on any database error, empty/malformed response, or unhandled status.
+ */
+export function parseRateLimitRpcResponse(
+  data: any,
+  error: any
+): { allowed: boolean; error?: string; reason?: string } {
+  if (error || !Array.isArray(data) || data.length === 0) {
+    return {
+      allowed: false,
+      error: "Subscription service is temporarily unavailable. Please try again in a few moments.",
+    };
+  }
+
+  const record = data[0];
+  if (record && typeof record.allowed === "boolean") {
+    if (record.allowed) {
+      return { allowed: true, reason: record.reason };
+    }
+    if (record.reason === "invalid_ip_hash") {
+      return {
+        allowed: false,
+        error: "Unable to verify network security. Please refresh the page and try again.",
+        reason: record.reason,
+      };
+    }
+    return {
+      allowed: false,
+      error: "Too many subscription attempts from your network. Please wait a few minutes before trying again.",
+      reason: record.reason,
+    };
+  }
+
+  return {
+    allowed: false,
+    error: "Subscription service is temporarily unavailable. Please try again in a few moments.",
+  };
 }
