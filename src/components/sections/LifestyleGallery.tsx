@@ -7,7 +7,7 @@ const DEFAULT_LIFESTYLE_CARDS: LifestyleCardItem[] = [
     title: "Explore Shadi Collection",
     description:
       "Handloom Mashru Banarasi silks, heirloom bridal drapes, and bespoke trousseau weaves lovingly created for life's most cherished celebrations.",
-    image: "/images/shadi_collection.png",
+    image: "/images/shaadi.png",
     href: "/collections/bespoke-bridal-collection",
     gridSpan: "lg:col-span-7 h-[420px] sm:h-[480px] lg:h-[500px]",
     imagePosition: "center 20%",
@@ -18,7 +18,7 @@ const DEFAULT_LIFESTYLE_CARDS: LifestyleCardItem[] = [
     title: "Thoughtful Keepsakes & Hampers",
     description:
       "Putting together these lovely hampers, wrapped in fabric and filled with little pieces of craft, culture and stories. A thoughtful way to gift something that feels personal, beautiful and rooted in India.",
-    image: "/images/pooja.png",
+    image: "/images/pack-pooja.png",
     href: "/collections/gift-hampers",
     gridSpan: "lg:col-span-5 h-[420px] sm:h-[480px] lg:h-[500px]",
     imagePosition: "center 25%",

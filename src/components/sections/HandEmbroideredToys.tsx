@@ -35,7 +35,13 @@ export default async function HandEmbroideredToys() {
 
   const products = (sbProducts || [])
     .sort((a, b) => (slugOrder[a.slug.trim()] ?? 99) - (slugOrder[b.slug.trim()] ?? 99))
-    .map(mapSupabaseProductToFrontend);
+    .map((sb) => {
+      const p = mapSupabaseProductToFrontend(sb);
+      return {
+        ...p,
+        compareAtPrice: p.compareAtPrice || Math.round(p.price / 0.9),
+      };
+    });
 
   return <HandEmbroideredToysClient products={products} />;
 }

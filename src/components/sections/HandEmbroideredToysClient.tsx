@@ -24,7 +24,7 @@ const FALLBACK_HOT_SELLERS = [
     name: "Handloom Kosa Silk Jacket for Men",
     slug: "premium-handloom-kosa-silk-jacket-men",
     price: 4588,
-    compareAtPrice: undefined,
+    compareAtPrice: 5098,
     subcategory: "Men Kosa Jackets",
     images: [
       {
@@ -42,7 +42,7 @@ const FALLBACK_HOT_SELLERS = [
     name: "Fabric Cover Journal with Handmade Unbleached Paper",
     slug: "journal",
     price: 315,
-    compareAtPrice: undefined,
+    compareAtPrice: 350,
     subcategory: "Textile Journals",
     images: [
       {
@@ -60,7 +60,7 @@ const FALLBACK_HOT_SELLERS = [
     name: "Muslin Cotton Saree Pouch (set of 3)",
     slug: "Saree organisers ",
     price: 315,
-    compareAtPrice: undefined,
+    compareAtPrice: 350,
     subcategory: "Saree pouches",
     images: [
       {
@@ -78,7 +78,7 @@ const FALLBACK_HOT_SELLERS = [
     name: "The Bhai Keepsake Hamper",
     slug: "ham",
     price: 2500,
-    compareAtPrice: undefined,
+    compareAtPrice: 2778,
     subcategory: "Gift Hampers",
     images: [
       {
@@ -96,7 +96,7 @@ const FALLBACK_HOT_SELLERS = [
     name: "The Jingle Hamper",
     slug: "Christmas hamper",
     price: 899,
-    compareAtPrice: undefined,
+    compareAtPrice: 999,
     subcategory: "Gift Hampers",
     images: [
       {
@@ -155,8 +155,19 @@ export default function HandEmbroideredToysClient({
     e.preventDefault();
     e.stopPropagation();
 
+    const compareAtPrice =
+      typeof product.compareAtPrice === "number" &&
+      product.compareAtPrice > product.price
+        ? product.compareAtPrice
+        : Math.round(product.price / 0.9);
+
+    const productWithCompare = {
+      ...product,
+      compareAtPrice,
+    };
+
     if (product.variants && product.variants.length > 1) {
-      setSelectedProduct(product);
+      setSelectedProduct(productWithCompare);
       return;
     }
 
@@ -165,7 +176,7 @@ export default function HandEmbroideredToysClient({
         ? product.variants[0]
         : { id: `${product.id}-default`, stock: product.stock ?? 10, price: product.price };
 
-    addItem(product, variantToAdd);
+    addItem(productWithCompare, variantToAdd);
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1800);
   };
@@ -179,15 +190,15 @@ export default function HandEmbroideredToysClient({
     const isAdded = addedId === product.id;
     const hasMultipleVariants = product.variants && product.variants.length > 1;
 
-    const hasDiscount =
+    const compareAtPrice =
       typeof product.compareAtPrice === "number" &&
-      product.compareAtPrice > product.price;
+      product.compareAtPrice > product.price
+        ? product.compareAtPrice
+        : Math.round(product.price / 0.9);
 
-    const discountPct = hasDiscount
-      ? Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
-        )
-      : null;
+    const discountPct = Math.round(
+      ((compareAtPrice - product.price) / compareAtPrice) * 100
+    );
 
     const cleanSlug = encodeURIComponent((product.slug || "").trim());
 
@@ -209,18 +220,15 @@ export default function HandEmbroideredToysClient({
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
 
-          {/* Badges: Discount percentage badge or Hot Seller badge */}
+          {/* Badges: Hot Seller + 10% Off discount badge */}
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start">
-            {discountPct !== null ? (
-              <span className="px-2.5 py-1 rounded-full bg-[#851A36] text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                {discountPct}% Off
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D95D1E] text-white text-[9.5px] font-bold uppercase tracking-wider shadow-sm">
-                <Flame size={10} className="fill-white" />
-                <span>Hot Seller</span>
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#D95D1E] text-white text-[9.5px] font-bold uppercase tracking-wider shadow-sm">
+              <Flame size={10} className="fill-white" />
+              <span>Hot Seller</span>
+            </span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#851A36] text-white text-[9.5px] font-bold uppercase tracking-wider shadow-sm">
+              {discountPct}% Off
+            </span>
           </div>
 
           <div className="absolute top-3 right-3 z-10">
@@ -247,14 +255,17 @@ export default function HandEmbroideredToysClient({
           {/* Price & Quick Add Button */}
           <div className="mt-auto pt-3 border-t border-[#1A1412]/8 flex items-center justify-between gap-2">
             <div className="flex flex-col">
-              <span className="font-body text-base sm:text-lg font-bold text-[#1A1412]">
-                ₹{product.price.toLocaleString("en-IN")}
-              </span>
-              {hasDiscount && (
-                <span className="font-body text-xs text-[#8C827A] line-through font-normal">
-                  ₹{product.compareAtPrice.toLocaleString("en-IN")}
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="font-body text-base sm:text-lg font-bold text-[#1A1412]">
+                  ₹{product.price.toLocaleString("en-IN")}
                 </span>
-              )}
+                <span className="font-body text-xs sm:text-sm text-[#8C827A] line-through font-normal">
+                  ₹{compareAtPrice.toLocaleString("en-IN")}
+                </span>
+              </div>
+              <span className="font-body text-[10.5px] font-semibold text-[#851A36]">
+                Save {discountPct}%
+              </span>
             </div>
 
             <button

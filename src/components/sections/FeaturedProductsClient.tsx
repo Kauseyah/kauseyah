@@ -61,11 +61,11 @@ export default function FeaturedProductsClient({ featuredProducts }: { featuredP
               Artisan Made · Living Traditions
             </p>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-[#1A1412] leading-[1.05]">
-              Featured <span className="text-[#D95D1E] italic font-light">Handlooms</span>
+              Freshly <span className="text-[#D95D1E] italic font-light">introduced</span>
             </h2>
             <div className="w-12 h-[1.5px] bg-[#D95D1E] mt-3 mb-3" />
             <p className="font-body text-sm sm:text-base text-[#665D59] font-light leading-relaxed">
-              Meticulously hand-spun wild silks, block-printed drapes, and heritage motifs woven by master tribal artisans across Chhattisgarh and India.
+              Newly introduced, thoughtfully crafted by our artisans, where timeless craft meets refined design.
             </p>
           </div>
 
