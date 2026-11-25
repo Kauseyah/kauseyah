@@ -869,6 +869,12 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
         .eq("campaign_id", campaignId)
         .eq("status", "failed");
 
+      const { count: bouncedTotal } = await adminClient
+        .from("newsletter_campaign_logs")
+        .select("id", { count: "exact", head: true })
+        .eq("campaign_id", campaignId)
+        .eq("status", "bounced");
+
       const { count: processingTotal } = await adminClient
         .from("newsletter_campaign_logs")
         .select("id", { count: "exact", head: true })
@@ -882,6 +888,7 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
         .eq("status", "pending");
 
       const activeRemaining = (processingTotal || 0) + (pendingTotal || 0);
+      const totalFailed = (failedTotal || 0) + (bouncedTotal || 0);
 
       if (activeRemaining > 0) {
         // Active workers or unexpired processing claims still exist; do not finalize campaign prematurely
@@ -889,21 +896,21 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
           done: false,
           campaignId,
           sentCount: sentTotal || 0,
-          failedCount: failedTotal || 0,
+          failedCount: totalFailed,
           remainingCount: activeRemaining,
           totalRecipients: campaign.recipient_count,
           status: "sending",
         };
       }
 
-      const finalStatus = (failedTotal || 0) > 0 ? "partially_failed" : "sent";
+      const finalStatus = totalFailed > 0 ? "partially_failed" : "sent";
 
       await adminClient
         .from("newsletter_campaigns")
         .update({
           status: finalStatus,
           sent_count: sentTotal || 0,
-          failed_count: failedTotal || 0,
+          failed_count: totalFailed,
           sent_at: campaign.sent_at || new Date().toISOString(),
           completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -915,8 +922,8 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
         done: true,
         campaignId,
         sentCount: sentTotal || 0,
-        failedCount: failedTotal || 0,
-        totalRecipients: campaign.recipient_count || (sentTotal || 0) + (failedTotal || 0),
+        failedCount: totalFailed,
+        totalRecipients: campaign.recipient_count || (sentTotal || 0) + totalFailed,
         status: finalStatus,
       };
     }
@@ -1009,24 +1016,32 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
       .eq("campaign_id", campaignId)
       .eq("status", "failed");
 
+    const { count: currentBounced } = await adminClient
+      .from("newsletter_campaign_logs")
+      .select("id", { count: "exact", head: true })
+      .eq("campaign_id", campaignId)
+      .eq("status", "bounced");
+
     const { count: pendingRemaining } = await adminClient
       .from("newsletter_campaign_logs")
       .select("id", { count: "exact", head: true })
       .eq("campaign_id", campaignId)
       .or("status.eq.pending,status.eq.processing");
 
+    const totalFailedBatch = (currentFailed || 0) + (currentBounced || 0);
+
     await adminClient
       .from("newsletter_campaigns")
       .update({
         sent_count: currentSent || 0,
-        failed_count: currentFailed || 0,
+        failed_count: totalFailedBatch,
         updated_at: new Date().toISOString(),
       })
       .eq("id", campaignId);
 
     const isComplete = (pendingRemaining || 0) === 0;
     if (isComplete) {
-      const finalStatus = (currentFailed || 0) > 0 ? "partially_failed" : "sent";
+      const finalStatus = totalFailedBatch > 0 ? "partially_failed" : "sent";
       await adminClient
         .from("newsletter_campaigns")
         .update({
@@ -1046,10 +1061,10 @@ export async function sendNewsletterCampaignBatch(campaignId: string, batchSize 
       sentInBatch: batchSent,
       failedInBatch: batchFailed,
       totalSent: currentSent || 0,
-      totalFailed: currentFailed || 0,
+      totalFailed: totalFailedBatch,
       remainingCount: pendingRemaining || 0,
       totalRecipients: campaign.recipient_count,
-      status: isComplete ? ((currentFailed || 0) > 0 ? "partially_failed" : "sent") : "sending",
+      status: isComplete ? (totalFailedBatch > 0 ? "partially_failed" : "sent") : "sending",
     };
   } catch (err: any) {
     return { error: err.message };

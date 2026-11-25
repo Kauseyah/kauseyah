@@ -201,7 +201,7 @@ describe("Campaign Claiming & Retry Lifecycle State Machine", () => {
   interface MockRecipientLog {
     id: string;
     email: string;
-    status: "pending" | "processing" | "sent" | "failed";
+    status: "pending" | "processing" | "sent" | "failed" | "bounced";
     attempt_count: number;
     updated_at: number;
   }
@@ -242,6 +242,7 @@ describe("Campaign Claiming & Retry Lifecycle State Machine", () => {
   } {
     const sent = logs.filter((l) => l.status === "sent").length;
     const failed = logs.filter((l) => l.status === "failed").length;
+    const bounced = logs.filter((l) => l.status === "bounced").length;
     const pending = logs.filter((l) => l.status === "pending").length;
     const processing = logs.filter((l) => l.status === "processing").length;
 
@@ -249,10 +250,10 @@ describe("Campaign Claiming & Retry Lifecycle State Machine", () => {
     let status: "sending" | "sent" | "partially_failed" = "sending";
 
     if (isComplete) {
-      status = failed > 0 ? "partially_failed" : "sent";
+      status = (failed + bounced) > 0 ? "partially_failed" : "sent";
     }
 
-    return { status, isComplete, sent, failed, pending, processing };
+    return { status, isComplete, sent, failed: failed + bounced, pending, processing };
   }
 
   it("should claim pending recipients and increment attempt_count", () => {
@@ -336,6 +337,20 @@ describe("Campaign Claiming & Retry Lifecycle State Machine", () => {
 
     const recon = simulateReconciliation(logs);
     assert.equal(recon.isComplete, true);
+    assert.equal(recon.status, "partially_failed");
+    assert.equal(recon.sent, 1);
+    assert.equal(recon.failed, 1);
+  });
+
+  it("should explicitly mark campaign partially_failed and not sent when bounced records exist", () => {
+    const logs: MockRecipientLog[] = [
+      { id: "1", email: "a@kauseyah.com", status: "sent", attempt_count: 1, updated_at: 1000 },
+      { id: "2", email: "b@kauseyah.com", status: "bounced", attempt_count: 1, updated_at: 2000 },
+    ];
+
+    const recon = simulateReconciliation(logs);
+    assert.equal(recon.isComplete, true);
+    assert.notEqual(recon.status, "sent");
     assert.equal(recon.status, "partially_failed");
     assert.equal(recon.sent, 1);
     assert.equal(recon.failed, 1);
@@ -1182,5 +1197,150 @@ describe("Empty Campaign & Batch Interruption Reconciliation", () => {
     assert.equal(clampBatchSize(25.8), 25);
     assert.equal(clampBatchSize(100), 100);
     assert.equal(clampBatchSize(500), 100);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 13. CAMPAIGN DIRECT-COUNT FALLBACK RECONCILIATION REGRESSION TESTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("Campaign Direct-Count Fallback Reconciliation Regression", () => {
+  interface DirectCountLogs {
+    sent: number;
+    failed: number;
+    bounced: number;
+    processing: number;
+    pending: number;
+    recipientCount: number;
+  }
+
+  function simulateDirectCountFallback(
+    logs: DirectCountLogs,
+    rpcAvailable: boolean
+  ): {
+    done: boolean;
+    status: "sending" | "sent" | "partially_failed";
+    sentCount: number;
+    failedCount: number;
+    usedFallback: boolean;
+  } {
+    if (rpcAvailable) {
+      // Simulate RPC path
+      const totalFailed = logs.failed + logs.bounced;
+      const isComplete = logs.pending === 0 && logs.processing === 0;
+      return {
+        done: isComplete,
+        status: isComplete ? (totalFailed > 0 ? "partially_failed" : "sent") : "sending",
+        sentCount: logs.sent,
+        failedCount: totalFailed,
+        usedFallback: false,
+      };
+    }
+
+    // Direct-count fallback path (mirroring newsletter-actions.ts)
+    const activeRemaining = logs.processing + logs.pending;
+    const totalFailed = logs.failed + logs.bounced;
+
+    if (activeRemaining > 0) {
+      return {
+        done: false,
+        status: "sending",
+        sentCount: logs.sent,
+        failedCount: totalFailed,
+        usedFallback: true,
+      };
+    }
+
+    const finalStatus = totalFailed > 0 ? "partially_failed" : "sent";
+    return {
+      done: true,
+      status: finalStatus,
+      sentCount: logs.sent,
+      failedCount: totalFailed,
+      usedFallback: true,
+    };
+  }
+
+  it("Scenario 1: Fallback marks sent when all recipients are sent and 0 failed/bounced", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 10, failed: 0, bounced: 0, processing: 0, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, true);
+    assert.equal(res.status, "sent");
+    assert.equal(res.sentCount, 10);
+    assert.equal(res.failedCount, 0);
+  });
+
+  it("Scenario 2: Fallback marks partially_failed when failed recipients exist", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 8, failed: 2, bounced: 0, processing: 0, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, true);
+    assert.equal(res.status, "partially_failed");
+    assert.equal(res.sentCount, 8);
+    assert.equal(res.failedCount, 2);
+  });
+
+  it("Scenario 3: Fallback marks partially_failed when bounced recipients exist without failed", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 8, failed: 0, bounced: 2, processing: 0, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, true);
+    assert.notEqual(res.status, "sent");
+    assert.equal(res.status, "partially_failed");
+    assert.equal(res.sentCount, 8);
+    assert.equal(res.failedCount, 2);
+  });
+
+  it("Scenario 4: Fallback aggregates both failed and bounced into failedCount", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 7, failed: 2, bounced: 1, processing: 0, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, true);
+    assert.equal(res.status, "partially_failed");
+    assert.equal(res.sentCount, 7);
+    assert.equal(res.failedCount, 3);
+  });
+
+  it("Scenario 5: Fallback does NOT finalize when pending recipients remain", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 5, failed: 1, bounced: 1, processing: 0, pending: 3, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, false);
+    assert.equal(res.status, "sending");
+  });
+
+  it("Scenario 6: Fallback does NOT finalize when processing recipients remain", () => {
+    const res = simulateDirectCountFallback(
+      { sent: 7, failed: 0, bounced: 1, processing: 2, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(res.usedFallback, true);
+    assert.equal(res.done, false);
+    assert.equal(res.status, "sending");
+  });
+
+  it("Scenario 7: Fallback is only used when RPC result is unavailable", () => {
+    const rpcRes = simulateDirectCountFallback(
+      { sent: 10, failed: 0, bounced: 0, processing: 0, pending: 0, recipientCount: 10 },
+      true
+    );
+    assert.equal(rpcRes.usedFallback, false);
+
+    const fallbackRes = simulateDirectCountFallback(
+      { sent: 10, failed: 0, bounced: 0, processing: 0, pending: 0, recipientCount: 10 },
+      false
+    );
+    assert.equal(fallbackRes.usedFallback, true);
   });
 });
