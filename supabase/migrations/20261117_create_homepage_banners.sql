@@ -1,6 +1,6 @@
 -- =====================================================================
 -- Kauseyah: Homepage Banner Management Migration
--- File: supabase/migrations/20261116_create_homepage_banners.sql
+-- File: supabase/migrations/20261117_create_homepage_banners.sql
 -- Description: Dynamic full-width rotating homepage promotional banners.
 -- Status: PENDING CLIENT AUTHORIZATION (DO NOT EXECUTE WITHOUT APPROVAL)
 -- =====================================================================
