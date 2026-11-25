@@ -34,7 +34,7 @@ const DEFAULT_NOTICES: AnnouncementNotice[] = [
   },
 ];
 
-const CYCLE_DURATION_MS = 5000;
+const CYCLE_DURATION_MS = 10000;
 const RADIUS = 9;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const DISMISSED_STORAGE_KEY = "kauseyah_dismissed_announcements";
@@ -47,15 +47,12 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
   const [announcements, setAnnouncements] = useState<AnnouncementBarItem[]>(initialAnnouncements || []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const startTimeRef = useRef<number | null>(null);
-  const requestRef = useRef<number | null>(null);
 
   // Fetch announcements on mount if not provided via props
   useEffect(() => {
     setIsMounted(true);
-    startTimeRef.current = Date.now();
 
     async function loadData() {
       try {
@@ -86,37 +83,18 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
   const hasDynamic = announcements.length > 0;
   const itemCount = hasDynamic ? announcements.length : DEFAULT_NOTICES.length;
 
-  // Smooth circular countdown timer loop
+  // Solid, reliable 10-second rotation interval
   useEffect(() => {
-    if (!isPlaying || itemCount <= 1) {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    if (!isPlaying || isHovered || itemCount <= 1) {
       return;
     }
 
-    const initialStart = startTimeRef.current ?? Date.now();
-    startTimeRef.current = initialStart - (progress / 100) * CYCLE_DURATION_MS;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % itemCount);
+    }, CYCLE_DURATION_MS);
 
-    const tick = () => {
-      const start = startTimeRef.current ?? Date.now();
-      const elapsed = Date.now() - start;
-      const pct = Math.min((elapsed / CYCLE_DURATION_MS) * 100, 100);
-      setProgress(pct);
-
-      if (elapsed >= CYCLE_DURATION_MS) {
-        setCurrentIndex((prev) => (prev + 1) % itemCount);
-        startTimeRef.current = Date.now();
-        setProgress(0);
-      }
-
-      requestRef.current = requestAnimationFrame(tick);
-    };
-
-    requestRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, [isPlaying, currentIndex, itemCount, progress]);
+    return () => clearInterval(timer);
+  }, [isPlaying, isHovered, itemCount]);
 
   // Handle dismissal
   const handleDismiss = (id: string) => {
@@ -130,7 +108,7 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
       // Storage error ignored
     }
 
-    const remaining = announcements.filter(a => a.id !== id);
+    const remaining = announcements.filter((a) => a.id !== id);
     setAnnouncements(remaining);
     if (currentIndex >= remaining.length) {
       setCurrentIndex(0);
@@ -145,15 +123,15 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
   const currentDefault = !hasDynamic ? DEFAULT_NOTICES[currentIndex % DEFAULT_NOTICES.length] : null;
 
   const bgColor = currentDynamic?.background_color || "#851A36";
-  const textColor = currentDynamic?.text_color || "#FFFFFF";
-
-  const strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+  const textColor = "#FFFFFF";
 
   return (
     <div
       data-announcement-bar="true"
       role="region"
       aria-label="Shipping and Store Announcements"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="relative z-50 w-full select-none border-b border-black/15 overflow-hidden font-body transition-colors duration-500"
       style={{
         backgroundColor: bgColor,
@@ -162,7 +140,7 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
       }}
     >
       <div className="max-w-[1500px] mx-auto flex items-center justify-between px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-[13px]">
-        {/* Left: Pause/Play with animated circular countdown ring */}
+        {/* Left: Pause/Play with animated countdown indicator */}
         <div className="flex-shrink-0 flex items-center pr-2">
           {itemCount > 1 ? (
             <button
@@ -173,12 +151,11 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
               className="relative w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/60 hover:opacity-90"
               style={{ color: textColor }}
             >
-              {/* SVG Progress Circle */}
+              {/* Background ring */}
               <svg
                 className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
                 viewBox="0 0 24 24"
               >
-                {/* Background ring */}
                 <circle
                   cx="12"
                   cy="12"
@@ -187,26 +164,29 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
                   stroke="rgba(255, 255, 255, 0.3)"
                   strokeWidth="1.75"
                 />
-                {/* Active animated stroke */}
+                {/* CSS-animated countdown circle when playing and not hovered */}
                 <circle
+                  key={`${currentIndex}-${isPlaying}-${isHovered}`}
                   cx="12"
                   cy="12"
                   r={RADIUS}
                   fill="none"
-                  stroke={textColor}
+                  stroke="#FFFFFF"
                   strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeDasharray={CIRCUMFERENCE}
-                  strokeDashoffset={isPlaying ? strokeDashoffset : CIRCUMFERENCE}
-                  className="transition-all"
+                  style={{
+                    strokeDashoffset: isPlaying && !isHovered ? CIRCUMFERENCE : 0,
+                    transition: isPlaying && !isHovered ? `stroke-dashoffset ${CYCLE_DURATION_MS}ms linear` : "none",
+                  }}
                 />
               </svg>
 
               {/* Play/Pause Icon */}
-              {isPlaying ? (
-                <Pause size={9} style={{ fill: textColor, color: textColor }} strokeWidth={0} />
+              {isPlaying && !isHovered ? (
+                <Pause size={9} style={{ fill: "#FFFFFF", color: "#FFFFFF" }} strokeWidth={0} />
               ) : (
-                <Play size={9} style={{ fill: textColor, color: textColor }} className="translate-x-[0.5px]" strokeWidth={0} />
+                <Play size={9} style={{ fill: "#FFFFFF", color: "#FFFFFF" }} className="translate-x-[0.5px]" strokeWidth={0} />
               )}
             </button>
           ) : (
@@ -227,16 +207,16 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
                 className="flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 leading-tight"
               >
                 <span
-                  className="font-medium text-[11px] sm:text-[13px] tracking-wide"
-                  style={{ color: textColor }}
+                  className="font-medium text-[11px] sm:text-[13px] tracking-wide text-white drop-shadow-sm"
+                  style={{ color: "#FFFFFF" }}
                 >
                   {currentDynamic.message}
                 </span>
                 {currentDynamic.cta_text && currentDynamic.cta_url && (
                   <Link
                     href={currentDynamic.cta_url}
-                    className="font-semibold underline underline-offset-4 hover:opacity-80 transition-opacity text-[11px] sm:text-[13px] whitespace-nowrap inline-flex items-center gap-1"
-                    style={{ color: textColor }}
+                    className="font-semibold underline underline-offset-4 hover:opacity-90 transition-opacity text-[11px] sm:text-[13px] whitespace-nowrap inline-flex items-center gap-1 text-white hover:text-amber-200"
+                    style={{ color: "#FFFFFF" }}
                   >
                     <span>{currentDynamic.cta_text}</span>
                     <ExternalLink size={11} />
@@ -253,15 +233,15 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
                 className="flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 leading-tight"
               >
                 <span
-                  className="font-medium text-[11px] sm:text-[13px] tracking-wide"
-                  style={{ color: textColor }}
+                  className="font-medium text-[11px] sm:text-[13px] tracking-wide text-white drop-shadow-sm"
+                  style={{ color: "#FFFFFF" }}
                 >
                   {currentDefault.text}
                 </span>
                 <Link
                   href={currentDefault.href}
-                  className="font-semibold underline underline-offset-4 decoration-white/90 hover:decoration-white hover:text-amber-200 transition-colors text-[11px] sm:text-[13px] whitespace-nowrap"
-                  style={{ color: textColor }}
+                  className="font-semibold underline underline-offset-4 decoration-white/90 hover:decoration-white hover:text-amber-200 transition-colors text-[11px] sm:text-[13px] whitespace-nowrap text-white"
+                  style={{ color: "#FFFFFF" }}
                 >
                   {currentDefault.cta}
                 </Link>
@@ -278,8 +258,8 @@ export default function PromotionalAnnouncementBar({ initialAnnouncements }: Pro
               onClick={() => handleDismiss(currentDynamic.id)}
               aria-label="Dismiss announcement"
               title="Dismiss"
-              className="p-1 rounded opacity-75 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none"
-              style={{ color: textColor }}
+              className="p-1 rounded opacity-80 hover:opacity-100 transition-opacity cursor-pointer focus:outline-none"
+              style={{ color: "#FFFFFF" }}
             >
               <X size={14} />
             </button>
